@@ -14,6 +14,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RedHttpServer.NETCore", "sr
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TestServer", "src\TestServer\TestServer.xproj", "{CFF58674-9536-4100-B627-6FFAC3719E06}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedHttpServer.NET45", "src\RedHttpServer.NET45\RedHttpServer.NET45.csproj", "{DFED1F90-EF2C-44FD-A940-2F1AA9E64203}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{CFF58674-9536-4100-B627-6FFAC3719E06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFF58674-9536-4100-B627-6FFAC3719E06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFF58674-9536-4100-B627-6FFAC3719E06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFED1F90-EF2C-44FD-A940-2F1AA9E64203}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFED1F90-EF2C-44FD-A940-2F1AA9E64203}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFED1F90-EF2C-44FD-A940-2F1AA9E64203}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFED1F90-EF2C-44FD-A940-2F1AA9E64203}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -35,5 +41,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{331EB634-FAF3-4D7A-83F1-1D3A780F0273} = {D9A21FF4-1C0B-45B1-8442-D89F53C67E2B}
 		{CFF58674-9536-4100-B627-6FFAC3719E06} = {D9A21FF4-1C0B-45B1-8442-D89F53C67E2B}
+		{DFED1F90-EF2C-44FD-A940-2F1AA9E64203} = {D9A21FF4-1C0B-45B1-8442-D89F53C67E2B}
 	EndGlobalSection
 EndGlobal

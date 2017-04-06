@@ -1,16 +1,17 @@
-﻿using System.Reflection;
+﻿using System.Resources;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("RHttpServer.CSharp")]
+[assembly: AssemblyTitle("RedHttpServer")]
 [assembly: AssemblyDescription("A simple Http server framework based on the .NET platform")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rosenbjerg Softworks")]
-[assembly: AssemblyProduct("RHttpServer.CSharp")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyProduct("RedHttpServer")]
+[assembly: AssemblyCopyright("Copyright © Rosenbjerg Softworks 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -35,5 +36,7 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.4.5")]
-[assembly: AssemblyFileVersion("1.0.4.5")]
+[assembly: AssemblyVersion("2.0.0.0")]
+[assembly: AssemblyFileVersion("2.0.0.0")]
+[assembly: NeutralResourcesLanguage("en")]
+

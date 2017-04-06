@@ -1,4 +1,8 @@
 {
+  "copyright": "Copyright © Rosenbjerg Softworks 2017",
+  "description": "A Http server framework using Kestrel and the .NET platform",
+  "language": "en",
+  "title": "RedHttpServer",
   "version": "2.0.0-alpha",
   "dependencies": {
     "HttpMultipartParser": "2.2.3",
