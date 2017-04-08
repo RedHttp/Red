@@ -6,15 +6,20 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
-using RHttpServer.Default;
-using RHttpServer.Logging;
+using System.Threading.Tasks;
+using RedHttpServer.Handling;
+using RedHttpServer.Logging;
+using RedHttpServer.Plugins;
+using RedHttpServer.Plugins.Default;
+using RedHttpServer.Request;
+using RedHttpServer.Response;
 
-namespace RHttpServer
+namespace RedHttpServer.Server
 {
     /// <summary>
     ///     The base for the http servers
     /// </summary>
-    public abstract class BaseHttpServer : IDisposable
+    public sealed class RedHttpServer : IDisposable
     {
         private static readonly RequestParams EmptyReqParams = new RequestParams(new Dictionary<string, string>());
         internal static string Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -27,13 +32,13 @@ namespace RHttpServer
         /// <param name="path">Path to use as public dir. Set to null or empty string if none wanted</param>
         /// <param name="port">The port that the server should listen on</param>
         /// <param name="throwExceptions">Whether exceptions should be suppressed and logged, or thrown (for debugging)</param>
-        protected BaseHttpServer(int port, string path, bool throwExceptions)
+        public RedHttpServer(int port, string path, bool throwExceptions)
         {
             ThrowExceptions = throwExceptions;
             PublicDir = path;
             _publicFiles = !string.IsNullOrWhiteSpace(path) && Directory.Exists(path);
             Port = port;
-            StopEvent = new ManualResetEventSlim(false);
+            _stopEvent = new ManualResetEventSlim(false);
             _listener = new HttpListener();
             _listenerThread = new Thread(HandleRequests) {Name = "ListenerThread"};
         }
@@ -41,47 +46,22 @@ namespace RHttpServer
         private readonly HttpListener _listener;
         private readonly Thread _listenerThread;
         private readonly bool _publicFiles;
-        private readonly RPluginCollection _rPluginCollection = new RPluginCollection();
         private readonly RouteTreeManager _rtman = new RouteTreeManager();
-        protected readonly ManualResetEventSlim StopEvent;
-        protected IHttpSecurityHandler SecMan;
+        private readonly ManualResetEventSlim _stopEvent;
         private IFileCacheManager _cacheMan;
         private bool _defPluginsReady;
         private ResponseHandler _resHandler;
-        private bool _securityOn;
 
         /// <summary>
         ///     The publicly available folder
         /// </summary>
         public string PublicDir { get; }
-
-        /// <summary>
-        ///     Whether public files should be cached if size and extension is set to be cached
-        /// </summary>
-        public bool CachePublicFiles { get; set; }
-
+        
         /// <summary>
         ///     The port that the server is listening on
         /// </summary>
         public int Port { get; }
-
-        /// <summary>
-        ///     Whether security is turned on
-        /// </summary>
-        public bool SecurityOn
-        {
-            get { return _securityOn; }
-            set
-            {
-                if (_securityOn == value) return;
-                _securityOn = value;
-                if (_securityOn)
-                    _rPluginCollection.Use<IHttpSecurityHandler>()?.Start();
-                else
-                    _rPluginCollection.Use<IHttpSecurityHandler>()?.Stop();
-            }
-        }
-
+        
 
         /// <summary>
         ///     Whether the server should respond to http requests
@@ -103,20 +83,9 @@ namespace RHttpServer
         public int HttpsPort { get; set; } = 5443;
 
         /// <summary>
-        ///     Register a plugin to be used in the server.
-        ///     <para />
-        ///     You can replace the default plugins by registering your plugin using the same interface as key before starting the
-        ///     server
+        /// The plugin collection containing all plugins registered to this server instance.
         /// </summary>
-        /// <typeparam name="TPluginInterface">The type the plugin implements</typeparam>
-        /// <typeparam name="TPlugin">The type of the plugin instance</typeparam>
-        /// <param name="plugin">The instance of the plugin that will be registered</param>
-        public void RegisterPlugin<TPluginInterface, TPlugin>(TPlugin plugin)
-            where TPlugin : RPlugin, TPluginInterface
-        {
-            plugin.SetPlugins(_rPluginCollection);
-            _rPluginCollection.Add(typeof(TPluginInterface), plugin);
-        }
+        public RPluginCollection Plugins { get; } = new RPluginCollection();
 
         /// <summary>
         ///     Add action to handle GET requests to a given route
@@ -240,12 +209,11 @@ namespace RHttpServer
                 }
                 _listener.Start();
                 _listenerThread.Start();
-                OnStart();
 
                 Console.WriteLine("RHttpServer v. {0} started", Version);
                 if (_listener.Prefixes.First() == "localhost")
                     Logger.Log("Server visibility", "Listening on localhost only");
-                RenderParams.Converter = _rPluginCollection.Use<IJsonConverter>();
+                RenderParams.Converter = Plugins.Use<IJsonConverter>();
             }
             catch (SocketException)
             {
@@ -273,38 +241,26 @@ namespace RHttpServer
         {
             if (_defPluginsReady) return;
 
-            if (!_rPluginCollection.IsRegistered<IJsonConverter>())
-                RegisterPlugin<IJsonConverter, ServiceStackJsonConverter>(new ServiceStackJsonConverter());
+            if (!Plugins.IsRegistered<IJsonConverter>())
+                Plugins.Register<IJsonConverter, ServiceStackJsonConverter>(new ServiceStackJsonConverter());
 
-            if (!_rPluginCollection.IsRegistered<IXmlConverter>())
-                RegisterPlugin<IXmlConverter, ServiceStackXmlConverter>(new ServiceStackXmlConverter());
-
-            if (!_rPluginCollection.IsRegistered<IHttpSecurityHandler>())
-                RegisterPlugin<IHttpSecurityHandler, SimpleServerProtection>(new SimpleServerProtection());
-
-            if (!_rPluginCollection.IsRegistered<IBodyParser>())
-                RegisterPlugin<IBodyParser, SimpleBodyParser>(new SimpleBodyParser());
-
-            if (!_rPluginCollection.IsRegistered<IFileCacheManager>())
-                RegisterPlugin<IFileCacheManager, SimpleFileCacheManager>(new SimpleFileCacheManager());
-
-            if (!_rPluginCollection.IsRegistered<IPageRenderer>())
-                RegisterPlugin<IPageRenderer, EcsPageRenderer>(new EcsPageRenderer());
+            if (!Plugins.IsRegistered<IXmlConverter>())
+                Plugins.Register<IXmlConverter, ServiceStackXmlConverter>(new ServiceStackXmlConverter());
+            
+            if (!Plugins.IsRegistered<IBodyParser>())
+                Plugins.Register<IBodyParser, SimpleBodyParser>(new SimpleBodyParser());
+            
+            if (!Plugins.IsRegistered<IPageRenderer>())
+                Plugins.Register<IPageRenderer, EcsPageRenderer>(new EcsPageRenderer());
 
             _defPluginsReady = true;
-
-            if (securitySettings == null) securitySettings = new SimpleHttpSecuritySettings();
-            SecMan = _rPluginCollection.Use<IHttpSecurityHandler>();
-            SecMan.Settings = securitySettings;
-            _rPluginCollection.Use<IPageRenderer>().CachePages = renderCaching;
-            _cacheMan = _rPluginCollection.Use<IFileCacheManager>();
+            Plugins.Use<IPageRenderer>().CachePages = renderCaching;
             if (CachePublicFiles && _publicFiles)
                 _resHandler = new CachePublicFileRequestHander(PublicDir, _cacheMan);
             else if (_publicFiles)
                 _resHandler = new PublicFileRequestHander(PublicDir);
             else
                 _resHandler = new ActionOnlyResponseHandler();
-            SecurityOn = securityOn;
         }
 
         /// <summary>
@@ -312,11 +268,9 @@ namespace RHttpServer
         /// </summary>
         public void Stop()
         {
-            StopEvent.Set();
+            _stopEvent.Set();
             _listenerThread.Join();
             _listener.Stop();
-            _rPluginCollection.Use<IHttpSecurityHandler>().Stop();
-            OnStop();
         }
 
         private void HandleRequests()
@@ -325,7 +279,7 @@ namespace RHttpServer
                 try
                 {
                     var context = _listener.BeginGetContext(ContextReady, null);
-                    if (0 == WaitHandle.WaitAny(new[] {StopEvent.WaitHandle, context.AsyncWaitHandle}))
+                    if (0 == WaitHandle.WaitAny(new[] {_stopEvent.WaitHandle, context.AsyncWaitHandle}))
                         return;
                 }
                 catch (Exception ex)
@@ -339,17 +293,18 @@ namespace RHttpServer
         {
             try
             {
-                ProcessContext(_listener.EndGetContext(ar));
+                Task.Run(() =>
+                {
+                    Process(_listener.EndGetContext(ar));
+                });
             }
             catch
             {
                 if (ThrowExceptions) throw;
             }
         }
-
-        protected abstract void ProcessContext(HttpListenerContext context);
-
-        protected void Process(HttpListenerContext context)
+        
+        private void Process(HttpListenerContext context)
         {
             var route = context.Request.Url.AbsolutePath.Trim('/');
             var hm = GetMethod(context.Request.HttpMethod);
@@ -368,7 +323,7 @@ namespace RHttpServer
                 var wsact = _rtman.SearchInTree(route, HttpMethod.WEBSOCKET, out gf);
                 if (wsact != null)
                 {
-                    PerformWSAction(context, GetParams(wsact, route), _rPluginCollection, wsact);
+                    PerformWSAction(context, GetParams(wsact, route), Plugins, wsact);
                     return;
                 }
             }
@@ -380,7 +335,7 @@ namespace RHttpServer
                 return;
             if (act != null)
             {
-                PerformAction(context, GetParams(act, route), _rPluginCollection, act);
+                PerformAction(context, GetParams(act, route), Plugins, act);
             }
             else
             {
@@ -434,24 +389,6 @@ namespace RHttpServer
                 .Where(kvp => kvp.Key < rt.Length)
                 .ToDictionary(kvp => kvp.Value, kvp => rt[kvp.Key]);
             return new RequestParams(dict);
-        }
-
-        /// <summary>
-        ///     Returns the plugin registered to type T, if any
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T GetPlugin<T>()
-        {
-            return _rPluginCollection.Use<T>();
-        }
-
-        protected virtual void OnStart()
-        {
-        }
-
-        protected virtual void OnStop()
-        {
         }
 
         public void Dispose()

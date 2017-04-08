@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RHttpServer
+namespace RedHttpServer
 {
     internal sealed class RouteTreeManager
     {
@@ -28,7 +28,7 @@ namespace RHttpServer
                     AddBranch(rTree[i]);
                 tree = ntree;
             }
-            if (tree.Action != null) throw new RHttpServerException("Cannot add two actions to the same route");
+            if (tree.Action != null) throw new RedHttpServerException("Cannot add two actions to the same route");
             tree.Action = action;
         }
 

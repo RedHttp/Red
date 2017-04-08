@@ -1,7 +1,7 @@
 using System.IO;
 using ServiceStack.Text;
 
-namespace RHttpServer.Default
+namespace RedHttpServer.Plugins.Default
 {
     /// <summary>
     ///     Very simple XmlConverter plugin using ServiceStact.Text generic methods

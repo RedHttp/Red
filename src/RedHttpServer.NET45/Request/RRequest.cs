@@ -6,8 +6,9 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using HttpMultipartParser;
+using RedHttpServer.Plugins;
 
-namespace RHttpServer
+namespace RedHttpServer.Request
 {
     /// <summary>
     ///     Class representing a request from a client

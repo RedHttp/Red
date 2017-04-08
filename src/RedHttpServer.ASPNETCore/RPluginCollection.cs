@@ -14,7 +14,14 @@ namespace RedHttpServer
 
         private readonly Dictionary<Type, object> _plugins = new Dictionary<Type, object>();
 
-        internal void Add<TKey, TImpl>(TImpl plugin) where TImpl : class, TKey
+        /// <summary>
+        ///     Register a plugin to the collection.
+        ///     Should be done before starting the server
+        /// </summary>s
+        /// <typeparam name="TKey">The type-key to look-up</typeparam>
+        /// <typeparam name="TImpl">The implementing class of the plugin</typeparam>
+        /// <returns>Whether the any plugin is registered to TPluginInterface</returns>
+        public void Register<TKey, TImpl>(TImpl plugin) where TImpl : class, TKey
         {
             var type = typeof(TKey);
             if (_plugins.ContainsKey(type))
@@ -24,7 +31,7 @@ namespace RedHttpServer
 
         /// <summary>
         ///     Check whether a plugin is registered to the given type-key
-        /// </summary>
+        /// </summary>s
         /// <typeparam name="TKey">The type-key to look-up</typeparam>
         /// <returns>Whether the any plugin is registered to TPluginInterface</returns>
         public bool IsRegistered<TKey>() => _plugins.ContainsKey(typeof(TKey));

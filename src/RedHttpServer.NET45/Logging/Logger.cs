@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace RHttpServer.Logging
+namespace RedHttpServer.Logging
 {
     /// <summary>
     ///     Class used to log things easily

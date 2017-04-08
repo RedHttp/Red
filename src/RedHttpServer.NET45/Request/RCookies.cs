@@ -1,8 +1,8 @@
 using System;
 using System.Net;
-using RHttpServer.Logging;
+using RedHttpServer.Logging;
 
-namespace RHttpServer
+namespace RedHttpServer.Request
 {
     /// <summary>
     ///     Ease-of-use wrapper for request cookies

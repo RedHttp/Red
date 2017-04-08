@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using RedHttpServer.Plugins.Interfaces;
 using ServiceStack.Text;
 
 namespace RedHttpServer.Rendering
@@ -27,6 +28,8 @@ namespace RedHttpServer.Rendering
             }
         }
 
+        internal static IJsonConverter Converter { get; set; }
+
         /// <summary>
         ///     Adds tag and replacement-data pair to parameters
         /// </summary>
@@ -44,7 +47,7 @@ namespace RedHttpServer.Rendering
         /// <param name="parData">The replacement-data object for the tag</param>
         public void Add(string parTag, object parData)
         {
-            _dict.Add(new KeyValuePair<string, string>(parTag, JsonSerializer.SerializeToString(parData)));
+            _dict.Add(new KeyValuePair<string, string>(parTag, Converter.Serialize(parData)));
         }
 
         /// <summary>

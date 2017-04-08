@@ -1,5 +1,6 @@
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace RedHttpServer.Plugins
 {
@@ -13,13 +14,7 @@ namespace RedHttpServer.Plugins
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        Task<T> ParseBodyAsync<T>(HttpListenerRequest underlyingRequest);
-
-        /// <summary>
-        ///     The method that must handle the body stream
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        T ParseBody<T>(HttpListenerRequest underlyingRequest);
+        Task<T> ParseBodyAsync<T>(HttpRequest underlyingRequest);
+        
     }
 }

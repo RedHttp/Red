@@ -1,4 +1,4 @@
-namespace RHttpServer
+namespace RedHttpServer
 {
     internal enum HttpMethod
     {

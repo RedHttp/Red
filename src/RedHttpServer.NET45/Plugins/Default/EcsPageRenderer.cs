@@ -4,8 +4,9 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using RedHttpServer.Response;
 
-namespace RHttpServer.Default
+namespace RedHttpServer.Plugins.Default
 {
     /// <summary>
     ///     Renderer for pages using ecs tags ("ecs files")
@@ -128,7 +129,7 @@ namespace RHttpServer.Default
         public string Render(string filepath, RenderParams parameters)
         {
             if (Path.GetExtension(filepath) != ".ecs")
-                throw new RHttpServerException("Please use .ecs files for rendering");
+                throw new RedHttpServerException("Please use .ecs files for rendering");
             string cached;
 
             if (CachePages && _renderCache.TryGetValue(filepath, out cached))

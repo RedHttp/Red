@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using RedHttpServer.Plugins;
+using RedHttpServer.Plugins.Default;
 using RedHttpServer.Plugins.Interfaces;
+using RedHttpServer.Rendering;
 
 namespace RedHttpServer
 {
@@ -64,7 +66,11 @@ namespace RedHttpServer
                 //.UseConfiguration(config)
                 //.UseContentRoot(_pubDir)
                 //.ConfigureLogging(l => l.AddConsole(config.GetSection("Logging")))
-                .ConfigureServices(s => s.AddRouting())
+                .ConfigureServices(s =>
+                {
+                    s.AddRouting();
+                    s.AddCors();
+                })
                 .Configure(app =>
                 {
                     //app.UseCors(builder =>
@@ -100,9 +106,18 @@ namespace RedHttpServer
         private void InitializePlugins()
         {
             if (!Plugins.IsRegistered<IJsonConverter>())
-                Plugins.Add<IJsonConverter, ServiceStackJsonConverter>(new ServiceStackJsonConverter());
+                Plugins.Register<IJsonConverter, ServiceStackJsonConverter>(new ServiceStackJsonConverter());
+
             if (!Plugins.IsRegistered<IXmlConverter>())
-                Plugins.Add<IXmlConverter, ServiceStackXmlConverter>(new ServiceStackXmlConverter());
+                Plugins.Register<IXmlConverter, ServiceStackXmlConverter>(new ServiceStackXmlConverter());
+
+            if (!Plugins.IsRegistered<IPageRenderer>())
+                Plugins.Register<IPageRenderer, EcsPageRenderer>(new EcsPageRenderer());
+
+            if (!Plugins.IsRegistered<IBodyParser>())
+                Plugins.Register<IBodyParser, SimpleBodyParser>(new SimpleBodyParser(Plugins.Use<IJsonConverter>(), Plugins.Use<IXmlConverter>()));
+
+            RenderParams.Converter = Plugins.Use<IJsonConverter>();
         }
 
 
@@ -153,7 +168,7 @@ namespace RedHttpServer
         /// <param name="parameter">original parameter</param>
         /// <param name="urlParam"></param>
         /// <param name="generalParam"></param>
-        private string ConvertParameter(string parameter, Regex urlParam, Regex generalParam)
+        private static string ConvertParameter(string parameter, Regex urlParam, Regex generalParam)
         {
             parameter = parameter.Trim('/');
             if (parameter.Contains("*"))

@@ -1,8 +1,9 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Net;
+using RedHttpServer.Response;
 
-namespace RHttpServer
+namespace RedHttpServer.Handling
 {
     internal sealed class PublicFileRequestHander : ResponseHandler
     {

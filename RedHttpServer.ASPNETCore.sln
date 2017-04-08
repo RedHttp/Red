@@ -1,18 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D9A21FF4-1C0B-45B1-8442-D89F53C67E2B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0F68BDC1-1C79-44B5-93D9-4D0F3ADE77D5}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RedHttpServer.NETCore", "src\RedHttpServer.ASPNETCore\RedHttpServer.NETCore.xproj", "{331EB634-FAF3-4D7A-83F1-1D3A780F0273}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedHttpServer.ASPNETCore", "src\RedHttpServer.ASPNETCore\RedHttpServer.ASPNETCore.csproj", "{331EB634-FAF3-4D7A-83F1-1D3A780F0273}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TestServer", "src\TestServer\TestServer.xproj", "{CFF58674-9536-4100-B627-6FFAC3719E06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestServer", "src\TestServer\TestServer.csproj", "{CFF58674-9536-4100-B627-6FFAC3719E06}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedHttpServer.NET45", "src\RedHttpServer.NET45\RedHttpServer.NET45.csproj", "{DFED1F90-EF2C-44FD-A940-2F1AA9E64203}"
 EndProject

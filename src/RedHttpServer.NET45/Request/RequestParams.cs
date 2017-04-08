@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace RHttpServer
+namespace RedHttpServer.Request
 {
     /// <summary>
     ///     Object containing the parameters for a request

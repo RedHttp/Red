@@ -1,4 +1,6 @@
-namespace RHttpServer
+using RedHttpServer.Response;
+
+namespace RedHttpServer.Plugins
 {
     /// <summary>
     ///     The interface used for page renderer in RHttpServer

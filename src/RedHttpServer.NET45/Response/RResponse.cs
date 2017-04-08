@@ -6,8 +6,10 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using RedHttpServer.Plugins;
+using RedHttpServer.Server;
 
-namespace RHttpServer
+namespace RedHttpServer.Response
 {
     /// <summary>
     ///     Class representing the reponse to a clients request
@@ -156,7 +158,7 @@ namespace RHttpServer
             {
                 UnderlyingResponse.StatusCode = status;
                 var bytes = Encoding.UTF8.GetBytes(data);
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + BaseHttpServer.Version);
+                UnderlyingResponse.AddHeader(Xpb, XpBstring + Server.RedHttpServer.Version);
                 UnderlyingResponse.ContentType = contentType;
                 UnderlyingResponse.ContentLength64 = bytes.LongLength;
                 if (!string.IsNullOrEmpty(filename))
@@ -172,7 +174,7 @@ namespace RHttpServer
             }
             catch (Exception)
             {
-                if (BaseHttpServer.ThrowExceptions) throw;
+                if (Server.RedHttpServer.ThrowExceptions) throw;
             }
         }
 
@@ -191,7 +193,7 @@ namespace RHttpServer
             try
             {
                 UnderlyingResponse.StatusCode = status;
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + BaseHttpServer.Version);
+                UnderlyingResponse.AddHeader(Xpb, XpBstring + Server.RedHttpServer.Version);
                 UnderlyingResponse.ContentType = contentType;
                 UnderlyingResponse.AddHeader("Accept-Ranges", "bytes");
                 UnderlyingResponse.ContentLength64 = data.LongLength;
@@ -208,7 +210,7 @@ namespace RHttpServer
             }
             catch (Exception)
             {
-                if (BaseHttpServer.ThrowExceptions) throw;
+                if (Server.RedHttpServer.ThrowExceptions) throw;
             }
         }
 
@@ -228,7 +230,7 @@ namespace RHttpServer
             try
             {
                 UnderlyingResponse.StatusCode = status;
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + BaseHttpServer.Version);
+                UnderlyingResponse.AddHeader(Xpb, XpBstring + Server.RedHttpServer.Version);
                 UnderlyingResponse.ContentType = contentType;
                 UnderlyingResponse.AddHeader("Accept-Ranges", "bytes");
                 var len = data.LongLength;
@@ -250,7 +252,7 @@ namespace RHttpServer
             }
             catch (Exception)
             {
-                if (BaseHttpServer.ThrowExceptions) throw;
+                if (Server.RedHttpServer.ThrowExceptions) throw;
             }
         }
 
@@ -270,7 +272,7 @@ namespace RHttpServer
             try
             {
                 UnderlyingResponse.StatusCode = status;
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + BaseHttpServer.Version);
+                UnderlyingResponse.AddHeader(Xpb, XpBstring + Server.RedHttpServer.Version);
                 if (gzipCompress) UnderlyingResponse.AddHeader("Content-Encoding", "gzip");
                 if (!string.IsNullOrEmpty(filename))
                     UnderlyingResponse.AddHeader("Content-disposition", $"inline; filename=\"{filename}\"");
@@ -287,7 +289,7 @@ namespace RHttpServer
             }
             catch (Exception)
             {
-                if (BaseHttpServer.ThrowExceptions) throw;
+                if (Server.RedHttpServer.ThrowExceptions) throw;
             }
         }
 
@@ -303,7 +305,7 @@ namespace RHttpServer
             {
                 UnderlyingResponse.StatusCode = status;
                 var bytes = Encoding.UTF8.GetBytes(Plugins.Use<IJsonConverter>().Serialize(data));
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + BaseHttpServer.Version);
+                UnderlyingResponse.AddHeader(Xpb, XpBstring + Server.RedHttpServer.Version);
                 UnderlyingResponse.ContentType = "application/json";
                 UnderlyingResponse.ContentLength64 = bytes.LongLength;
                 if (!gzipCompress || !UnderlyingResponse.Headers["Accept-Encoding"].Contains("gzip"))
@@ -317,7 +319,7 @@ namespace RHttpServer
             }
             catch (Exception)
             {
-                if (BaseHttpServer.ThrowExceptions) throw;
+                if (Server.RedHttpServer.ThrowExceptions) throw;
             }
         }
 
@@ -333,7 +335,7 @@ namespace RHttpServer
             {
                 UnderlyingResponse.StatusCode = status;
                 var bytes = Encoding.UTF8.GetBytes(Plugins.Use<IXmlConverter>().Serialize(data));
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + BaseHttpServer.Version);
+                UnderlyingResponse.AddHeader(Xpb, XpBstring + Server.RedHttpServer.Version);
                 UnderlyingResponse.ContentType = "application/xml";
                 UnderlyingResponse.ContentLength64 = bytes.LongLength;
                 if (!gzipCompress || !UnderlyingResponse.Headers["Accept-Encoding"].Contains("gzip"))
@@ -347,7 +349,7 @@ namespace RHttpServer
             }
             catch (Exception)
             {
-                if (BaseHttpServer.ThrowExceptions) throw;
+                if (Server.RedHttpServer.ThrowExceptions) throw;
             }
         }
 
@@ -371,7 +373,7 @@ namespace RHttpServer
                     contentType = "application/octet-stream";
                 UnderlyingResponse.ContentType = contentType;
                 UnderlyingResponse.AddHeader("Accept-Ranges", "bytes");
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + BaseHttpServer.Version);
+                UnderlyingResponse.AddHeader(Xpb, XpBstring + Server.RedHttpServer.Version);
                 UnderlyingResponse.AddHeader("Content-disposition",
                     "inline; filename=\"" + Path.GetFileName(filepath) + "\"");
                 using (Stream input = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -391,7 +393,7 @@ namespace RHttpServer
             }
             catch (Exception)
             {
-                if (BaseHttpServer.ThrowExceptions) throw;
+                if (Server.RedHttpServer.ThrowExceptions) throw;
             }
         }
 
@@ -418,7 +420,7 @@ namespace RHttpServer
                     contentType = "application/octet-stream";
                 UnderlyingResponse.ContentType = contentType;
                 UnderlyingResponse.AddHeader("Accept-Ranges", "bytes");
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + BaseHttpServer.Version);
+                UnderlyingResponse.AddHeader(Xpb, XpBstring + Server.RedHttpServer.Version);
                 UnderlyingResponse.AddHeader("Content-disposition",
                     "inline; filename=\"" + Path.GetFileName(filepath) + "\"");
                 using (Stream input = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -440,7 +442,7 @@ namespace RHttpServer
             }
             catch (Exception)
             {
-                if (BaseHttpServer.ThrowExceptions) throw;
+                if (Server.RedHttpServer.ThrowExceptions) throw;
             }
         }
 
@@ -465,7 +467,7 @@ namespace RHttpServer
                 if (contentType == null && !MimeTypes.TryGetValue(Path.GetExtension(filepath), out contentType))
                     contentType = "application/octet-stream";
                 UnderlyingResponse.ContentType = contentType;
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + BaseHttpServer.Version);
+                UnderlyingResponse.AddHeader(Xpb, XpBstring + Server.RedHttpServer.Version);
                 UnderlyingResponse.AddHeader("Content-disposition", "attachment; filename=\"" +
                                                                     (string.IsNullOrEmpty(filename)
                                                                         ? Path.GetFileName(filepath)
@@ -487,7 +489,7 @@ namespace RHttpServer
             }
             catch (Exception)
             {
-                if (BaseHttpServer.ThrowExceptions) throw;
+                if (Server.RedHttpServer.ThrowExceptions) throw;
             }
         }
 
@@ -506,7 +508,7 @@ namespace RHttpServer
                 UnderlyingResponse.StatusCode = status;
                 var data = Encoding.UTF8.GetBytes(Plugins.Use<IPageRenderer>().Render(pagefilepath, parameters));
                 UnderlyingResponse.ContentType = "text/html";
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + BaseHttpServer.Version);
+                UnderlyingResponse.AddHeader(Xpb, XpBstring + Server.RedHttpServer.Version);
                 UnderlyingResponse.ContentLength64 = data.LongLength;
                 if (!gzipCompress || !UnderlyingResponse.Headers["Accept-Encoding"].Contains("gzip"))
                     await InternalTransfer(data, UnderlyingResponse.OutputStream);
@@ -519,7 +521,7 @@ namespace RHttpServer
             }
             catch (Exception)
             {
-                if (BaseHttpServer.ThrowExceptions) throw;
+                if (Server.RedHttpServer.ThrowExceptions) throw;
             }
         }
 

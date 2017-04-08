@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace RHttpServer
+namespace RedHttpServer
 {
     internal sealed class RouteTree
     {

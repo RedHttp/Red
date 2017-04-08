@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
     <DocumentationFile>bin\Debug\RedHttpServer.NET45.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -34,6 +34,14 @@
     <DocumentationFile>bin\Release\RedHttpServer.NET45.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HttpMultipartParser, Version=2.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\HttpMultipartParser.2.2.3\lib\net452\HttpMultipartParser.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ServiceStack.Text, Version=4.5.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ServiceStack.Text.4.5.8\lib\net45\ServiceStack.Text.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -53,19 +61,16 @@
     <Compile Include="Plugins\Default\SimpleBodyParser.cs" />
     <Compile Include="Plugins\IBodyParser.cs" />
     <Compile Include="Plugins\IFileCacheManager.cs" />
-    <Compile Include="Plugins\IHttpSecurityHandler.cs" />
-    <Compile Include="Plugins\IHttpSecuritySettings.cs" />
     <Compile Include="Plugins\IJsonConverter.cs" />
     <Compile Include="Plugins\IPageRenderer.cs" />
     <Compile Include="Plugins\IXmlConverter.cs" />
-    <Compile Include="Plugins\RPlugin.cs" />
     <Compile Include="Plugins\RPluginCollection.cs" />
     <Compile Include="Plugins\Default\SimpleFileCacheManager.cs" />
     <Compile Include="Handling\PublicFileRequestHander.cs" />
     <Compile Include="Request\RQueries.cs" />
     <Compile Include="Handling\ResponseHandler.cs" />
     <Compile Include="Request\WebSocketDialog.cs" />
-    <Compile Include="RHttpServerException.cs" />
+    <Compile Include="RedHttpServerException.cs" />
     <Compile Include="RouteTree.cs" />
     <Compile Include="RouteTreeManager.cs" />
     <Compile Include="Plugins\Default\EcsPageRenderer.cs" />
@@ -73,16 +78,12 @@
     <Compile Include="Response\RenderParams.cs" />
     <Compile Include="Request\RequestParams.cs" />
     <Compile Include="RHttpAction.cs" />
-    <Compile Include="Plugins\Default\SimpleServerProtection.cs" />
-    <Compile Include="Plugins\Default\SimpleHttpSecuritySettings.cs" />
-    <Compile Include="Server\BaseHttpServer.cs" />
+    <Compile Include="Server\RedHttpServer.cs" />
     <Compile Include="Plugins\Default\ServiceStackJsonConverter.cs" />
     <Compile Include="Request\RRequest.cs" />
     <Compile Include="Response\RResponse.cs" />
     <Compile Include="Request\RCookies.cs" />
     <Compile Include="Request\RHeaders.cs" />
-    <Compile Include="Server\TaskBasedHttpServer.cs" />
-    <Compile Include="Server\ThreadBasedHttpServer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

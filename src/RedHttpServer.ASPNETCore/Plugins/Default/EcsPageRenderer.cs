@@ -5,16 +5,15 @@ using System.IO;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
+using RedHttpServer.Rendering;
 
-namespace RedHttpServer.Rendering
+namespace RedHttpServer.Plugins.Default
 {
     /// <summary>
     ///     Renderer for pages using ecs tags ("ecs files")
     /// </summary>
-    internal sealed class EcsPageRenderer
+    internal sealed class EcsPageRenderer : IPageRenderer
     {
-        private static EcsPageRenderer _instance;
-
         private static readonly Regex NormalTagRegex = new Regex(@"(?i)<% ?[a-z_][a-z_0-9]* ?%>", RegexOptions.Compiled);
         private static readonly Regex HtmlTagRegex = new Regex(@"(?i)<%= ?[a-z_][a-z_0-9]* ?=%>", RegexOptions.Compiled);
 
@@ -24,7 +23,6 @@ namespace RedHttpServer.Rendering
         private static readonly HtmlEncoder _htmlEncoder = HtmlEncoder.Create();
 
         private readonly ConcurrentDictionary<string, string> _renderCache = new ConcurrentDictionary<string, string>();
-        public static EcsPageRenderer Instance => _instance ?? (_instance = new EcsPageRenderer());
 
         /// <summary>
         ///     Whether the raw file should be cached to avoid file IO overhead

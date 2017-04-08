@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
-namespace RHttpServer
+namespace RedHttpServer.Request
 {
     /// <summary>
     ///     Ease-of-use wrapper for request headers

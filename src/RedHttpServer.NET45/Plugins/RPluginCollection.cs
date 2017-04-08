@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 
-namespace RHttpServer
+namespace RedHttpServer
 {
     /// <summary>
-    ///     A collection of RPlugins
+    /// Plugin manager that
     /// </summary>
     public sealed class RPluginCollection
     {
@@ -12,32 +12,40 @@ namespace RHttpServer
         {
         }
 
-        private readonly ConcurrentDictionary<Type, object> _plugins = new ConcurrentDictionary<Type, object>();
+        private readonly Dictionary<Type, object> _plugins = new Dictionary<Type, object>();
 
-        internal void Add(Type pluginInterface, object plugin)
+        /// <summary>
+        ///     Register a plugin to the collection.
+        ///     Should be done before starting the server
+        /// </summary>s
+        /// <typeparam name="TKey">The type-key to look-up</typeparam>
+        /// <returns>Whether the any plugin is registered to TPluginInterface</returns>
+        public void Register<TKey, TImpl>(TImpl plugin) where TImpl : class, TKey
         {
-            if (!_plugins.TryAdd(pluginInterface, plugin))
-                throw new RHttpServerException("You can only register one plugin to a plugin interface");
+            var type = typeof(TKey);
+            if (_plugins.ContainsKey(type))
+                throw new RedHttpServerException("You can only register one plugin to a plugin interface");
+            _plugins.Add(type, plugin);
         }
 
         /// <summary>
         ///     Check whether a plugin is registered to the given type-key
-        /// </summary>
-        /// <typeparam name="TPluginInterface">The type-key to look-up</typeparam>
+        /// </summary>s
+        /// <typeparam name="TKey">The type-key to look-up</typeparam>
         /// <returns>Whether the any plugin is registered to TPluginInterface</returns>
-        public bool IsRegistered<TPluginInterface>() => _plugins.ContainsKey(typeof(TPluginInterface));
+        public bool IsRegistered<TKey>() => _plugins.ContainsKey(typeof(TKey));
 
         /// <summary>
         ///     Returns the instance of the registered plugin
         /// </summary>
-        /// <typeparam name="TPluginInterface">The type-key to look-up</typeparam>
-        /// <exception cref="RHttpServerException">Throws exception when trying to use a plugin that is not registered</exception>
-        public TPluginInterface Use<TPluginInterface>()
+        /// <typeparam name="TKey">The type-key to look-up</typeparam>
+        /// <exception cref="RedHttpServerException">Throws exception when trying to use a plugin that is not registered</exception>
+        public TKey Use<TKey>()
         {
             object obj;
-            if (_plugins.TryGetValue(typeof(TPluginInterface), out obj)) return (TPluginInterface) obj;
-            throw new RHttpServerException(
-                $"You must have registered a plugin that implements '{typeof(TPluginInterface).Name}'");
+            if (_plugins.TryGetValue(typeof(TKey), out obj))
+                return (TKey)obj;
+            throw new RedHttpServerException($"No plugin registered for '{typeof(TKey).Name}'");
         }
     }
 }

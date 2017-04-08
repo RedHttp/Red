@@ -1,4 +1,4 @@
-namespace RHttpServer.Logging
+namespace RedHttpServer.Logging
 {
     /// <summary>
     ///     How the logger should handle calls to Log(..)

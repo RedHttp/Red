@@ -21,6 +21,15 @@ namespace TestServer
             {
                 res.Redirect("/test");
             });
+            http.WebSocket("/wstest", (req, wsd) =>
+            {
+                wsd.OnTextReceived += (sender, eventArgs) =>
+                {
+                    wsd.SendText("why do you say " + eventArgs.Text);
+                };
+
+                wsd.Ready();
+            });
             http.Start();
             Console.ReadKey();
         }

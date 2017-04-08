@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 
-namespace RHttpServer.Default
+namespace RedHttpServer.Plugins.Default
 {
     internal class SimpleFileCacheManager : RPlugin, IFileCacheManager
     {

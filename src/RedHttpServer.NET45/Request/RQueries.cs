@@ -1,7 +1,7 @@
 using System.Collections.Specialized;
 using System.Linq;
 
-namespace RHttpServer
+namespace RedHttpServer.Request
 {
     /// <summary>
     ///     Ease-of-use wrapper for request queries
