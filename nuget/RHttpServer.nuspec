@@ -14,8 +14,8 @@
 		</description>
 		<summary>
 			RedHttpServer is made to be simple to use while being efficient, and is inspired by some of the use patterns of nodejs with expressjs.
-			The NET Core version uses the Kestrel server as base, and the .NET4.5 version uses HttpListener.
-			The framework includes plugins for json and xml serialization/deserialization, request body parsing and file caching for improved performance.
+			The NET Core version uses the Kestrel server as base, and the .NET Framework version uses HttpListener.
+			The RedHttpServer framework includes plugins for json and xml serialization/deserialization, request body parsing.
 			Furthermore a simple plugin for dynamic page rendering, which offers the ability to embed dynamically created content in the html file, even js objects and text, ecs or html files (and a couple more).
 			See project page for more information.
 		</summary>
@@ -27,7 +27,7 @@
 				<dependency id="HttpMultipartParser" version="2.2.3" />
 				<dependency id="ServiceStack.Text" version="4.5.4" />
 			</group>
-			<group targetFramework=".NETStandard1.6">
+			<group targetFramework="netstandard1.6">
 				<dependency id="HttpMultipartParser" version="2.2.3" />
 				<dependency id="ServiceStack.Text.Core" version="1.0.40" />
 				<dependency id="Microsoft.AspNetCore.Cors" version="1.1.1" />
@@ -39,17 +39,17 @@
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.dll" target="lib\net452" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.xml" target="lib\net452" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.dll" target="lib\Xamarin.Mac20" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.xml" target="lib\Xamarin.Mac20" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.dll" target="lib\Xamarin.iOS10" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.xml" target="lib\Xamarin.iOS10" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.dll" target="lib\MonoAndroid10" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.xml" target="lib\MonoAndroid10" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.dll" target="lib\MonoTouch10" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.xml" target="lib\MonoTouch10" />
-		<file src="..\src\RedHttpServer.ASPNETCore\bin\Release\netstandard1.6\RedHttpServer.dll" target="lib\netstandard1.6" />
-		<file src="..\src\RedHttpServer.ASPNETCore\bin\Release\netstandard1.6\RedHttpServer.xml" target="lib\netstandard1.6" />
+		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.dll" target="lib\net452" />
+		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.xml" target="lib\net452" />
+		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.dll" target="lib\Xamarin.Mac20" />
+		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.xml" target="lib\Xamarin.Mac20" />
+		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.dll" target="lib\Xamarin.iOS10" />
+		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.xml" target="lib\Xamarin.iOS10" />
+		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.dll" target="lib\MonoAndroid10" />
+		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.xml" target="lib\MonoAndroid10" />
+		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.dll" target="lib\MonoTouch10" />
+		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.xml" target="lib\MonoTouch10" />
+		<file src="..\src\RedHttpServer.ASPNETCore\bin\Release\netstandard1.6\RedHttpServer.ASPNETCore.dll" target="lib\netstandard1.6" />
+		<file src="..\src\RedHttpServer.ASPNETCore\bin\Release\netstandard1.6\RedHttpServer.ASPNETCore.xml" target="lib\netstandard1.6" />
 	</files>
 </package>
