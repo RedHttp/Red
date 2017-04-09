@@ -4,7 +4,6 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using RedHttpServer.Plugins.Interfaces;
 using ServiceStack.Text;
 
 namespace RedHttpServer.Plugins.Default

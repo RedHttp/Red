@@ -11,7 +11,7 @@ namespace RedHttpServer.Plugins.Default
     /// <summary>
     ///     Renderer for pages using ecs tags ("ecs files")
     /// </summary>
-    internal sealed class EcsPageRenderer : RPlugin, IPageRenderer
+    internal sealed class EcsPageRenderer : IPageRenderer
     {
         private static readonly Regex NormalTagRegex = new Regex(@"(?i)<% ?[a-z_][a-z_0-9]* ?%>", RegexOptions.Compiled);
         private static readonly Regex HtmlTagRegex = new Regex(@"(?i)<%= ?[a-z_][a-z_0-9]* ?=%>", RegexOptions.Compiled);

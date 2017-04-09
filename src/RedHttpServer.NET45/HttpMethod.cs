@@ -6,7 +6,6 @@ namespace RedHttpServer
         POST,
         PUT,
         DELETE,
-        HEAD,
         OPTIONS,
         UNSUPPORTED,
         WEBSOCKET

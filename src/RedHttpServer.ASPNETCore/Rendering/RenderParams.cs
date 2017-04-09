@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using RedHttpServer.Plugins.Interfaces;
+using RedHttpServer.Plugins;
 using ServiceStack.Text;
 
 namespace RedHttpServer.Rendering

@@ -20,20 +20,9 @@ namespace RedHttpServer.Request
             UnderlyingRequest = req;
             Params = par;
             _rp = pluginCollection;
-            _cookies = new Lazy<RCookies>(() => new RCookies(UnderlyingRequest.Cookies));
-            _headers = new Lazy<RHeaders>(() => new RHeaders(UnderlyingRequest.Headers));
-            _queries = new Lazy<RQueries>(() => new RQueries(UnderlyingRequest.QueryString));
         }
-
-        internal RRequest()
-        {
-        }
-
-        private readonly Lazy<RCookies> _cookies;
+        
         private readonly NameValueCollection _emptyNameValueCollection = new NameValueCollection();
-        private readonly Lazy<RHeaders> _headers;
-        private readonly Lazy<RQueries> _queries;
-
         private readonly RPluginCollection _rp;
 
         private NameValueCollection _postFormData;
@@ -41,17 +30,17 @@ namespace RedHttpServer.Request
         /// <summary>
         ///     The query elements of the request
         /// </summary>
-        public RQueries Queries => _queries.Value;
+        public NameValueCollection Queries => UnderlyingRequest.QueryString;
 
         /// <summary>
         ///     The headers contained in the request
         /// </summary>
-        public RHeaders Headers => _headers.Value;
+        public NameValueCollection Headers => UnderlyingRequest.Headers;
 
         /// <summary>
         ///     The cookies contained in the request
         /// </summary>
-        public RCookies Cookies => _cookies.Value;
+        public CookieCollection Cookies => UnderlyingRequest.Cookies;
 
         /// <summary>
         ///     The url parameters of the request
@@ -71,50 +60,22 @@ namespace RedHttpServer.Request
         ///     and null if the request does not contain a body
         /// </summary>
         /// <returns></returns>
-        public Stream GetBodyStream()
-        {
-            if (!UnderlyingRequest.HasEntityBody || UnderlyingRequest.InputStream == Stream.Null) return null;
-            return UnderlyingRequest.InputStream;
-        }
+        public Stream GetBodyStream() => UnderlyingRequest.InputStream;
 
         /// <summary>
         ///     Returns the body deserialized or parsed to specified type, if possible, default if not
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T ParseBody<T>()
-        {
-            return _rp.Use<IBodyParser>().ParseBody<T>(UnderlyingRequest);
-        }
-
-        /// <summary>
-        ///     Returns the body deserialized or parsed to specified type, if possible, default if not
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public async Task<T> ParseBodyAsync<T>()
-        {
-            return await _rp.Use<IBodyParser>().ParseBodyAsync<T>(UnderlyingRequest);
-        }
+        public async Task<T> ParseBodyAsync<T>() => await _rp.Use<IBodyParser>().ParseBodyAsync<T>(UnderlyingRequest);
 
         /// <summary>
         ///     Returns form-data from post request, if any
         /// </summary>
         /// <returns></returns>
-        public NameValueCollection GetBodyPostFormData()
+        public MultipartFormDataParser GetFormData()
         {
-            if (_postFormData != null) return _postFormData;
-            if (!UnderlyingRequest.ContentType.Contains("x-www-form-urlencoded"))
-            {
-                _postFormData = _emptyNameValueCollection;
-                return _emptyNameValueCollection;
-            }
-            using (var reader = new StreamReader(UnderlyingRequest.InputStream))
-            {
-                var txt = reader.ReadToEnd();
-                _postFormData = HttpUtility.ParseQueryString(txt);
-                return _postFormData;
-            }
+            return new MultipartFormDataParser(UnderlyingRequest.InputStream);
         }
 
         /// <summary>

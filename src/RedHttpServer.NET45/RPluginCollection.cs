@@ -19,6 +19,7 @@ namespace RedHttpServer
         ///     Should be done before starting the server
         /// </summary>s
         /// <typeparam name="TKey">The type-key to look-up</typeparam>
+        /// <typeparam name="TImpl">The implementing class of the plugin</typeparam>
         /// <returns>Whether the any plugin is registered to TPluginInterface</returns>
         public void Register<TKey, TImpl>(TImpl plugin) where TImpl : class, TKey
         {
@@ -44,7 +45,7 @@ namespace RedHttpServer
         {
             object obj;
             if (_plugins.TryGetValue(typeof(TKey), out obj))
-                return (TKey)obj;
+                return (TKey) obj;
             throw new RedHttpServerException($"No plugin registered for '{typeof(TKey).Name}'");
         }
     }

@@ -52,38 +52,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CorsPolicy.cs" />
     <Compile Include="Handling\ActionOnlyResponseHandler.cs" />
-    <Compile Include="Handling\CachePublicFileRequestHander.cs" />
     <Compile Include="HttpMethod.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\LoggingOption.cs" />
+    <Compile Include="Handling\PublicFileRequestHander.cs" />
+    <Compile Include="Plugins\Default\EcsPageRenderer.cs" />
+    <Compile Include="Plugins\Default\ServiceStackJsonConverter.cs" />
     <Compile Include="Plugins\Default\ServiceStackXmlConverter.cs" />
     <Compile Include="Plugins\Default\SimpleBodyParser.cs" />
     <Compile Include="Plugins\IBodyParser.cs" />
-    <Compile Include="Plugins\IFileCacheManager.cs" />
     <Compile Include="Plugins\IJsonConverter.cs" />
     <Compile Include="Plugins\IPageRenderer.cs" />
     <Compile Include="Plugins\IXmlConverter.cs" />
-    <Compile Include="Plugins\RPluginCollection.cs" />
-    <Compile Include="Plugins\Default\SimpleFileCacheManager.cs" />
-    <Compile Include="Handling\PublicFileRequestHander.cs" />
-    <Compile Include="Request\RQueries.cs" />
     <Compile Include="Handling\ResponseHandler.cs" />
     <Compile Include="Request\WebSocketDialog.cs" />
     <Compile Include="RedHttpServerException.cs" />
     <Compile Include="RouteTree.cs" />
     <Compile Include="RouteTreeManager.cs" />
-    <Compile Include="Plugins\Default\EcsPageRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Response\RenderParams.cs" />
     <Compile Include="Request\RequestParams.cs" />
     <Compile Include="RHttpAction.cs" />
-    <Compile Include="Server\RedHttpServer.cs" />
-    <Compile Include="Plugins\Default\ServiceStackJsonConverter.cs" />
+    <Compile Include="RedHttpServer.cs" />
     <Compile Include="Request\RRequest.cs" />
     <Compile Include="Response\RResponse.cs" />
-    <Compile Include="Request\RCookies.cs" />
-    <Compile Include="Request\RHeaders.cs" />
+    <Compile Include="RPluginCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

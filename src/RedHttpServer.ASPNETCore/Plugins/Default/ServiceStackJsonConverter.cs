@@ -1,5 +1,4 @@
 using System.IO;
-using RedHttpServer.Plugins.Interfaces;
 using ServiceStack.Text;
 
 namespace RedHttpServer.Plugins.Default

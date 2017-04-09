@@ -6,7 +6,7 @@ namespace RedHttpServer.Plugins.Default
     /// <summary>
     ///     Very simple XmlConverter plugin using ServiceStact.Text generic methods
     /// </summary>
-    internal sealed class ServiceStackXmlConverter : RPlugin, IXmlConverter
+    internal sealed class ServiceStackXmlConverter : IXmlConverter
     {
         public string Serialize<T>(T obj)
         {
@@ -16,16 +16,6 @@ namespace RedHttpServer.Plugins.Default
         public T Deserialize<T>(string jsonData)
         {
             return XmlSerializer.DeserializeFromString<T>(jsonData);
-        }
-
-        public void SerializeToStream<T>(T obj, Stream outputStream)
-        {
-            XmlSerializer.SerializeToStream(obj, outputStream);
-        }
-
-        public T DeserializeFromStream<T>(Stream jsonStream)
-        {
-            return XmlSerializer.DeserializeFromStream<T>(jsonStream);
         }
     }
 }

@@ -14,12 +14,6 @@ namespace RedHttpServer.Plugins
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         Task<T> ParseBodyAsync<T>(HttpListenerRequest underlyingRequest);
-
-        /// <summary>
-        ///     The method that must handle the body stream
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        T ParseBody<T>(HttpListenerRequest underlyingRequest);
+        
     }
 }

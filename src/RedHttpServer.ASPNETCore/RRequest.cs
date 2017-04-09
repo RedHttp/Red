@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HttpMultipartParser;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
+using RedHttpServer.Plugins;
 using ServiceStack;
 using ServiceStack.Text;
 
@@ -68,23 +69,7 @@ namespace RedHttpServer
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public async Task<T> ParseBodyAsync<T>()
-        {
-            using (var sr = new StreamReader(UnderlyingRequest.Body))
-            {
-                switch (UnderlyingRequest.ContentType)
-                {
-                    case "application/xml":
-                    case "text/xml":
-                        return XmlSerializer.DeserializeFromString<T>(await sr.ReadToEndAsync());
-                    case "application/json":
-                    case "text/json":
-                        return XmlSerializer.DeserializeFromString<T>(await sr.ReadToEndAsync());
-                    default:
-                        return default(T);
-                }
-            }
-        }
+        public async Task<T> ParseBodyAsync<T>() => await ServerPlugins.Use<IBodyParser>().ParseBodyAsync<T>(UnderlyingRequest);
 
         /// <summary>
         ///     Returns form-data from post request, if any

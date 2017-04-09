@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using Microsoft.AspNetCore.Http;
-using RedHttpServer.Plugins.Interfaces;
+using RedHttpServer.Plugins;
 using RedHttpServer.Rendering;
 
 namespace RedHttpServer
@@ -94,6 +94,15 @@ namespace RedHttpServer
             ServerPlugins = plugins;
         }
 
+        /// <summary>
+        ///     Add header item to response
+        /// </summary>
+        /// <param name="fieldName"></param>
+        /// <param name="fieldValue"></param>
+        public void AddHeader(string fieldName, string fieldValue)
+        {
+            UnderlyingResponse.Headers.Add(fieldName, fieldValue);
+        }
         /// <summary>
         ///     The underlying HttpResponse
         ///     <para />
@@ -235,7 +244,7 @@ namespace RedHttpServer
         {
             UnderlyingResponse.StatusCode = status;
             UnderlyingResponse.ContentType = "text/html";
-            await UnderlyingResponse.WriteAsync(EcsPageRenderer.Instance.Render(pagefilepath, parameters));
+            await UnderlyingResponse.WriteAsync(ServerPlugins.Use<IPageRenderer>().Render(pagefilepath, parameters));
         }
     }
 }

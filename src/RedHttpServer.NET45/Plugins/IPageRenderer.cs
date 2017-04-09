@@ -19,22 +19,6 @@ namespace RedHttpServer.Plugins
         /// <param name="parameters">The parameters used for rendering the page</param>
         /// <returns>Returns the content of the rendered page, ready to be sent as response</returns>
         string Render(string filepath, RenderParams parameters);
-
-        ///// <summary>
-
-        /////     Used by RenderParams internally to add the render-specific symbols to the tags.
-        ///// </summary>
-        ///// <param name="tag">The tag without any render-specific symbols</param>
-        ///// <param name="data">The data that will replace the tag when rendering</param>
-        //KeyValuePair<string, string> Parametrize(string tag, string data);
-
-        ///// <summary>
-        /////     Used by RenderParams internally to add the render-specific symbols to the tags.
-        ///// </summary>
-        ///// <param name="tag">The tag without any render-specific symbols</param>
-        ///// <param name="data">The data that will replace the tag when rendering</param>
-        //KeyValuePair<string, string> ParametrizeObject(string tag, object data);
-
-        //KeyValuePair<string, string> HtmlParametrize(string tag, string data);
+        
     }
 }

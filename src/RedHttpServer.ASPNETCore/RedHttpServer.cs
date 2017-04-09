@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using RedHttpServer.Plugins;
 using RedHttpServer.Plugins.Default;
-using RedHttpServer.Plugins.Interfaces;
 using RedHttpServer.Rendering;
 
 namespace RedHttpServer
@@ -48,9 +47,14 @@ namespace RedHttpServer
         public int Port { get; }
 
         /// <summary>
-        ///     The publicly available folder
+        ///     The publicly available folder root
         /// </summary>
         private string PublicRoot { get; }
+
+        /// <summary>
+        ///     Cross-Origin Resource Sharing (CORS) policy
+        /// </summary>
+        public CorsPolicy CorsPolicy { get; set; }
 
         /// <summary>
         ///     Starts the server
@@ -60,6 +64,7 @@ namespace RedHttpServer
         /// <param name="hostnames">The host names the server is handling requests for</param>
         public void Start(params string[] hostnames)
         {
+            InitializePlugins();
             var urls = hostnames.Select(url => $"http://{url}:{Port}").ToArray();
             var host = new WebHostBuilder()
                 .UseKestrel()
@@ -69,17 +74,19 @@ namespace RedHttpServer
                 .ConfigureServices(s =>
                 {
                     s.AddRouting();
-                    s.AddCors();
+                    if (CorsPolicy != null)
+                        s.AddCors();
                 })
                 .Configure(app =>
                 {
-                    //app.UseCors(builder =>
-                    //{
-                    //    builder.WithOrigins("rosenbjerg.dk")
-                    //    .AllowAnyHeader()
-                    //    .AllowAnyMethod()
-                    //    .Build();
-                    //});
+                    if (CorsPolicy != null)
+                        app.UseCors(builder =>
+                        {
+                            builder = builder.WithOrigins(CorsPolicy.AllowedDomains.ToArray());
+                            builder = builder.WithHeaders(CorsPolicy.AllowedHeaders.ToArray());
+                            builder = builder.WithMethods(CorsPolicy.AllowedMethods.ToArray());
+                            builder.Build();
+                        });
                     if (!string.IsNullOrWhiteSpace(PublicRoot))
                         app.UseStaticFiles(new StaticFileOptions { FileProvider = new PhysicalFileProvider(Path.GetFullPath(PublicRoot)) });
                     if (_wsMethods.Any())
@@ -88,7 +95,6 @@ namespace RedHttpServer
                 })
                 .UseUrls(urls)
                 .Build();
-            InitializePlugins();
             host.Start();
             Console.WriteLine($"RedHttpServer/{Version} running on port " + Port);
         }

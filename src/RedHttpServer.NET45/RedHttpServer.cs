@@ -14,7 +14,7 @@ using RedHttpServer.Plugins.Default;
 using RedHttpServer.Request;
 using RedHttpServer.Response;
 
-namespace RedHttpServer.Server
+namespace RedHttpServer
 {
     /// <summary>
     ///     The base for the http servers
@@ -48,7 +48,6 @@ namespace RedHttpServer.Server
         private readonly bool _publicFiles;
         private readonly RouteTreeManager _rtman = new RouteTreeManager();
         private readonly ManualResetEventSlim _stopEvent;
-        private IFileCacheManager _cacheMan;
         private bool _defPluginsReady;
         private ResponseHandler _resHandler;
 
@@ -62,26 +61,6 @@ namespace RedHttpServer.Server
         /// </summary>
         public int Port { get; }
         
-
-        /// <summary>
-        ///     Whether the server should respond to http requests
-        ///     <para />
-        ///     Defaults to true
-        /// </summary>
-        public bool HttpEnabled { get; set; } = true;
-
-        /// <summary>
-        ///     Whether the server should respond to https requests
-        ///     <para />
-        ///     You must have a (ssl) certificate setup to the specified port for it to respond.
-        /// </summary>
-        public bool HttpsEnabled { get; set; }
-
-        /// <summary>
-        ///     The port that https requests are handled through, if enabled
-        /// </summary>
-        public int HttpsPort { get; set; } = 5443;
-
         /// <summary>
         /// The plugin collection containing all plugins registered to this server instance.
         /// </summary>
@@ -127,19 +106,7 @@ namespace RedHttpServer.Server
         /// <param name="action">The action that wil respond to the request</param>
         public void Delete(string route, Action<RRequest, RResponse> action)
             => _rtman.AddRoute(new RHttpAction(route, action), HttpMethod.DELETE);
-
-        /// <summary>
-        ///     Add action to handle HEAD requests to a given route
-        ///     You should only send the headers of the route as response
-        ///     <para />
-        ///     Should always be idempotent.
-        ///     (Receiving the same HEAD request one or multiple times should yield same result)
-        /// </summary>
-        /// <param name="route">The route to respond to</param>
-        /// <param name="action">The action that wil respond to the request</param>
-        public void Head(string route, Action<RRequest, RResponse> action)
-            => _rtman.AddRoute(new RHttpAction(route, action), HttpMethod.HEAD);
-
+        
         /// <summary>
         ///     Add action to handle OPTIONS requests to a given route
         ///     You should respond only using headers.
@@ -204,8 +171,7 @@ namespace RedHttpServer.Server
                 InitializeDefaultPlugins();
                 foreach (var listeningPrefix in listeningPrefixes)
                 {
-                    if (HttpEnabled) _listener.Prefixes.Add($"http://{listeningPrefix}:{Port}/");
-                    if (HttpsEnabled) _listener.Prefixes.Add($"https://{listeningPrefix}:{HttpsPort}/");
+                    _listener.Prefixes.Add($"http://{listeningPrefix}:{Port}/");
                 }
                 _listener.Start();
                 _listenerThread.Start();
@@ -229,6 +195,12 @@ namespace RedHttpServer.Server
             }
         }
 
+
+        /// <summary>
+        ///     Cross-Origin Resource Sharing (CORS) policy
+        /// </summary>
+        public CorsPolicy CorsPolicy { get; set; }
+
         /// <summary>
         ///     Initializes any default plugin if no other plugin is registered to same interface
         ///     <para />
@@ -236,8 +208,7 @@ namespace RedHttpServer.Server
         ///     <para />
         ///     Should be called after you have registered all your non-default plugins
         /// </summary>
-        public void InitializeDefaultPlugins(bool renderCaching = true, bool securityOn = false,
-            SimpleHttpSecuritySettings securitySettings = null)
+        public void InitializeDefaultPlugins(bool renderCaching = true)
         {
             if (_defPluginsReady) return;
 
@@ -248,16 +219,14 @@ namespace RedHttpServer.Server
                 Plugins.Register<IXmlConverter, ServiceStackXmlConverter>(new ServiceStackXmlConverter());
             
             if (!Plugins.IsRegistered<IBodyParser>())
-                Plugins.Register<IBodyParser, SimpleBodyParser>(new SimpleBodyParser());
+                Plugins.Register<IBodyParser, SimpleBodyParser>(new SimpleBodyParser(Plugins.Use<IJsonConverter>(), Plugins.Use<IXmlConverter>()));
             
             if (!Plugins.IsRegistered<IPageRenderer>())
                 Plugins.Register<IPageRenderer, EcsPageRenderer>(new EcsPageRenderer());
 
-            _defPluginsReady = true;
             Plugins.Use<IPageRenderer>().CachePages = renderCaching;
-            if (CachePublicFiles && _publicFiles)
-                _resHandler = new CachePublicFileRequestHander(PublicDir, _cacheMan);
-            else if (_publicFiles)
+            _defPluginsReady = true;
+            if (_publicFiles)
                 _resHandler = new PublicFileRequestHander(PublicDir);
             else
                 _resHandler = new ActionOnlyResponseHandler();
@@ -291,17 +260,10 @@ namespace RedHttpServer.Server
 
         private void ContextReady(IAsyncResult ar)
         {
-            try
+            Task.Run(() =>
             {
-                Task.Run(() =>
-                {
-                    Process(_listener.EndGetContext(ar));
-                });
-            }
-            catch
-            {
-                if (ThrowExceptions) throw;
-            }
+                Process(_listener.EndGetContext(ar));
+            });
         }
         
         private void Process(HttpListenerContext context)
@@ -365,8 +327,6 @@ namespace RedHttpServer.Server
                     return HttpMethod.DELETE;
                 case "OPTIONS":
                     return HttpMethod.OPTIONS;
-                case "HEAD":
-                    return HttpMethod.HEAD;
                 default:
                     return HttpMethod.UNSUPPORTED;
             }
