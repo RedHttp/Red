@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using HttpMultipartParser;
 using RedHttpServer.Plugins;
+using RedHttpServer.Plugins.Interfaces;
 
 namespace RedHttpServer.Request
 {
@@ -22,11 +23,8 @@ namespace RedHttpServer.Request
             _rp = pluginCollection;
         }
         
-        private readonly NameValueCollection _emptyNameValueCollection = new NameValueCollection();
         private readonly RPluginCollection _rp;
-
-        private NameValueCollection _postFormData;
-
+        
         /// <summary>
         ///     The query elements of the request
         /// </summary>

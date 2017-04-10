@@ -6,6 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using RedHttpServer.Plugins;
+using RedHttpServer.Plugins.Interfaces;
+using ILogger = RedHttpServer.Plugins.Interfaces.ILogger;
 
 namespace RedHttpServer.Response
 {
@@ -166,7 +168,6 @@ namespace RedHttpServer.Response
             }
             catch (Exception)
             {
-                if (RedHttpServer.ThrowExceptions) throw;
             }
         }
         
@@ -190,7 +191,6 @@ namespace RedHttpServer.Response
             }
             catch (Exception)
             {
-                if (RedHttpServer.ThrowExceptions) throw;
             }
         }
 
@@ -213,7 +213,6 @@ namespace RedHttpServer.Response
             }
             catch (Exception)
             {
-                if (RedHttpServer.ThrowExceptions) throw;
             }
         }
 
@@ -249,7 +248,6 @@ namespace RedHttpServer.Response
             }
             catch (Exception)
             {
-                if (RedHttpServer.ThrowExceptions) throw;
             }
         }
 
@@ -290,7 +288,6 @@ namespace RedHttpServer.Response
             }
             catch (Exception)
             {
-                if (RedHttpServer.ThrowExceptions) throw;
             }
         }
 
@@ -328,7 +325,6 @@ namespace RedHttpServer.Response
             }
             catch (Exception)
             {
-                if (RedHttpServer.ThrowExceptions) throw;
             }
         }
 
@@ -353,7 +349,6 @@ namespace RedHttpServer.Response
             }
             catch (Exception)
             {
-                if (RedHttpServer.ThrowExceptions) throw;
             }
         }
 

@@ -21,14 +21,13 @@ namespace TestServer
             {
                 res.Redirect("/test");
             });
-            http.WebSocket("/wstest", (req, wsd) =>
+            http.WebSocket("/wstest", async (req, wsd) =>
             {
+                await wsd.SendText("Welcome to the echo test server");
                 wsd.OnTextReceived += (sender, eventArgs) =>
                 {
                     wsd.SendText("why do you say " + eventArgs.Text);
                 };
-
-                wsd.Ready();
             });
             http.Start();
             Console.ReadKey();

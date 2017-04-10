@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using RedHttpServer.Plugins;
-using RedHttpServer.Plugins.Default;
+using RedHttpServer.Plugins.Interfaces;
 using RedHttpServer.Rendering;
+using ILogger = RedHttpServer.Plugins.Interfaces.ILogger;
 
 namespace RedHttpServer
 {
@@ -50,7 +52,7 @@ namespace RedHttpServer
         ///     The publicly available folder root
         /// </summary>
         private string PublicRoot { get; }
-
+        
         /// <summary>
         ///     Cross-Origin Resource Sharing (CORS) policy
         /// </summary>
@@ -68,9 +70,6 @@ namespace RedHttpServer
             var urls = hostnames.Select(url => $"http://{url}:{Port}").ToArray();
             var host = new WebHostBuilder()
                 .UseKestrel()
-                //.UseConfiguration(config)
-                //.UseContentRoot(_pubDir)
-                //.ConfigureLogging(l => l.AddConsole(config.GetSection("Logging")))
                 .ConfigureServices(s =>
                 {
                     s.AddRouting();
@@ -79,18 +78,20 @@ namespace RedHttpServer
                 })
                 .Configure(app =>
                 {
-                    if (CorsPolicy != null)
+                    if (CorsPolicy != null && CorsPolicy.AllowedOrigins.Any())
                         app.UseCors(builder =>
                         {
-                            builder = builder.WithOrigins(CorsPolicy.AllowedDomains.ToArray());
-                            builder = builder.WithHeaders(CorsPolicy.AllowedHeaders.ToArray());
-                            builder = builder.WithMethods(CorsPolicy.AllowedMethods.ToArray());
-                            builder.Build();
+                            builder.WithOrigins(CorsPolicy.AllowedOrigins.ToArray())
+                                .WithHeaders(CorsPolicy.AllowedHeaders.ToArray())
+                                .WithMethods(CorsPolicy.AllowedMethods.ToArray())
+                                .Build();
                         });
-                    if (!string.IsNullOrWhiteSpace(PublicRoot))
+                    if (!string.IsNullOrWhiteSpace(PublicRoot) && Directory.Exists(PublicRoot))
                         app.UseStaticFiles(new StaticFileOptions { FileProvider = new PhysicalFileProvider(Path.GetFullPath(PublicRoot)) });
                     if (_wsMethods.Any())
-                        app.UseWebSockets(new WebSocketOptions());
+                    {
+                        app.UseWebSockets();
+                    }
                     app.UseRouter(SetRoutes);
                 })
                 .UseUrls(urls)
@@ -109,8 +110,14 @@ namespace RedHttpServer
             Start(localOnly ? "localhost" : "*");
         }
 
-        private void InitializePlugins()
+        /// <summary>
+        ///     Initializes any default plugin if no other plugin is registered to same interface
+        ///     <para />
+        ///     Should be called after you have registered all your non-default plugins
+        /// </summary>
+        public void InitializePlugins(bool renderCaching = true)
         {
+            if (_defPluginsReady) return;
             if (!Plugins.IsRegistered<IJsonConverter>())
                 Plugins.Register<IJsonConverter, ServiceStackJsonConverter>(new ServiceStackJsonConverter());
 
@@ -123,7 +130,12 @@ namespace RedHttpServer
             if (!Plugins.IsRegistered<IBodyParser>())
                 Plugins.Register<IBodyParser, SimpleBodyParser>(new SimpleBodyParser(Plugins.Use<IJsonConverter>(), Plugins.Use<IXmlConverter>()));
 
+            if (!Plugins.IsRegistered<ILogger>())
+                Plugins.Register<ILogger, NoLogger>(new NoLogger());
+
+            Plugins.Use<IPageRenderer>().CachePages = renderCaching;
             RenderParams.Converter = Plugins.Use<IJsonConverter>();
+            _defPluginsReady = true;
         }
 
 
@@ -158,8 +170,9 @@ namespace RedHttpServer
                     if (context.WebSockets.IsWebSocketRequest)
                     {
                         var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                        wsMethod.Item2(new RRequest(context.Request, Plugins),
-                            new WebSocketDialog(context, webSocket, Plugins));
+                        var wsd = new WebSocketDialog(context, webSocket, Plugins);
+                        wsMethod.Item2(new RRequest(context.Request, Plugins), wsd);
+                        await wsd.ReadFromWebSocket();
                     }
                     else
                         context.Response.StatusCode = 400;
@@ -250,6 +263,9 @@ namespace RedHttpServer
 
         private readonly List<Tuple<string, Action<RRequest, WebSocketDialog>>> _wsMethods =
             new List<Tuple<string, Action<RRequest, WebSocketDialog>>>();
+
+        private bool _defPluginsReady;
+
         #endregion
     }
 }

@@ -74,7 +74,7 @@ namespace RedHttpServer.Request
             await _ws.CloseAsync(status, description, CancellationToken.None);
         }
 
-        private async void ReadFromWebSocket()
+        internal async Task ReadFromWebSocket()
         {
             var buffer = new byte[0x2000];
             try
@@ -109,15 +109,7 @@ namespace RedHttpServer.Request
                 _ws.Dispose();
             }
         }
-
-        /// <summary>
-        ///     Start receiving from websocket. Call when eventhandlers are set up
-        /// </summary>
-        public void Ready()
-        {
-            ReadFromWebSocket();
-        }
-
+        
         /// <summary>
         ///     Represents a binary message received from websocket
         /// </summary>

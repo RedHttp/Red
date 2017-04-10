@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -8,11 +9,11 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using RedHttpServer.Handling;
-using RedHttpServer.Logging;
 using RedHttpServer.Plugins;
-using RedHttpServer.Plugins.Default;
+using RedHttpServer.Plugins.Interfaces;
 using RedHttpServer.Request;
 using RedHttpServer.Response;
+using ILogger = RedHttpServer.Plugins.Interfaces.ILogger;
 
 namespace RedHttpServer
 {
@@ -23,7 +24,6 @@ namespace RedHttpServer
     {
         private static readonly RequestParams EmptyReqParams = new RequestParams(new Dictionary<string, string>());
         internal static string Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-        internal static bool ThrowExceptions;
 
         /// <summary>
         ///     Constructs a server instance with given port and using the given path as public folder.
@@ -31,11 +31,9 @@ namespace RedHttpServer
         /// </summary>
         /// <param name="path">Path to use as public dir. Set to null or empty string if none wanted</param>
         /// <param name="port">The port that the server should listen on</param>
-        /// <param name="throwExceptions">Whether exceptions should be suppressed and logged, or thrown (for debugging)</param>
-        public RedHttpServer(int port, string path, bool throwExceptions)
+        public RedHttpServer(int port, string path)
         {
-            ThrowExceptions = throwExceptions;
-            PublicDir = path;
+            PublicRoot = path;
             _publicFiles = !string.IsNullOrWhiteSpace(path) && Directory.Exists(path);
             Port = port;
             _stopEvent = new ManualResetEventSlim(false);
@@ -43,6 +41,7 @@ namespace RedHttpServer
             _listenerThread = new Thread(HandleRequests) {Name = "ListenerThread"};
         }
 
+        private readonly CorsHandler _cors = new CorsHandler();
         private readonly HttpListener _listener;
         private readonly Thread _listenerThread;
         private readonly bool _publicFiles;
@@ -54,7 +53,7 @@ namespace RedHttpServer
         /// <summary>
         ///     The publicly available folder
         /// </summary>
-        public string PublicDir { get; }
+        public string PublicRoot { get; }
         
         /// <summary>
         ///     The port that the server is listening on
@@ -65,6 +64,8 @@ namespace RedHttpServer
         /// The plugin collection containing all plugins registered to this server instance.
         /// </summary>
         public RPluginCollection Plugins { get; } = new RPluginCollection();
+        
+        #region Adding route handlers
 
         /// <summary>
         ///     Add action to handle GET requests to a given route
@@ -75,7 +76,10 @@ namespace RedHttpServer
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
         public void Get(string route, Action<RRequest, RResponse> action)
-            => _rtman.AddRoute(new RHttpAction(route, action), HttpMethod.GET);
+        {
+            _rtman.AddRoute(new RHttpAction(route, action), HttpMethod.GET);
+        }
+
 
         /// <summary>
         ///     Add action to handle POST requests to a given route
@@ -83,7 +87,10 @@ namespace RedHttpServer
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
         public void Post(string route, Action<RRequest, RResponse> action)
-            => _rtman.AddRoute(new RHttpAction(route, action), HttpMethod.POST);
+        {
+            _rtman.AddRoute(new RHttpAction(route, action), HttpMethod.POST);
+            _cors.Register(route, "POST");
+        }
 
         /// <summary>
         ///     Add action to handle PUT requests to a given route.
@@ -94,7 +101,10 @@ namespace RedHttpServer
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
         public void Put(string route, Action<RRequest, RResponse> action)
-            => _rtman.AddRoute(new RHttpAction(route, action), HttpMethod.PUT);
+        {
+            _rtman.AddRoute(new RHttpAction(route, action), HttpMethod.PUT);
+            _cors.Register(route, "PUT");
+        }
 
         /// <summary>
         ///     Add action to handle DELETE requests to a given route.
@@ -105,8 +115,11 @@ namespace RedHttpServer
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
         public void Delete(string route, Action<RRequest, RResponse> action)
-            => _rtman.AddRoute(new RHttpAction(route, action), HttpMethod.DELETE);
-        
+        {
+            _rtman.AddRoute(new RHttpAction(route, action), HttpMethod.DELETE);
+            _cors.Register(route, "DELETE");
+        }
+
         /// <summary>
         ///     Add action to handle OPTIONS requests to a given route
         ///     You should respond only using headers.
@@ -136,6 +149,8 @@ namespace RedHttpServer
             _rtman.AddRoute(new RHttpAction(route, action, protocol), HttpMethod.WEBSOCKET);
         }
 
+        #endregion
+
         /// <summary>
         ///     Starts the server
         ///     <para />
@@ -155,7 +170,6 @@ namespace RedHttpServer
         ///     <para />
         ///     "+" , "*" , "localhost" , "example.com", "123.12.34.56"
         ///     <para />
-        ///     Protocol and port will be added automatically
         /// </summary>
         /// <param name="listeningPrefixes">The prefixes the server will listen for requests with</param>
         public void Start(params string[] listeningPrefixes)
@@ -168,7 +182,8 @@ namespace RedHttpServer
                         "You must listen for either http or https (or both) requests for the server to do anything");
                     return;
                 }
-                InitializeDefaultPlugins();
+                InitializePlugins();
+                _cors.Bind(CorsPolicy, _rtman);
                 foreach (var listeningPrefix in listeningPrefixes)
                 {
                     _listener.Prefixes.Add($"http://{listeningPrefix}:{Port}/");
@@ -177,9 +192,8 @@ namespace RedHttpServer
                 _listenerThread.Start();
 
                 Console.WriteLine("RHttpServer v. {0} started", Version);
-                if (_listener.Prefixes.First() == "localhost")
-                    Logger.Log("Server visibility", "Listening on localhost only");
-                RenderParams.Converter = Plugins.Use<IJsonConverter>();
+                if (listeningPrefixes.All(a => a == "localhost"))
+                    Plugins.Use<ILogger>().Log("Server visibility", "Listening on localhost only");
             }
             catch (SocketException)
             {
@@ -194,7 +208,7 @@ namespace RedHttpServer
                 Environment.Exit(0);
             }
         }
-
+        
 
         /// <summary>
         ///     Cross-Origin Resource Sharing (CORS) policy
@@ -204,14 +218,11 @@ namespace RedHttpServer
         /// <summary>
         ///     Initializes any default plugin if no other plugin is registered to same interface
         ///     <para />
-        ///     Also used for changing the default security settings
-        ///     <para />
         ///     Should be called after you have registered all your non-default plugins
         /// </summary>
-        public void InitializeDefaultPlugins(bool renderCaching = true)
+        public void InitializePlugins(bool renderCaching = true)
         {
             if (_defPluginsReady) return;
-
             if (!Plugins.IsRegistered<IJsonConverter>())
                 Plugins.Register<IJsonConverter, ServiceStackJsonConverter>(new ServiceStackJsonConverter());
 
@@ -225,9 +236,10 @@ namespace RedHttpServer
                 Plugins.Register<IPageRenderer, EcsPageRenderer>(new EcsPageRenderer());
 
             Plugins.Use<IPageRenderer>().CachePages = renderCaching;
+            RenderParams.Converter = Plugins.Use<IJsonConverter>();
             _defPluginsReady = true;
             if (_publicFiles)
-                _resHandler = new PublicFileRequestHander(PublicDir);
+                _resHandler = new PublicFileRequestHander(PublicRoot);
             else
                 _resHandler = new ActionOnlyResponseHandler();
         }
@@ -245,6 +257,7 @@ namespace RedHttpServer
         private void HandleRequests()
         {
             while (_listener.IsListening)
+            {
                 try
                 {
                     var context = _listener.BeginGetContext(ContextReady, null);
@@ -253,9 +266,8 @@ namespace RedHttpServer
                 }
                 catch (Exception ex)
                 {
-                    if (ThrowExceptions) throw;
-                    Logger.Log(ex);
-                }
+                    Plugins.Use<ILogger>().Log(ex);
+                }}
         }
 
         private void ContextReady(IAsyncResult ar)
@@ -266,13 +278,13 @@ namespace RedHttpServer
             });
         }
         
-        private void Process(HttpListenerContext context)
+        private async void Process(HttpListenerContext context)
         {
             var route = context.Request.Url.AbsolutePath.Trim('/');
             var hm = GetMethod(context.Request.HttpMethod);
             if (hm == HttpMethod.UNSUPPORTED)
             {
-                Logger.Log("Unsupported HTTP method",
+                Plugins.Use<ILogger>().Log("Unsupported HTTP method",
                     $"{context.Request.HttpMethod} from {context.Request.RemoteEndPoint}");
                 context.Response.StatusCode = 404;
                 context.Response.Close();
@@ -281,17 +293,15 @@ namespace RedHttpServer
 
             if (context.Request.IsWebSocketRequest)
             {
-                bool gf;
-                var wsact = _rtman.SearchInTree(route, HttpMethod.WEBSOCKET, out gf);
+                var wsact = _rtman.SearchInTree(route, HttpMethod.WEBSOCKET, out bool gf);
                 if (wsact != null)
                 {
-                    PerformWSAction(context, GetParams(wsact, route), Plugins, wsact);
+                    await PerformWsAction(context, GetParams(wsact, route), Plugins, wsact);
                     return;
                 }
             }
 
-            bool generalFallback;
-            var act = _rtman.SearchInTree(route, hm, out generalFallback);
+            var act = _rtman.SearchInTree(route, hm, out bool generalFallback);
 
             if (generalFallback && _resHandler.Handle(route, context))
                 return;
@@ -306,11 +316,13 @@ namespace RedHttpServer
             }
         }
 
-        private static async void PerformWSAction(HttpListenerContext context, RequestParams reqPar,
+        private static async Task PerformWsAction(HttpListenerContext context, RequestParams reqPar,
             RPluginCollection plugins, RHttpAction wsact)
         {
             var wsc = await context.AcceptWebSocketAsync(wsact.WSProtocol);
-            wsact.WSAction(new RRequest(context.Request, reqPar, plugins), new WebSocketDialog(wsc));
+            var wsd = new WebSocketDialog(wsc);
+            wsact.WSAction(new RRequest(context.Request, reqPar, plugins), wsd);
+            await wsd.ReadFromWebSocket();
         }
 
         private static HttpMethod GetMethod(string input)
@@ -351,9 +363,14 @@ namespace RedHttpServer
             return new RequestParams(dict);
         }
 
+        /// <summary>
+        /// Makes sure the server is correctly stopped when this intance is disposed
+        /// </summary>
         public void Dispose()
         {
             Stop();
+            _stopEvent.Dispose();
+            _listener.Close();
         }
     }
 }

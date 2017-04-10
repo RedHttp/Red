@@ -52,20 +52,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CorsHandler.cs" />
     <Compile Include="CorsPolicy.cs" />
+    <Compile Include="Plugins\FileLogger.cs" />
     <Compile Include="Handling\ActionOnlyResponseHandler.cs" />
     <Compile Include="HttpMethod.cs" />
-    <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Logging\LoggingOption.cs" />
+    <Compile Include="Plugins\Interfaces\ILogger.cs" />
+    <Compile Include="Plugins\NoLogger.cs" />
     <Compile Include="Handling\PublicFileRequestHander.cs" />
-    <Compile Include="Plugins\Default\EcsPageRenderer.cs" />
-    <Compile Include="Plugins\Default\ServiceStackJsonConverter.cs" />
-    <Compile Include="Plugins\Default\ServiceStackXmlConverter.cs" />
-    <Compile Include="Plugins\Default\SimpleBodyParser.cs" />
-    <Compile Include="Plugins\IBodyParser.cs" />
-    <Compile Include="Plugins\IJsonConverter.cs" />
-    <Compile Include="Plugins\IPageRenderer.cs" />
-    <Compile Include="Plugins\IXmlConverter.cs" />
+    <Compile Include="Plugins\EcsPageRenderer.cs" />
+    <Compile Include="Plugins\ServiceStackJsonConverter.cs" />
+    <Compile Include="Plugins\ServiceStackXmlConverter.cs" />
+    <Compile Include="Plugins\SimpleBodyParser.cs" />
+    <Compile Include="Plugins\Interfaces\IBodyParser.cs" />
+    <Compile Include="Plugins\Interfaces\IJsonConverter.cs" />
+    <Compile Include="Plugins\Interfaces\IPageRenderer.cs" />
+    <Compile Include="Plugins\Interfaces\IXmlConverter.cs" />
     <Compile Include="Handling\ResponseHandler.cs" />
     <Compile Include="Request\WebSocketDialog.cs" />
     <Compile Include="RedHttpServerException.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="Request\RRequest.cs" />
     <Compile Include="Response\RResponse.cs" />
     <Compile Include="RPluginCollection.cs" />
+    <Compile Include="Plugins\TerminalLogger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
@@ -88,6 +91,7 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

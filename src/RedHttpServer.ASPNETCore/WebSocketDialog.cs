@@ -81,14 +81,14 @@ namespace RedHttpServer
             await _ws.CloseAsync(status, description, CancellationToken.None);
         }
 
-        private async void ReadFromWebSocket()
+        internal async Task ReadFromWebSocket()
         {
-            var buffer = new byte[0x2000];
+            var buffer = new byte[0x1000];
             try
             {
-                while (_ws.State == WebSocketState.Open)
+                var received = await _ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                while (!received.CloseStatus.HasValue)
                 {
-                    var received = await _ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                     switch (received.MessageType)
                     {
                         case WebSocketMessageType.Text:
@@ -105,6 +105,7 @@ namespace RedHttpServer
                             await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
                             break;
                     }
+                    received = await _ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                 }
             }
             catch (WebSocketException)
@@ -113,16 +114,9 @@ namespace RedHttpServer
             finally
             {
                 OnClosed?.Invoke(this, EventArgs.Empty);
+                await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
                 _ws.Dispose();
             }
-        }
-
-        /// <summary>
-        ///     Start receiving from websocket. Call when eventhandlers are set up
-        /// </summary>
-        public void Ready()
-        {
-            ReadFromWebSocket();
         }
 
         /// <summary>

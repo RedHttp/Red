@@ -10,7 +10,7 @@ namespace RedHttpServer
         /// <summary>
         ///     The allowed origins for CORS requests
         /// </summary>
-        public List<string> AllowedDomains { get; } = new List<string>();
+        public List<string> AllowedOrigins { get; } = new List<string>();
 
         /// <summary>
         ///     The allowed headers for CORS requests

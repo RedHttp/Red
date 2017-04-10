@@ -6,6 +6,7 @@ using HttpMultipartParser;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using RedHttpServer.Plugins;
+using RedHttpServer.Plugins.Interfaces;
 using ServiceStack;
 using ServiceStack.Text;
 
@@ -110,8 +111,7 @@ namespace RedHttpServer
                 }
                 if (filerenamer != null)
                 {
-                    string rename;
-                    if (!files.TryGetValue(fname, out rename))
+                    if (!files.TryGetValue(fname, out string rename))
                     {
                         rename = filerenamer(fname);
                         files.Add(fname, rename);
@@ -130,8 +130,7 @@ namespace RedHttpServer
                     tcs.TrySetResult(false);
                     return;
                 }
-                Stream stream;
-                if (!filestreams.TryGetValue(fname, out stream))
+                if (!filestreams.TryGetValue(fname, out Stream stream))
                 {
                     stream = File.Create(Path.Combine(filePath, fname));
                     filestreams.Add(fname, stream);

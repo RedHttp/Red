@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using Microsoft.AspNetCore.Http;
 using RedHttpServer.Plugins;
+using RedHttpServer.Plugins.Interfaces;
 using RedHttpServer.Rendering;
 
 namespace RedHttpServer
