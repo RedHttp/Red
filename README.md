@@ -11,9 +11,11 @@ Some of the use patterns has been inspired by nodejs and expressjs
 
 [Documentation for .NET Framework version](https://rosenbjerg.dk/rhs/docs/)
 
+### Installation
+RedHttpServer can be installed from [NuGet](https://www.nuget.org/packages/RHttpServer/): Install-Package RHttpServer
+
 ### Example
 In this example, we listen locally on port 5000, and respond to GET, POST and WebSocket requests
-
 
 ```csharp
 var server = new RedHttpServer(5000, "./public");
