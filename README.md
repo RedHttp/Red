@@ -12,9 +12,8 @@ Some of the use patterns has been inspired by nodejs and expressjs
 [Documentation for .NET Framework version](https://rosenbjerg.dk/rhs/docs/)
 
 ### Example
-In this example, we listen locally on port 5000 and handles the responses as tasks.
+In this example, we listen locally on port 5000, and respond to GET, POST and WebSocket requests
 
-This example only handles GET http requests and the public folder is placed in the same folder as the server executable and named public.
 
 ```csharp
 var server = new RedHttpServer(5000, "./public");
