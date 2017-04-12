@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>RHttpServer</id>
-		<version>2.0.0</version>
+		<version>2.0.0.0</version>
 		<title>RHS - RedHttpServer</title>
 		<authors>Malte Rosenbjerg</authors>
 		<owners>Rosenbjerg Softworks</owners>
@@ -13,13 +13,13 @@
 			RedHttpServer is a simple server framework for creating powerful http(s) servers for websites with dynamic and static content, or APIs, in a very simple manner
 		</description>
 		<summary>
-			RedHttpServer is made to be simple to use while being efficient, and is inspired by some of the use patterns of nodejs with expressjs.
-			The NET Core version uses the Kestrel server as base, and the .NET Framework version uses HttpListener.
-			The RedHttpServer framework includes plugins for json and xml serialization/deserialization, request body parsing.
-			Furthermore a simple plugin for dynamic page rendering, which offers the ability to embed dynamically created content in the html file, even js objects and text, ecs or html files (and a couple more).
-			See project page for more information.
+RedHttpServer is made to be simple to use while being efficient, and is inspired by some of the use patterns of nodejs with expressjs.
+The .NET Core version uses the Kestrel server as base, and the .NET Framework version uses HttpListener.
+The RedHttpServer framework includes plugins for Json and Xml serialization/deserialization and simple request body parsing, which can easily be substituted if necessary.
+Furthermore a simple plugin for dynamic page rendering, which offers the ability to embed dynamically created content in the html file, even js objects and text, ecs or html files (and a couple more).
+See project page for more information.
 		</summary>
-		<releaseNotes>.NET Core support and major changes and trimming of the framework</releaseNotes>
+		<releaseNotes>.NET Core support and major changes and trimming of the API</releaseNotes>
 		<copyright>Copyright 2017</copyright>
 		<tags>RedHttpServer RHttpServer red rhs netcore http server api rendering ecs</tags>
 		<dependencies>

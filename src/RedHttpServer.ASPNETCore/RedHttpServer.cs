@@ -24,7 +24,7 @@ namespace RedHttpServer
         /// <summary>
         /// Build version of RedHttpServer
         /// </summary>
-        public const string Version = "2.0.0alpha";
+        public const string Version = "2.0.0.0";
 
         /// <summary>
         ///     Constructs a server instance with given port and using the given path as public folder.

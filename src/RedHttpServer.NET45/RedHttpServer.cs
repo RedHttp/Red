@@ -235,6 +235,9 @@ namespace RedHttpServer
             if (!Plugins.IsRegistered<IPageRenderer>())
                 Plugins.Register<IPageRenderer, EcsPageRenderer>(new EcsPageRenderer());
 
+            if (!Plugins.IsRegistered<ILogger>())
+                Plugins.Register<ILogger, NoLogger>(new NoLogger());
+
             Plugins.Use<IPageRenderer>().CachePages = renderCaching;
             RenderParams.Converter = Plugins.Use<IJsonConverter>();
             _defPluginsReady = true;
