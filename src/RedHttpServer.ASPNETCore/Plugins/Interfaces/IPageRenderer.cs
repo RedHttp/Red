@@ -1,4 +1,4 @@
-using RedHttpServer.Rendering;
+using RedHttpServer.Response;
 
 namespace RedHttpServer.Plugins.Interfaces
 {

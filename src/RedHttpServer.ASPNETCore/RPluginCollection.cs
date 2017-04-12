@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace RedHttpServer
 {
     /// <summary>
-    /// Plugin manager that
+    /// Plugin manager that contains the registered plugins for the instance of the server.
     /// </summary>
     public sealed class RPluginCollection
     {

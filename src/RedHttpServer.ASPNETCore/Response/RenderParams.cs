@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using RedHttpServer.Plugins;
 using RedHttpServer.Plugins.Interfaces;
-using ServiceStack.Text;
 
-namespace RedHttpServer.Rendering
+namespace RedHttpServer.Response
 {    
     /// <summary>
     ///     Parameters used when rendering a page

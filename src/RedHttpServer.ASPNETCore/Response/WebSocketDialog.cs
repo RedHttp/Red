@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace RedHttpServer
+namespace RedHttpServer.Response
 {    
     /// <summary>
      ///     Represents a websocket dialog between server and a client

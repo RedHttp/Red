@@ -20,7 +20,7 @@ namespace RedHttpServer
             list.Add(method);
         }
 
-        public void Bind(CorsPolicy corsPolicy, RouteTreeManager rtman)
+        internal void Bind(CorsPolicy corsPolicy, RouteTreeManager rtman)
         {
             if (corsPolicy == null)
                 return;

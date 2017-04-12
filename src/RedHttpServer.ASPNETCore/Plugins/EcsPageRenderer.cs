@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using RedHttpServer.Plugins.Interfaces;
-using RedHttpServer.Rendering;
+using RedHttpServer.Response;
 
 namespace RedHttpServer.Plugins
 {

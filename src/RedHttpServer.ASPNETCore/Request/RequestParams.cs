@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace RedHttpServer
+namespace RedHttpServer.Request
 {
     /// <summary>
     ///     Object containing the parameters for a request

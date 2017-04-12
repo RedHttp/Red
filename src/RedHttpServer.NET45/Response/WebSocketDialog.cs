@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RedHttpServer.Request
+namespace RedHttpServer.Response
 {
     /// <summary>
     ///     Represents a websocket dialog between server and a client

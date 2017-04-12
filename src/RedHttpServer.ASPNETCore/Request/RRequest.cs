@@ -5,12 +5,10 @@ using System.Threading.Tasks;
 using HttpMultipartParser;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using RedHttpServer.Plugins;
 using RedHttpServer.Plugins.Interfaces;
 using ServiceStack;
-using ServiceStack.Text;
 
-namespace RedHttpServer
+namespace RedHttpServer.Request
 {
     /// <summary>
     ///     Class representing a request from a client

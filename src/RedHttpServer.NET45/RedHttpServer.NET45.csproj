@@ -69,7 +69,7 @@
     <Compile Include="Plugins\Interfaces\IPageRenderer.cs" />
     <Compile Include="Plugins\Interfaces\IXmlConverter.cs" />
     <Compile Include="Handling\ResponseHandler.cs" />
-    <Compile Include="Request\WebSocketDialog.cs" />
+    <Compile Include="Response\WebSocketDialog.cs" />
     <Compile Include="RedHttpServerException.cs" />
     <Compile Include="RouteTree.cs" />
     <Compile Include="RouteTreeManager.cs" />

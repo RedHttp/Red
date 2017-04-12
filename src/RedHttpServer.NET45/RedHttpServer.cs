@@ -18,7 +18,7 @@ using ILogger = RedHttpServer.Plugins.Interfaces.ILogger;
 namespace RedHttpServer
 {
     /// <summary>
-    ///     The base for the http servers
+    /// A HTTP server based on HttpListener, with use-patterns inspired by express.js
     /// </summary>
     public sealed class RedHttpServer : IDisposable
     {
@@ -31,7 +31,7 @@ namespace RedHttpServer
         /// </summary>
         /// <param name="path">Path to use as public dir. Set to null or empty string if none wanted</param>
         /// <param name="port">The port that the server should listen on</param>
-        public RedHttpServer(int port, string path)
+        public RedHttpServer(int port = 5000, string path = "")
         {
             PublicRoot = path;
             _publicFiles = !string.IsNullOrWhiteSpace(path) && Directory.Exists(path);
@@ -134,7 +134,7 @@ namespace RedHttpServer
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
-        public void Options(string route, Action<RRequest, RResponse> action)
+        internal void Options(string route, Action<RRequest, RResponse> action)
             => _rtman.AddRoute(new RHttpAction(route, action), HttpMethod.OPTIONS);
 
         /// <summary>

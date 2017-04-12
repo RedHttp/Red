@@ -11,7 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using RedHttpServer.Plugins;
 using RedHttpServer.Plugins.Interfaces;
-using RedHttpServer.Rendering;
+using RedHttpServer.Request;
+using RedHttpServer.Response;
 using ILogger = RedHttpServer.Plugins.Interfaces.ILogger;
 
 namespace RedHttpServer
