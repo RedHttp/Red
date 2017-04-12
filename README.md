@@ -8,6 +8,7 @@ Some of the use patterns has been inspired by nodejs and expressjs
 
 ### Documentation
 [Documentation for .NET Core version](https://rosenbjerg.dk/rhscore/docs/)
+
 [Documentation for .NET Framework version](https://rosenbjerg.dk/rhs/docs/)
 
 ### Example
