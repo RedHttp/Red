@@ -5,17 +5,18 @@ using System.Threading.Tasks;
 using HttpMultipartParser;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using RedHttpServer.Plugins.Interfaces;
+using RedHttpServerCore.Plugins.Interfaces;
 using ServiceStack;
 
-namespace RedHttpServer.Request
+namespace RedHttpServerCore.Request
 {
     /// <summary>
     ///     Class representing a request from a client
     /// </summary>
     public sealed class RRequest
     {
-        private static readonly IFormCollection EmptyFormCol = new FormCollection(new Dictionary<string, StringValues>());
+        private static readonly IFormCollection EmptyFormCol =
+            new FormCollection(new Dictionary<string, StringValues>());
 
         internal RRequest(HttpRequest req, RPluginCollection plugins)
         {
@@ -68,7 +69,8 @@ namespace RedHttpServer.Request
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public async Task<T> ParseBodyAsync<T>() => await ServerPlugins.Use<IBodyParser>().ParseBodyAsync<T>(UnderlyingRequest);
+        public async Task<T> ParseBodyAsync<T>() => await ServerPlugins.Use<IBodyParser>()
+            .ParseBodyAsync<T>(UnderlyingRequest);
 
         /// <summary>
         ///     Returns form-data from post request, if any
@@ -88,7 +90,8 @@ namespace RedHttpServer.Request
         /// <param name="filerenamer">Function to rename the file(s)</param>
         /// <param name="maxSizeKb">The max filesize allowed</param>
         /// <returns>Whether the file was saved succesfully</returns>
-        public Task<bool> SaveBodyToFile(string filePath, Func<string, string> filerenamer = null, long maxSizeKb = 1024)
+        public Task<bool> SaveBodyToFile(string filePath, Func<string, string> filerenamer = null,
+            long maxSizeKb = 1024)
         {
             if (UnderlyingRequest.Body == Stream.Null) return Task.FromResult(false);
             var maxbytes = maxSizeKb << 10;

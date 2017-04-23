@@ -1,6 +1,6 @@
 using System;
 
-namespace RedHttpServer
+namespace RedHttpServerCore
 {
     /// <summary>
     /// Exception for errors in RedHttpServer

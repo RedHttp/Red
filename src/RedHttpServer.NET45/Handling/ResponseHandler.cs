@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Net;
-using RedHttpServer.Response;
+using RedHttpServerNet45.Response;
 
-namespace RedHttpServer.Handling
+namespace RedHttpServerNet45.Handling
 {
     internal abstract class ResponseHandler
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RedHttpServer
+namespace RedHttpServerNet45
 {
     internal sealed class RouteTreeManager
     {
@@ -24,8 +24,7 @@ namespace RedHttpServer
             var len = rTree.Length;
             for (var i = 0; i < len; i++)
             {
-                var ntree = tree.
-                    AddBranch(rTree[i]);
+                var ntree = tree.AddBranch(rTree[i]);
                 tree = ntree;
             }
             if (tree.Action != null) throw new RedHttpServerException("Cannot add two actions to the same route");

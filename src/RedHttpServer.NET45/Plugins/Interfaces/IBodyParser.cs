@@ -1,7 +1,7 @@
 using System.Net;
 using System.Threading.Tasks;
 
-namespace RedHttpServer.Plugins.Interfaces
+namespace RedHttpServerNet45.Plugins.Interfaces
 {
     /// <summary>
     ///     Interface for classes used to parse the request body data stream
@@ -14,6 +14,5 @@ namespace RedHttpServer.Plugins.Interfaces
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         Task<T> ParseBodyAsync<T>(HttpListenerRequest underlyingRequest);
-        
     }
 }

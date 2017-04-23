@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using RedHttpServer.Plugins;
-using RedHttpServer.Plugins.Interfaces;
-using RedHttpServer.Request;
-using RedHttpServer.Response;
-using ILogger = RedHttpServer.Plugins.Interfaces.ILogger;
+using RedHttpServerCore.Plugins;
+using RedHttpServerCore.Plugins.Interfaces;
+using RedHttpServerCore.Request;
+using RedHttpServerCore.Response;
 
-namespace RedHttpServer
+namespace RedHttpServerCore
 {
     /// <summary>
     /// A HTTP server based on Kestrel, with use-patterns inspired by express.js
@@ -25,12 +24,12 @@ namespace RedHttpServer
         /// <summary>
         /// Build version of RedHttpServer
         /// </summary>
-        public const string Version = "2.0.0.0";
+        public const string Version = "2.0.1";
 
         /// <summary>
         ///     Constructs a server instance with given port and using the given path as public folder.
         ///     Set path to null or empty string if none wanted
-        /// </summary>
+        /// </summary>C:\Users\Malte\Documents\GitHub\RedHttpServer.CSharp\src\RedHttpServer.ASPNETCore\RedHttpServer.cs
         /// <param name="port">The port that the server should listen on</param>
         /// <param name="publicDir">Path to use as public dir. Set to null or empty string if none wanted</param>
         public RedHttpServer(int port = 5000, string publicDir = "")
@@ -53,11 +52,11 @@ namespace RedHttpServer
         ///     The publicly available folder root
         /// </summary>
         private string PublicRoot { get; }
-        
+
         /// <summary>
         ///     Cross-Origin Resource Sharing (CORS) policy
         /// </summary>
-        public CorsPolicy CorsPolicy { get; set; }
+        public RCorsPolicy RCorsPolicy { get; set; }
 
         /// <summary>
         ///     Starts the server
@@ -73,26 +72,18 @@ namespace RedHttpServer
                 .UseKestrel()
                 .ConfigureServices(s =>
                 {
+                    if (RCorsPolicy != null)
+                        s.AddCors(options => options.AddPolicy("CorsPolicy", ConfigurePolicy));
                     s.AddRouting();
-                    if (CorsPolicy != null)
-                        s.AddCors();
                 })
                 .Configure(app =>
                 {
-                    if (CorsPolicy != null && CorsPolicy.AllowedOrigins.Any())
-                        app.UseCors(builder =>
-                        {
-                            builder.WithOrigins(CorsPolicy.AllowedOrigins.ToArray())
-                                .WithHeaders(CorsPolicy.AllowedHeaders.ToArray())
-                                .WithMethods(CorsPolicy.AllowedMethods.ToArray())
-                                .Build();
-                        });
+                    if (RCorsPolicy != null)
+                        app.UseCors("CorsPolicy");
                     if (!string.IsNullOrWhiteSpace(PublicRoot) && Directory.Exists(PublicRoot))
-                        app.UseStaticFiles(new StaticFileOptions { FileProvider = new PhysicalFileProvider(Path.GetFullPath(PublicRoot)) });
+                        app.UseFileServer(new FileServerOptions { FileProvider = new PhysicalFileProvider(Path.GetFullPath(PublicRoot)) });
                     if (_wsMethods.Any())
-                    {
                         app.UseWebSockets();
-                    }
                     app.UseRouter(SetRoutes);
                 })
                 .UseUrls(urls)
@@ -101,12 +92,26 @@ namespace RedHttpServer
             Console.WriteLine($"RedHttpServer/{Version} running on port " + Port);
         }
 
+        private void ConfigurePolicy(CorsPolicyBuilder builder)
+        {
+            builder = RCorsPolicy.AllowedOrigins.All(d => d == "*")
+                ? builder.AllowAnyOrigin()
+                : builder.WithOrigins(RCorsPolicy.AllowedOrigins.ToArray());
+            builder = RCorsPolicy.AllowedMethods.All(d => d == "*")
+                ? builder.AllowAnyMethod()
+                : builder.WithOrigins(RCorsPolicy.AllowedMethods.ToArray());
+            if (RCorsPolicy.AllowedHeaders.All(d => d == "*"))
+                builder.AllowAnyHeader();
+            else
+                builder.WithOrigins(RCorsPolicy.AllowedHeaders.ToArray());
+        }
+
         /// <summary>
         ///     Starts the server
         ///     <para />
         /// </summary>
         /// <param name="localOnly">Whether to only listn locally</param>
-        public void Start(bool localOnly = false)
+            public void Start(bool localOnly = false)
         {
             Start(localOnly ? "localhost" : "*");
         }
@@ -129,10 +134,11 @@ namespace RedHttpServer
                 Plugins.Register<IPageRenderer, EcsPageRenderer>(new EcsPageRenderer());
 
             if (!Plugins.IsRegistered<IBodyParser>())
-                Plugins.Register<IBodyParser, SimpleBodyParser>(new SimpleBodyParser(Plugins.Use<IJsonConverter>(), Plugins.Use<IXmlConverter>()));
+                Plugins.Register<IBodyParser, SimpleBodyParser>(new SimpleBodyParser(Plugins.Use<IJsonConverter>(),
+                    Plugins.Use<IXmlConverter>()));
 
-            if (!Plugins.IsRegistered<ILogger>())
-                Plugins.Register<ILogger, NoLogger>(new NoLogger());
+            if (!Plugins.IsRegistered<ILogging>())
+                Plugins.Register<ILogging, NoLogging>(new NoLogging());
 
             Plugins.Use<IPageRenderer>().CachePages = renderCaching;
             RenderParams.Converter = Plugins.Use<IJsonConverter>();
@@ -141,6 +147,7 @@ namespace RedHttpServer
 
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+
         private void SetRoutes(IRouteBuilder rb)
         {
             var urlParam = new Regex(":[a-zA-Z0-9_-]+");
@@ -148,22 +155,22 @@ namespace RedHttpServer
             foreach (var method in _getMethods)
                 rb.MapGet(ConvertParameter(method.Item1, urlParam, generalParam),
                     async context =>
-                        method.Item2(new RRequest(context.Request, Plugins), new RRespone(context.Response, Plugins)));
+                        method.Item2(new RRequest(context.Request, Plugins), new RResponse(context.Response, Plugins)));
             _getMethods.Clear();
             foreach (var method in _postMethods)
                 rb.MapPost(ConvertParameter(method.Item1, urlParam, generalParam),
                     async context =>
-                        method.Item2(new RRequest(context.Request, Plugins), new RRespone(context.Response, Plugins)));
+                        method.Item2(new RRequest(context.Request, Plugins), new RResponse(context.Response, Plugins)));
             _postMethods.Clear();
             foreach (var method in _putMethods)
                 rb.MapPut(ConvertParameter(method.Item1, urlParam, generalParam),
                     async context =>
-                        method.Item2(new RRequest(context.Request, Plugins), new RRespone(context.Response, Plugins)));
+                        method.Item2(new RRequest(context.Request, Plugins), new RResponse(context.Response, Plugins)));
             _putMethods.Clear();
             foreach (var method in _deleteMethods)
                 rb.MapDelete(ConvertParameter(method.Item1, urlParam, generalParam),
                     async context =>
-                        method.Item2(new RRequest(context.Request, Plugins), new RRespone(context.Response, Plugins)));
+                        method.Item2(new RRequest(context.Request, Plugins), new RResponse(context.Response, Plugins)));
             _deleteMethods.Clear();
             foreach (var wsMethod in _wsMethods)
                 rb.MapGet(ConvertParameter(wsMethod.Item1, urlParam, generalParam), async context =>
@@ -180,6 +187,7 @@ namespace RedHttpServer
                 });
             _wsMethods.Clear();
         }
+
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
         /// <summary>
@@ -208,16 +216,16 @@ namespace RedHttpServer
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
-        public void Get(string route, Action<RRequest, RRespone> action)
-            => _getMethods.Add(new Tuple<string, Action<RRequest, RRespone>>(route, action));
+        public void Get(string route, Action<RRequest, RResponse> action)
+            => _getMethods.Add(new Tuple<string, Action<RRequest, RResponse>>(route, action));
 
         /// <summary>
         ///     Add action to handle POST requests to a given route
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
-        public void Post(string route, Action<RRequest, RRespone> action)
-            => _postMethods.Add(new Tuple<string, Action<RRequest, RRespone>>(route, action));
+        public void Post(string route, Action<RRequest, RResponse> action)
+            => _postMethods.Add(new Tuple<string, Action<RRequest, RResponse>>(route, action));
 
         /// <summary>
         ///     Add action to handle PUT requests to a given route.
@@ -227,8 +235,8 @@ namespace RedHttpServer
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
-        public void Put(string route, Action<RRequest, RRespone> action)
-            => _putMethods.Add(new Tuple<string, Action<RRequest, RRespone>>(route, action));
+        public void Put(string route, Action<RRequest, RResponse> action)
+            => _putMethods.Add(new Tuple<string, Action<RRequest, RResponse>>(route, action));
 
         /// <summary>
         ///     Add action to handle DELETE requests to a given route.
@@ -238,8 +246,8 @@ namespace RedHttpServer
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
-        public void Delete(string route, Action<RRequest, RRespone> action)
-            => _deleteMethods.Add(new Tuple<string, Action<RRequest, RRespone>>(route, action));
+        public void Delete(string route, Action<RRequest, RResponse> action)
+            => _deleteMethods.Add(new Tuple<string, Action<RRequest, RResponse>>(route, action));
 
         /// <summary>
         ///     Add action to handle WEBSOCKET requests to a given route. <para/>
@@ -249,18 +257,18 @@ namespace RedHttpServer
         public void WebSocket(string route, Action<RRequest, WebSocketDialog> action)
             => _wsMethods.Add(new Tuple<string, Action<RRequest, WebSocketDialog>>(route, action));
 
-        
-        private readonly List<Tuple<string, Action<RRequest, RRespone>>> _deleteMethods =
-            new List<Tuple<string, Action<RRequest, RRespone>>>();
 
-        private readonly List<Tuple<string, Action<RRequest, RRespone>>> _getMethods =
-            new List<Tuple<string, Action<RRequest, RRespone>>>();
+        private readonly List<Tuple<string, Action<RRequest, RResponse>>> _deleteMethods =
+            new List<Tuple<string, Action<RRequest, RResponse>>>();
 
-        private readonly List<Tuple<string, Action<RRequest, RRespone>>> _postMethods =
-            new List<Tuple<string, Action<RRequest, RRespone>>>();
+        private readonly List<Tuple<string, Action<RRequest, RResponse>>> _getMethods =
+            new List<Tuple<string, Action<RRequest, RResponse>>>();
 
-        private readonly List<Tuple<string, Action<RRequest, RRespone>>> _putMethods =
-            new List<Tuple<string, Action<RRequest, RRespone>>>();
+        private readonly List<Tuple<string, Action<RRequest, RResponse>>> _postMethods =
+            new List<Tuple<string, Action<RRequest, RResponse>>>();
+
+        private readonly List<Tuple<string, Action<RRequest, RResponse>>> _putMethods =
+            new List<Tuple<string, Action<RRequest, RResponse>>>();
 
         private readonly List<Tuple<string, Action<RRequest, WebSocketDialog>>> _wsMethods =
             new List<Tuple<string, Action<RRequest, WebSocketDialog>>>();

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace RedHttpServer
+namespace RedHttpServerNet45
 {
     internal sealed class RouteTree
     {

@@ -5,11 +5,9 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using RedHttpServer.Plugins;
-using RedHttpServer.Plugins.Interfaces;
-using ILogger = RedHttpServer.Plugins.Interfaces.ILogger;
+using RedHttpServerNet45.Plugins.Interfaces;
 
-namespace RedHttpServer.Response
+namespace RedHttpServerNet45.Response
 {
     /// <summary>
     ///     Class representing the reponse to a clients request
@@ -25,6 +23,7 @@ namespace RedHttpServer.Response
             new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
             {
                 #region extension to MIME type list
+
                 {".asf", "video/x-ms-asf"},
                 {".asx", "video/x-ms-asf"},
                 {".avi", "video/x-msvideo"},
@@ -92,6 +91,7 @@ namespace RedHttpServer.Response
                 {".xml", "text/xml"},
                 {".xpi", "application/x-xpinstall"},
                 {".zip", "application/zip"}
+
                 #endregion
             };
 
@@ -170,7 +170,7 @@ namespace RedHttpServer.Response
             {
             }
         }
-        
+
 
         /// <summary>
         ///     Sends object serialized to text using the current IJsonConverter plugin
@@ -282,7 +282,7 @@ namespace RedHttpServer.Response
                     len = CalcLength(len, start, rangeEnd);
                     UnderlyingResponse.AddHeader("Content-Range", $"bytes {start}-{start + len - 1}/{start + len}");
                     UnderlyingResponse.ContentLength64 = len;
-                    await InternalTransfer(input, UnderlyingResponse.OutputStream, rangeStart, (int)len);
+                    await InternalTransfer(input, UnderlyingResponse.OutputStream, rangeStart, (int) len);
                 }
                 UnderlyingResponse.Close();
             }

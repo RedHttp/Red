@@ -4,18 +4,21 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using RedHttpServer.Plugins.Interfaces;
-using RedHttpServer.Response;
+using RedHttpServerNet45.Plugins.Interfaces;
+using RedHttpServerNet45.Response;
 
-namespace RedHttpServer.Plugins
+namespace RedHttpServerNet45.Plugins
 {
     /// <summary>
     ///     Renderer for pages using ecs tags ("ecs files")
     /// </summary>
     internal sealed class EcsPageRenderer : IPageRenderer
     {
-        private static readonly Regex NormalTagRegex = new Regex(@"(?i)<% ?[a-z_][a-z_0-9]* ?%>", RegexOptions.Compiled);
-        private static readonly Regex HtmlTagRegex = new Regex(@"(?i)<%= ?[a-z_][a-z_0-9]* ?=%>", RegexOptions.Compiled);
+        private static readonly Regex NormalTagRegex =
+            new Regex(@"(?i)<% ?[a-z_][a-z_0-9]* ?%>", RegexOptions.Compiled);
+
+        private static readonly Regex HtmlTagRegex =
+            new Regex(@"(?i)<%= ?[a-z_][a-z_0-9]* ?=%>", RegexOptions.Compiled);
 
         private static readonly Regex FileTagRegex =
             new Regex(@"(?i)<¤ ?([a-z]:|.)?[.\\\/\w]+.(html|ecs|js|css|txt) ?¤>", RegexOptions.Compiled);

@@ -1,4 +1,4 @@
-namespace RedHttpServer
+namespace RedHttpServerNet45
 {
     internal enum HttpMethod
     {

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace RedHttpServer.Plugins.Interfaces
+namespace RedHttpServerCore.Plugins.Interfaces
 {
     /// <summary>
     ///     Interface for classes used to parse the request body data stream
@@ -14,6 +14,5 @@ namespace RedHttpServer.Plugins.Interfaces
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         Task<T> ParseBodyAsync<T>(HttpRequest underlyingRequest);
-        
     }
 }

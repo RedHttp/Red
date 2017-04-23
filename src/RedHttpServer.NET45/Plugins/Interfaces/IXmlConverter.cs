@@ -1,4 +1,4 @@
-namespace RedHttpServer.Plugins.Interfaces
+namespace RedHttpServerNet45.Plugins.Interfaces
 {
     /// <summary>
     ///     Interface for classes used for XML serialization and deserialization

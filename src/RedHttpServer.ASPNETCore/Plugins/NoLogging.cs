@@ -1,14 +1,15 @@
 using System;
-using RedHttpServer.Plugins.Interfaces;
+using RedHttpServerCore.Plugins.Interfaces;
 
-namespace RedHttpServer.Plugins
+namespace RedHttpServerCore.Plugins
 {
     /// <summary>
     ///     Logs nothing at all
     /// </summary>
-    public sealed class NoLogger : ILogger
+    public sealed class NoLogging : ILogging
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
         public void Log(string category, string message)
         {
         }

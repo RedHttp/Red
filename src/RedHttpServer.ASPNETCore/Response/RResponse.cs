@@ -3,20 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using Microsoft.AspNetCore.Http;
-using RedHttpServer.Plugins.Interfaces;
+using RedHttpServerCore.Plugins.Interfaces;
 
-namespace RedHttpServer.Response
+namespace RedHttpServerCore.Response
 {
     /// <summary>
     ///     Class representing the reponse to a clients request
     ///     All
     /// </summary>
-    public sealed class RRespone
+    public sealed class RResponse
     {
         internal static readonly IDictionary<string, string> MimeTypes =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
                 #region extension to MIME type list
+
                 {".asf", "video/x-ms-asf"},
                 {".asx", "video/x-ms-asf"},
                 {".avi", "video/x-msvideo"},
@@ -84,10 +85,11 @@ namespace RedHttpServer.Response
                 {".xml", "text/xml"},
                 {".xpi", "application/x-xpinstall"},
                 {".zip", "application/zip"}
+
                 #endregion
             };
 
-        internal RRespone(HttpResponse resp, RPluginCollection plugins)
+        internal RResponse(HttpResponse resp, RPluginCollection plugins)
         {
             UnderlyingResponse = resp;
             ServerPlugins = plugins;
@@ -102,6 +104,7 @@ namespace RedHttpServer.Response
         {
             UnderlyingResponse.Headers.Add(fieldName, fieldValue);
         }
+
         /// <summary>
         ///     The underlying HttpResponse
         ///     <para />
@@ -149,7 +152,8 @@ namespace RedHttpServer.Response
         {
             UnderlyingResponse.StatusCode = status;
             UnderlyingResponse.ContentType = "application/json";
-            await UnderlyingResponse.WriteAsync(ServerPlugins.Use<IJsonConverter>().Serialize(data));
+            var json = ServerPlugins.Use<IJsonConverter>().Serialize(data);
+            await UnderlyingResponse.WriteAsync(json);
         }
 
         /// <summary>
@@ -161,7 +165,8 @@ namespace RedHttpServer.Response
         {
             UnderlyingResponse.StatusCode = status;
             UnderlyingResponse.ContentType = "application/xml";
-            await UnderlyingResponse.WriteAsync(ServerPlugins.Use<IXmlConverter>().Serialize(data));
+            var xml = ServerPlugins.Use<IXmlConverter>().Serialize(data);
+            await UnderlyingResponse.WriteAsync(xml);
         }
 
         /// <summary>
@@ -243,7 +248,8 @@ namespace RedHttpServer.Response
         {
             UnderlyingResponse.StatusCode = status;
             UnderlyingResponse.ContentType = "text/html";
-            await UnderlyingResponse.WriteAsync(ServerPlugins.Use<IPageRenderer>().Render(pagefilepath, parameters));
+            var page = ServerPlugins.Use<IPageRenderer>().Render(pagefilepath, parameters);
+            await UnderlyingResponse.WriteAsync(page);
         }
     }
 }

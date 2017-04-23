@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Runtime.CompilerServices;
 
-namespace RedHttpServer.Handling
+namespace RedHttpServerNet45.Handling
 {
     internal sealed class ActionOnlyResponseHandler : ResponseHandler
     {

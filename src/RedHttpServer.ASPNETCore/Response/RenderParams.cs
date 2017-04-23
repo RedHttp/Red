@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using RedHttpServer.Plugins.Interfaces;
+using RedHttpServerCore.Plugins.Interfaces;
 
-namespace RedHttpServer.Response
-{    
+namespace RedHttpServerCore.Response
+{
     /// <summary>
     ///     Parameters used when rendering a page
     /// </summary>

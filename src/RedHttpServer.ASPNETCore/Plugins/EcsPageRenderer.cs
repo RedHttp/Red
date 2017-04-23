@@ -3,24 +3,26 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
-using RedHttpServer.Plugins.Interfaces;
-using RedHttpServer.Response;
+using RedHttpServerCore.Plugins.Interfaces;
+using RedHttpServerCore.Response;
 
-namespace RedHttpServer.Plugins
+namespace RedHttpServerCore.Plugins
 {
     /// <summary>
     ///     Renderer for pages using ecs tags ("ecs files")
     /// </summary>
     internal sealed class EcsPageRenderer : IPageRenderer
     {
-        private static readonly Regex NormalTagRegex = new Regex(@"(?i)<% ?[a-z_][a-z_0-9]* ?%>", RegexOptions.Compiled);
-        private static readonly Regex HtmlTagRegex = new Regex(@"(?i)<%= ?[a-z_][a-z_0-9]* ?=%>", RegexOptions.Compiled);
+        private static readonly Regex NormalTagRegex =
+            new Regex(@"(?i)<% ?[a-z_][a-z_0-9]* ?%>", RegexOptions.Compiled);
+
+        private static readonly Regex HtmlTagRegex =
+            new Regex(@"(?i)<%= ?[a-z_][a-z_0-9]* ?=%>", RegexOptions.Compiled);
 
         private static readonly Regex FileTagRegex =
             new Regex(@"(?i)<¤ ?([a-z]:|.)?[.\\\/\w]+.(html|ecs|js|css|txt) ?¤>", RegexOptions.Compiled);
-        
+
         private readonly ConcurrentDictionary<string, string> _renderCache = new ConcurrentDictionary<string, string>();
 
         /// <summary>

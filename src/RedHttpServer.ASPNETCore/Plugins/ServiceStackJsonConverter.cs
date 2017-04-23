@@ -1,7 +1,7 @@
-using RedHttpServer.Plugins.Interfaces;
+using RedHttpServerCore.Plugins.Interfaces;
 using ServiceStack.Text;
 
-namespace RedHttpServer.Plugins
+namespace RedHttpServerCore.Plugins
 {
     /// <summary>
     ///     Very simple JsonConverter plugin using ServiceStact.Text generic methods

@@ -1,19 +1,19 @@
 using System;
 using System.IO;
-using RedHttpServer.Plugins.Interfaces;
+using RedHttpServerNet45.Plugins.Interfaces;
 
-namespace RedHttpServer.Plugins
+namespace RedHttpServerNet45.Plugins
 {
     /// <summary>
     ///     Logs everything to a specified file
     /// </summary>
-    public sealed class FileLogger : ILogger
+    public sealed class FileLogging : ILogging
     {
         /// <summary>
         ///     Logs everything to a specified file
         /// </summary>
         /// <param name="filename">file to log entries to</param>
-        public FileLogger(string filename)
+        public FileLogging(string filename)
         {
             LogFile = filename;
         }
@@ -33,7 +33,8 @@ namespace RedHttpServer.Plugins
 
         public void Log(Exception exception)
         {
-            File.AppendAllText(LogFile, $"{DateTime.UtcNow:g}: {exception.GetType().Name} - {exception.Message}{(IncludeStackTrace ? $" Stack trace: \n{exception.StackTrace}" : "")}\n");
+            File.AppendAllText(LogFile,
+                $"{DateTime.UtcNow:g}: {exception.GetType().Name} - {exception.Message}{(IncludeStackTrace ? $" Stack trace: \n{exception.StackTrace}" : "")}\n");
         }
 
         public bool IncludeStackTrace { get; set; } = false;

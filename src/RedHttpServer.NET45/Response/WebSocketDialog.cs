@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RedHttpServer.Response
+namespace RedHttpServerNet45.Response
 {
     /// <summary>
     ///     Represents a websocket dialog between server and a client
@@ -109,7 +109,7 @@ namespace RedHttpServer.Response
                 _ws.Dispose();
             }
         }
-        
+
         /// <summary>
         ///     Represents a binary message received from websocket
         /// </summary>

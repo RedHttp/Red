@@ -2,9 +2,9 @@ using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using RedHttpServer.Plugins.Interfaces;
+using RedHttpServerNet45.Plugins.Interfaces;
 
-namespace RedHttpServer.Plugins
+namespace RedHttpServerNet45.Plugins
 {
     /// <summary>
     ///     Simple body parser that can be used to parse JSON objects and C# primitives, or just return the input stream
@@ -16,6 +16,7 @@ namespace RedHttpServer.Plugins
             _jsonConv = jsonconv;
             _xmlConv = xmlconv;
         }
+
         private static readonly Type StringType = typeof(string);
         private readonly IJsonConverter _jsonConv;
         private readonly IXmlConverter _xmlConv;
@@ -34,7 +35,7 @@ namespace RedHttpServer.Plugins
                         return _xmlConv.Deserialize<T>(await sr.ReadToEndAsync());
                     case "application/json":
                     case "text/json":
-                        return _jsonConv.Deserialize<T> (await sr.ReadToEndAsync());
+                        return _jsonConv.Deserialize<T>(await sr.ReadToEndAsync());
                     default:
                         return default(T);
                 }

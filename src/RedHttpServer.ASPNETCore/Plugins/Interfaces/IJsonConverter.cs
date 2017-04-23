@@ -1,4 +1,4 @@
-namespace RedHttpServer.Plugins.Interfaces
+namespace RedHttpServerCore.Plugins.Interfaces
 {
     /// <summary>
     ///     Interface for classes used for Json serialization and deserialization

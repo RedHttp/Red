@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RedHttpServer
+namespace RedHttpServerCore
 {
     /// <summary>
     /// Plugin manager that contains the registered plugins for the instance of the server.

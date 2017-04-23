@@ -1,11 +1,11 @@
 using System;
 
-namespace RedHttpServer.Plugins.Interfaces
+namespace RedHttpServerNet45.Plugins.Interfaces
 {
     /// <summary>
     ///     Interface for classes used to log things
     /// </summary>
-    public interface ILogger
+    public interface ILogging
     {
         /// <summary>
         ///     Create log entry with category and message

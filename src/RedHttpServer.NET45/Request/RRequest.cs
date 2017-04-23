@@ -4,12 +4,10 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web;
 using HttpMultipartParser;
-using RedHttpServer.Plugins;
-using RedHttpServer.Plugins.Interfaces;
+using RedHttpServerNet45.Plugins.Interfaces;
 
-namespace RedHttpServer.Request
+namespace RedHttpServerNet45.Request
 {
     /// <summary>
     ///     Class representing a request from a client
@@ -22,9 +20,9 @@ namespace RedHttpServer.Request
             Params = par;
             _rp = pluginCollection;
         }
-        
+
         private readonly RPluginCollection _rp;
-        
+
         /// <summary>
         ///     The query elements of the request
         /// </summary>
@@ -83,7 +81,8 @@ namespace RedHttpServer.Request
         /// <param name="filerenamer">Function to rename the file(s)</param>
         /// <param name="maxSizeKb">The max filesize allowed</param>
         /// <returns>Whether the file was saved succesfully</returns>
-        public Task<bool> SaveBodyToFile(string filePath, Func<string, string> filerenamer = null, long maxSizeKb = 1024)
+        public Task<bool> SaveBodyToFile(string filePath, Func<string, string> filerenamer = null,
+            long maxSizeKb = 1024)
         {
             if (!UnderlyingRequest.HasEntityBody) return Task.FromResult(false);
             var maxbytes = maxSizeKb << 10;

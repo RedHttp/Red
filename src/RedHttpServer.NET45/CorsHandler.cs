@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
-using RedHttpServer.Request;
-using RedHttpServer.Response;
 
-namespace RedHttpServer
+namespace RedHttpServerNet45
 {
     internal class CorsHandler
     {
@@ -20,12 +17,12 @@ namespace RedHttpServer
             list.Add(method);
         }
 
-        internal void Bind(CorsPolicy corsPolicy, RouteTreeManager rtman)
+        internal void Bind(RCorsPolicy rCorsPolicy, RouteTreeManager rtman)
         {
-            if (corsPolicy == null)
+            if (rCorsPolicy == null)
                 return;
-            var headers = string.Join(", ", corsPolicy.AllowedHeaders);
-            var origins = string.Join(", ", corsPolicy.AllowedOrigins);
+            var headers = string.Join(", ", rCorsPolicy.AllowedHeaders);
+            var origins = string.Join(", ", rCorsPolicy.AllowedOrigins);
             foreach (var route in _corsRoutes.Keys)
             {
                 var methods = string.Join(", ", _corsRoutes[route]);

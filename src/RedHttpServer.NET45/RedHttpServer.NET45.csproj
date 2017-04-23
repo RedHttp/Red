@@ -7,7 +7,7 @@
     <ProjectGuid>{DFED1F90-EF2C-44FD-A940-2F1AA9E64203}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RedHttpServer</RootNamespace>
+    <RootNamespace>RedHttpServerNet45</RootNamespace>
     <AssemblyName>RedHttpServer.NET45</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -53,12 +53,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CorsHandler.cs" />
-    <Compile Include="CorsPolicy.cs" />
-    <Compile Include="Plugins\FileLogger.cs" />
+    <Compile Include="RCorsPolicy.cs" />
+    <Compile Include="Plugins\FileLogging.cs" />
     <Compile Include="Handling\ActionOnlyResponseHandler.cs" />
     <Compile Include="HttpMethod.cs" />
-    <Compile Include="Plugins\Interfaces\ILogger.cs" />
-    <Compile Include="Plugins\NoLogger.cs" />
+    <Compile Include="Plugins\Interfaces\ILogging.cs" />
+    <Compile Include="Plugins\NoLogging.cs" />
     <Compile Include="Handling\PublicFileRequestHander.cs" />
     <Compile Include="Plugins\EcsPageRenderer.cs" />
     <Compile Include="Plugins\ServiceStackJsonConverter.cs" />
@@ -81,7 +81,7 @@
     <Compile Include="Request\RRequest.cs" />
     <Compile Include="Response\RResponse.cs" />
     <Compile Include="RPluginCollection.cs" />
-    <Compile Include="Plugins\TerminalLogger.cs" />
+    <Compile Include="Plugins\TerminalLogging.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

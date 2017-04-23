@@ -5,11 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace RedHttpServer.Response
-{    
+namespace RedHttpServerCore.Response
+{
     /// <summary>
-     ///     Represents a websocket dialog between server and a client
-     /// </summary>
+    ///     Represents a websocket dialog between server and a client
+    /// </summary>
     public sealed class WebSocketDialog
     {
         internal WebSocketDialog(HttpContext ctx, WebSocket ws, RPluginCollection plugins)

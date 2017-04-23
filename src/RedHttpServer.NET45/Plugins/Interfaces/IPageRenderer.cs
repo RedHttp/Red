@@ -1,6 +1,6 @@
-using RedHttpServer.Response;
+using RedHttpServerNet45.Response;
 
-namespace RedHttpServer.Plugins.Interfaces
+namespace RedHttpServerNet45.Plugins.Interfaces
 {
     /// <summary>
     ///     The interface used for page renderer in RHttpServer
@@ -19,6 +19,5 @@ namespace RedHttpServer.Plugins.Interfaces
         /// <param name="parameters">The parameters used for rendering the page</param>
         /// <returns>Returns the content of the rendered page, ready to be sent as response</returns>
         string Render(string filepath, RenderParams parameters);
-        
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -8,14 +7,13 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using RedHttpServer.Handling;
-using RedHttpServer.Plugins;
-using RedHttpServer.Plugins.Interfaces;
-using RedHttpServer.Request;
-using RedHttpServer.Response;
-using ILogger = RedHttpServer.Plugins.Interfaces.ILogger;
+using RedHttpServerNet45.Handling;
+using RedHttpServerNet45.Plugins;
+using RedHttpServerNet45.Plugins.Interfaces;
+using RedHttpServerNet45.Request;
+using RedHttpServerNet45.Response;
 
-namespace RedHttpServer
+namespace RedHttpServerNet45
 {
     /// <summary>
     /// A HTTP server based on HttpListener, with use-patterns inspired by express.js
@@ -54,17 +52,17 @@ namespace RedHttpServer
         ///     The publicly available folder
         /// </summary>
         public string PublicRoot { get; }
-        
+
         /// <summary>
         ///     The port that the server is listening on
         /// </summary>
         public int Port { get; }
-        
+
         /// <summary>
         /// The plugin collection containing all plugins registered to this server instance.
         /// </summary>
         public RPluginCollection Plugins { get; } = new RPluginCollection();
-        
+
         #region Adding route handlers
 
         /// <summary>
@@ -183,7 +181,7 @@ namespace RedHttpServer
                     return;
                 }
                 InitializePlugins();
-                _cors.Bind(CorsPolicy, _rtman);
+                _cors.Bind(RCorsPolicy, _rtman);
                 foreach (var listeningPrefix in listeningPrefixes)
                 {
                     _listener.Prefixes.Add($"http://{listeningPrefix}:{Port}/");
@@ -193,7 +191,7 @@ namespace RedHttpServer
 
                 Console.WriteLine("RHttpServer v. {0} started", Version);
                 if (listeningPrefixes.All(a => a == "localhost"))
-                    Plugins.Use<ILogger>().Log("Server visibility", "Listening on localhost only");
+                    Plugins.Use<ILogging>().Log("Server visibility", "Listening on localhost only");
             }
             catch (SocketException)
             {
@@ -208,12 +206,12 @@ namespace RedHttpServer
                 Environment.Exit(0);
             }
         }
-        
+
 
         /// <summary>
         ///     Cross-Origin Resource Sharing (CORS) policy
         /// </summary>
-        public CorsPolicy CorsPolicy { get; set; }
+        public RCorsPolicy RCorsPolicy { get; set; }
 
         /// <summary>
         ///     Initializes any default plugin if no other plugin is registered to same interface
@@ -228,15 +226,16 @@ namespace RedHttpServer
 
             if (!Plugins.IsRegistered<IXmlConverter>())
                 Plugins.Register<IXmlConverter, ServiceStackXmlConverter>(new ServiceStackXmlConverter());
-            
+
             if (!Plugins.IsRegistered<IBodyParser>())
-                Plugins.Register<IBodyParser, SimpleBodyParser>(new SimpleBodyParser(Plugins.Use<IJsonConverter>(), Plugins.Use<IXmlConverter>()));
-            
+                Plugins.Register<IBodyParser, SimpleBodyParser>(new SimpleBodyParser(Plugins.Use<IJsonConverter>(),
+                    Plugins.Use<IXmlConverter>()));
+
             if (!Plugins.IsRegistered<IPageRenderer>())
                 Plugins.Register<IPageRenderer, EcsPageRenderer>(new EcsPageRenderer());
 
-            if (!Plugins.IsRegistered<ILogger>())
-                Plugins.Register<ILogger, NoLogger>(new NoLogger());
+            if (!Plugins.IsRegistered<ILogging>())
+                Plugins.Register<ILogging, NoLogging>(new NoLogging());
 
             Plugins.Use<IPageRenderer>().CachePages = renderCaching;
             RenderParams.Converter = Plugins.Use<IJsonConverter>();
@@ -269,26 +268,25 @@ namespace RedHttpServer
                 }
                 catch (Exception ex)
                 {
-                    Plugins.Use<ILogger>().Log(ex);
-                }}
+                    Plugins.Use<ILogging>().Log(ex);
+                }
+            }
         }
 
         private void ContextReady(IAsyncResult ar)
         {
-            Task.Run(() =>
-            {
-                Process(_listener.EndGetContext(ar));
-            });
+            Task.Run(() => { Process(_listener.EndGetContext(ar)); });
         }
-        
+
         private async void Process(HttpListenerContext context)
         {
             var route = context.Request.Url.AbsolutePath.Trim('/');
             var hm = GetMethod(context.Request.HttpMethod);
             if (hm == HttpMethod.UNSUPPORTED)
             {
-                Plugins.Use<ILogger>().Log("Unsupported HTTP method",
-                    $"{context.Request.HttpMethod} from {context.Request.RemoteEndPoint}");
+                Plugins.Use<ILogging>()
+                    .Log("Unsupported HTTP method",
+                        $"{context.Request.HttpMethod} from {context.Request.RemoteEndPoint}");
                 context.Response.StatusCode = 404;
                 context.Response.Close();
                 return;

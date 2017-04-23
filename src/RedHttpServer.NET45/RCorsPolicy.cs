@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 
-namespace RedHttpServer
+namespace RedHttpServerNet45
 {
     /// <summary>
     /// The Cross-Origin Resource Sharing (CORS) policy for the webserver
     /// </summary>
-    public class CorsPolicy
+    public class RCorsPolicy
     {
         /// <summary>
         ///     The allowed origins for CORS requests

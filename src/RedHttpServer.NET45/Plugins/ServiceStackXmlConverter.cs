@@ -1,7 +1,7 @@
-using RedHttpServer.Plugins.Interfaces;
+using RedHttpServerNet45.Plugins.Interfaces;
 using ServiceStack.Text;
 
-namespace RedHttpServer.Plugins
+namespace RedHttpServerNet45.Plugins
 {
     /// <summary>
     ///     Very simple XmlConverter plugin using ServiceStact.Text generic methods

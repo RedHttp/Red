@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using RedHttpServer.Request;
-using RedHttpServer.Response;
+using RedHttpServerNet45.Request;
+using RedHttpServerNet45.Response;
 
-namespace RedHttpServer
+namespace RedHttpServerNet45
 {
     internal sealed class RHttpAction
     {

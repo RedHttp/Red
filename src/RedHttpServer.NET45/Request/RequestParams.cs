@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace RedHttpServer.Request
+namespace RedHttpServerNet45.Request
 {
     /// <summary>
     ///     Object containing the parameters for a request
