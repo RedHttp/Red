@@ -18,75 +18,81 @@ RedHttpServer can be installed from [NuGet](https://www.nuget.org/packages/RHttp
 In this example, we listen locally on port 5000, and respond to GET, POST and WebSocket requests
 
 ```csharp
-var server = new RedHttpServer(5000, "./public");
+// We serve static files, such as index.html from the 'public' directory
+var server = new RedHttpServer(5000, "public");
+var startTime = DateTime.UtcNow;
 
-server.Get("/", (req, res) =>
+// We log to terminal here
+var logger = new TerminalLogging();
+server.Plugins.Register<ILogging, TerminalLogging>(logger);
+
+// URL param demo
+server.Get("/:param1/:paramtwo/:somethingthird", async (req, res) =>
 {
-    res.SendString("Welcome");
+    await res.SendString($"URL: {req.Params["param1"]} / {req.Params["paramtwo"]} / {req.Params["somethingthird"]}");
 });
 
-// Sends the file secret.html as response
-server.Get("/file", (req, res) =>
+// Redirect to page on same host
+server.Get("/redirect", async (req, res) =>
 {
-    res.SendFile("./notpublic/somepage.html");
-});
-
-server.Get("/download", (req, res) =>
-{
-    res.Download("./notpublic/video.mp4");
-});
-
-server.Get("/:name", (req, res) =>
-{
-    var name = req.Params["name"];
-    
-    var pars = new RenderParams
-    {
-        {"nametag", name},
-        {"foo", "bar"},
-        {"answer", 42}
-    };
-
-    res.RenderPage("./public/index.ecs", pars);
-});
-
-// Handle websocket requests
-// This example is a simple echo server that replies with what has been send
-server.WebSocket("/ws", (req, wsd) =>
-{
-    wsd.OnTextReceived += (sender, eventArgs) =>
-    {
-        wsd.SendText(eventArgs.Text);
-    };
-    
-    wsd.OnClosed += (sender, eventArgs) =>
-    {
-        // Do stuff when websocket connection is closed
-    };
+    await res.Redirect("/redirect/test/here");
 });
 
 
-// Saves the body of post requests to the Uploads folder
-// and prepends the current date and time to the filename
+
+// Save uploaded file from request body 
+Directory.CreateDirectory("./uploads");
 server.Post("/upload", async (req, res) =>
 {
-    await req.SaveBodyToFile("./Uploads", fname => DateTime.Now + "-" + fname);
-    res.SendString("saved");
+    if (await req.SaveBodyToFile("./uploads"))
+    {
+        await res.SendString("OK");
+        // We can use logger reference directly
+        logger.Log("UPL", "File uploaded");
+    }
+    else
+        await res.SendString("Error", status: 413);
 });
 
-// The asterisk (*) is a weak wildcard
-// here it is used as a fallback when visitors requests an unknown route
-server.Get("/*", (req, res) =>
+server.Get("/file", async (req, res) =>
 {
-    res.Redirect("/404");
+    await res.SendFile("testimg.jpeg");
 });
 
-server.Get("/404", (req, res) =>
+// Using url queries to generate an answer
+server.Get("/hello", async (req, res) =>
 {
-    res.SendString("Nothing found", 404);
+    var queries = req.Queries;
+    var firstname = queries["firstname"];
+    var lastname = queries["lastname"];
+    await res.SendString($"Hello {firstname} {lastname}, have a nice day");
 });
 
-server.Start(true);
+// Rendering a page for dynamic content
+server.Get("/serverstatus", async (req, res) =>
+{
+    await res.RenderPage("./pages/statuspage.ecs", new RenderParams
+    {
+        { "uptime", DateTime.UtcNow.Subtract(startTime).TotalHours },
+        { "versiom", RedHttpServer.Version }
+    });
+});
+
+// WebSocket echo server
+server.WebSocket("/echo", (req, wsd) =>
+{
+    // Or we can use the logger from the plugin collection 
+    wsd.ServerPlugins.Use<ILogging>().Log("WS", "Echo server visited");
+
+    wsd.SendText("Welcome to the echo test server");
+    wsd.OnTextReceived += (sender, eventArgs) =>
+    {
+        wsd.SendText("you sent: " + eventArgs.Text);
+    };
+});
+
+
+server.Start();
 ```
 ### Static files
 When serving static files, it not required to add a route action for every static file.
