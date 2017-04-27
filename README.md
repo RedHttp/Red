@@ -38,8 +38,6 @@ server.Get("/redirect", async (req, res) =>
     await res.Redirect("/redirect/test/here");
 });
 
-
-
 // Save uploaded file from request body 
 Directory.CreateDirectory("./uploads");
 server.Post("/upload", async (req, res) =>
@@ -90,7 +88,6 @@ server.WebSocket("/echo", (req, wsd) =>
         wsd.SendText("you sent: " + eventArgs.Text);
     };
 });
-
 
 server.Start();
 ```
