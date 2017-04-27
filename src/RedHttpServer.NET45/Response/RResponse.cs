@@ -15,9 +15,8 @@ namespace RedHttpServerNet45.Response
     /// </summary>
     public class RResponse
     {
+        private static readonly Task CompletedTask = Task.FromResult(0);
         private const int BufferSize = 0x1000;
-        private const string Xpb = "X-Powered-By";
-        private const string XpBstring = "RedHttpServer.CSharp/";
 
         internal static readonly IDictionary<string, string> MimeTypes =
             new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
@@ -105,12 +104,7 @@ namespace RedHttpServerNet45.Response
         {
             UnderlyingResponse = res;
         }
-
-        internal RResponse()
-        {
-        }
-
-
+        
         /// <summary>
         ///     The plugins registered to the server
         /// </summary>
@@ -138,10 +132,11 @@ namespace RedHttpServerNet45.Response
         ///     Redirects the client to a given path or url
         /// </summary>
         /// <param name="redirectPath">The path or url to redirect to</param>
-        public void Redirect(string redirectPath)
+        public Task Redirect(string redirectPath)
         {
             UnderlyingResponse.Redirect(redirectPath);
             UnderlyingResponse.Close();
+            return CompletedTask;
         }
 
         /// <summary>
@@ -151,14 +146,13 @@ namespace RedHttpServerNet45.Response
         /// <param name="contentType">The mime type of the content</param>
         /// <param name="filename"></param>
         /// <param name="status">The status code for the response</param>
-        public async void SendString(string data, string contentType = "text/plain", string filename = "",
+        public async Task SendString(string data, string contentType = "text/plain", string filename = "",
             int status = (int) HttpStatusCode.OK)
         {
             try
             {
                 UnderlyingResponse.StatusCode = status;
                 var bytes = Encoding.UTF8.GetBytes(data);
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + RedHttpServer.Version);
                 UnderlyingResponse.ContentType = contentType;
                 UnderlyingResponse.ContentLength64 = bytes.LongLength;
                 if (!string.IsNullOrEmpty(filename))
@@ -177,13 +171,12 @@ namespace RedHttpServerNet45.Response
         /// </summary>
         /// <param name="data">The object to be serialized and send</param>
         /// <param name="status">The status code for the response</param>
-        public async void SendJson(object data, int status = (int) HttpStatusCode.OK)
+        public async Task SendJson(object data, int status = (int) HttpStatusCode.OK)
         {
             try
             {
                 UnderlyingResponse.StatusCode = status;
                 var bytes = Encoding.UTF8.GetBytes(Plugins.Use<IJsonConverter>().Serialize(data));
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + RedHttpServer.Version);
                 UnderlyingResponse.ContentType = "application/json";
                 UnderlyingResponse.ContentLength64 = bytes.LongLength;
                 await InternalTransfer(bytes, UnderlyingResponse.OutputStream);
@@ -199,13 +192,12 @@ namespace RedHttpServerNet45.Response
         /// </summary>
         /// <param name="data">The object to be serialized and send</param>
         /// <param name="status">The status code for the response</param>
-        public async void SendXml(object data, int status = (int) HttpStatusCode.OK)
+        public async Task SendXml(object data, int status = (int) HttpStatusCode.OK)
         {
             try
             {
                 UnderlyingResponse.StatusCode = status;
                 var bytes = Encoding.UTF8.GetBytes(Plugins.Use<IXmlConverter>().Serialize(data));
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + RedHttpServer.Version);
                 UnderlyingResponse.ContentType = "application/xml";
                 UnderlyingResponse.ContentLength64 = bytes.LongLength;
                 await InternalTransfer(bytes, UnderlyingResponse.OutputStream);
@@ -225,7 +217,7 @@ namespace RedHttpServerNet45.Response
         ///     extension
         /// </param>
         /// <param name="status">The status code for the response</param>
-        public async void SendFile(string filepath, string contentType = null,
+        public async Task SendFile(string filepath, string contentType = null,
             int status = (int) HttpStatusCode.OK)
         {
             try
@@ -235,7 +227,6 @@ namespace RedHttpServerNet45.Response
                     contentType = "application/octet-stream";
                 UnderlyingResponse.ContentType = contentType;
                 UnderlyingResponse.AddHeader("Accept-Ranges", "bytes");
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + RedHttpServer.Version);
                 UnderlyingResponse.AddHeader("Content-disposition",
                     "inline; filename=\"" + Path.GetFileName(filepath) + "\"");
                 using (Stream input = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -262,7 +253,7 @@ namespace RedHttpServerNet45.Response
         ///     extension
         /// </param>
         /// <param name="status">The status code for the response</param>
-        public async void SendFile(string filepath, long rangeStart, long rangeEnd, string contentType = "",
+        public async Task SendFile(string filepath, long rangeStart, long rangeEnd, string contentType = "",
             int status = (int) HttpStatusCode.PartialContent)
         {
             try
@@ -272,7 +263,6 @@ namespace RedHttpServerNet45.Response
                     contentType = "application/octet-stream";
                 UnderlyingResponse.ContentType = contentType;
                 UnderlyingResponse.AddHeader("Accept-Ranges", "bytes");
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + RedHttpServer.Version);
                 UnderlyingResponse.AddHeader("Content-disposition",
                     "inline; filename=\"" + Path.GetFileName(filepath) + "\"");
                 using (Stream input = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -301,7 +291,7 @@ namespace RedHttpServerNet45.Response
         ///     extension
         /// </param>
         /// <param name="status">The status code for the response</param>
-        public async void Download(string filepath, string filename = "", string contentType = "",
+        public async Task Download(string filepath, string filename = "", string contentType = "",
             int status = (int) HttpStatusCode.OK)
         {
             try
@@ -310,7 +300,6 @@ namespace RedHttpServerNet45.Response
                 if (contentType == null && !MimeTypes.TryGetValue(Path.GetExtension(filepath), out contentType))
                     contentType = "application/octet-stream";
                 UnderlyingResponse.ContentType = contentType;
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + RedHttpServer.Version);
                 UnderlyingResponse.AddHeader("Content-disposition", "attachment; filename=\"" +
                                                                     (string.IsNullOrEmpty(filename)
                                                                         ? Path.GetFileName(filepath)
@@ -334,7 +323,7 @@ namespace RedHttpServerNet45.Response
         /// <param name="pagefilepath">The path of the file to be rendered</param>
         /// <param name="parameters">The parameter collection used when replacing data</param>
         /// <param name="status">The status code for the response</param>
-        public async void RenderPage(string pagefilepath, RenderParams parameters,
+        public async Task RenderPage(string pagefilepath, RenderParams parameters,
             int status = (int) HttpStatusCode.OK)
         {
             try
@@ -342,7 +331,6 @@ namespace RedHttpServerNet45.Response
                 UnderlyingResponse.StatusCode = status;
                 var data = Encoding.UTF8.GetBytes(Plugins.Use<IPageRenderer>().Render(pagefilepath, parameters));
                 UnderlyingResponse.ContentType = "text/html";
-                UnderlyingResponse.AddHeader(Xpb, XpBstring + RedHttpServer.Version);
                 UnderlyingResponse.ContentLength64 = data.LongLength;
                 await InternalTransfer(data, UnderlyingResponse.OutputStream);
                 UnderlyingResponse.Close();
@@ -394,15 +382,7 @@ namespace RedHttpServerNet45.Response
             await dest.FlushAsync();
             dest.Close();
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static async Task InternalTransfer(byte[] src, Stream dest, long start, long end)
-        {
-            await dest.WriteAsync(src, (int) start, (int) end);
-            await dest.FlushAsync();
-            dest.Close();
-        }
-
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static long CalcStart(long len, long start, long end)
         {

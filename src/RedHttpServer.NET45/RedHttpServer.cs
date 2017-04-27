@@ -21,7 +21,11 @@ namespace RedHttpServerNet45
     public sealed class RedHttpServer : IDisposable
     {
         private static readonly RequestParams EmptyReqParams = new RequestParams(new Dictionary<string, string>());
-        internal static string Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+        /// <summary>
+        /// Build version of RedHttpServer
+        /// </summary>
+        public static string Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         /// <summary>
         ///     Constructs a server instance with given port and using the given path as public folder.

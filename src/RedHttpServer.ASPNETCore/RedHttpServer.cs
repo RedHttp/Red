@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
@@ -24,7 +25,7 @@ namespace RedHttpServerCore
         /// <summary>
         /// Build version of RedHttpServer
         /// </summary>
-        public const string Version = "2.0.1";
+        public const string Version = "2.0.2";
 
         /// <summary>
         ///     Constructs a server instance with given port and using the given path as public folder.
@@ -155,22 +156,22 @@ namespace RedHttpServerCore
             foreach (var method in _getMethods)
                 rb.MapGet(ConvertParameter(method.Item1, urlParam, generalParam),
                     async context =>
-                        method.Item2(new RRequest(context.Request, Plugins), new RResponse(context.Response, Plugins)));
+                        await method.Item2(new RRequest(context.Request, Plugins), new RResponse(context.Response, Plugins)));
             _getMethods.Clear();
             foreach (var method in _postMethods)
                 rb.MapPost(ConvertParameter(method.Item1, urlParam, generalParam),
                     async context =>
-                        method.Item2(new RRequest(context.Request, Plugins), new RResponse(context.Response, Plugins)));
+                        await method.Item2(new RRequest(context.Request, Plugins), new RResponse(context.Response, Plugins)));
             _postMethods.Clear();
             foreach (var method in _putMethods)
                 rb.MapPut(ConvertParameter(method.Item1, urlParam, generalParam),
                     async context =>
-                        method.Item2(new RRequest(context.Request, Plugins), new RResponse(context.Response, Plugins)));
+                        await method.Item2(new RRequest(context.Request, Plugins), new RResponse(context.Response, Plugins)));
             _putMethods.Clear();
             foreach (var method in _deleteMethods)
                 rb.MapDelete(ConvertParameter(method.Item1, urlParam, generalParam),
                     async context =>
-                        method.Item2(new RRequest(context.Request, Plugins), new RResponse(context.Response, Plugins)));
+                        await method.Item2(new RRequest(context.Request, Plugins), new RResponse(context.Response, Plugins)));
             _deleteMethods.Clear();
             foreach (var wsMethod in _wsMethods)
                 rb.MapGet(ConvertParameter(wsMethod.Item1, urlParam, generalParam), async context =>
@@ -216,16 +217,16 @@ namespace RedHttpServerCore
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
-        public void Get(string route, Action<RRequest, RResponse> action)
-            => _getMethods.Add(new Tuple<string, Action<RRequest, RResponse>>(route, action));
+        public void Get(string route, Func<RRequest, RResponse, Task> action)
+            => _getMethods.Add(new Tuple<string, Func<RRequest, RResponse, Task>>(route, action));
 
         /// <summary>
         ///     Add action to handle POST requests to a given route
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
-        public void Post(string route, Action<RRequest, RResponse> action)
-            => _postMethods.Add(new Tuple<string, Action<RRequest, RResponse>>(route, action));
+        public void Post(string route, Func<RRequest, RResponse, Task> action)
+            => _postMethods.Add(new Tuple<string, Func<RRequest, RResponse, Task>>(route, action));
 
         /// <summary>
         ///     Add action to handle PUT requests to a given route.
@@ -235,8 +236,8 @@ namespace RedHttpServerCore
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
-        public void Put(string route, Action<RRequest, RResponse> action)
-            => _putMethods.Add(new Tuple<string, Action<RRequest, RResponse>>(route, action));
+        public void Put(string route, Func<RRequest, RResponse, Task> action)
+            => _putMethods.Add(new Tuple<string, Func<RRequest, RResponse, Task>>(route, action));
 
         /// <summary>
         ///     Add action to handle DELETE requests to a given route.
@@ -246,8 +247,8 @@ namespace RedHttpServerCore
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
-        public void Delete(string route, Action<RRequest, RResponse> action)
-            => _deleteMethods.Add(new Tuple<string, Action<RRequest, RResponse>>(route, action));
+        public void Delete(string route, Func<RRequest, RResponse, Task> action)
+            => _deleteMethods.Add(new Tuple<string, Func<RRequest, RResponse, Task>>(route, action));
 
         /// <summary>
         ///     Add action to handle WEBSOCKET requests to a given route. <para/>
@@ -258,17 +259,17 @@ namespace RedHttpServerCore
             => _wsMethods.Add(new Tuple<string, Action<RRequest, WebSocketDialog>>(route, action));
 
 
-        private readonly List<Tuple<string, Action<RRequest, RResponse>>> _deleteMethods =
-            new List<Tuple<string, Action<RRequest, RResponse>>>();
+        private readonly List<Tuple<string, Func<RRequest, RResponse, Task>>> _deleteMethods =
+            new List<Tuple<string, Func<RRequest, RResponse, Task>>>();
 
-        private readonly List<Tuple<string, Action<RRequest, RResponse>>> _getMethods =
-            new List<Tuple<string, Action<RRequest, RResponse>>>();
+        private readonly List<Tuple<string, Func<RRequest, RResponse, Task>>> _getMethods =
+            new List<Tuple<string, Func<RRequest, RResponse, Task>>>();
 
-        private readonly List<Tuple<string, Action<RRequest, RResponse>>> _postMethods =
-            new List<Tuple<string, Action<RRequest, RResponse>>>();
+        private readonly List<Tuple<string, Func<RRequest, RResponse, Task>>> _postMethods =
+            new List<Tuple<string, Func<RRequest, RResponse, Task>>>();
 
-        private readonly List<Tuple<string, Action<RRequest, RResponse>>> _putMethods =
-            new List<Tuple<string, Action<RRequest, RResponse>>>();
+        private readonly List<Tuple<string, Func<RRequest, RResponse, Task>>> _putMethods =
+            new List<Tuple<string, Func<RRequest, RResponse, Task>>>();
 
         private readonly List<Tuple<string, Action<RRequest, WebSocketDialog>>> _wsMethods =
             new List<Tuple<string, Action<RRequest, WebSocketDialog>>>();

@@ -4,6 +4,7 @@ using RedHttpServerCore;
 using RedHttpServerCore.Plugins;
 using RedHttpServerCore.Plugins.Interfaces;
 using RedHttpServerCore.Response;
+using RedHttpServerCore.Request;
 
 namespace TestServer
 {
@@ -20,16 +21,18 @@ namespace TestServer
             server.Plugins.Register<ILogging, TerminalLogging>(logger);
 
             // URL param demo
-            server.Get("/:param1/:paramtwo/:somethingthird", (req, res) =>
+            server.Get("/:param1/:paramtwo/:somethingthird", async (req, res) =>
             {
-                res.SendString($"URL: {req.Params["param1"]} / {req.Params["paramtwo"]} / {req.Params["somethingthird"]}");
+                await res.SendString($"URL: {req.Params["param1"]} / {req.Params["paramtwo"]} / {req.Params["somethingthird"]}");
             });
 
             // Redirect to page on same host
-            server.Get("/redirect", (req, res) =>
+            server.Get("/redirect", async (req, res) =>
             {
-                res.Redirect("/redirect/test/here");
+                await res.Redirect("/redirect/test/here");
             });
+
+            
             
             // Save uploaded file from request body 
             Directory.CreateDirectory("./uploads");
@@ -37,27 +40,32 @@ namespace TestServer
             {
                 if (await req.SaveBodyToFile("./uploads"))
                 {
-                    res.SendString("OK");
+                    await res.SendString("OK");
                     // We can use logger reference directly
                     logger.Log("UPL", "File uploaded");
                 }
                 else
-                    res.SendString("Error", status: 413);
+                    await res.SendString("Error", status: 413);
+            });
+
+            server.Get("/file", async (req, res) =>
+            {
+                await res.SendFile("testimg.jpeg");
             });
 
             // Using url queries to generate an answer
-            server.Get("/hello", (req, res) =>
+            server.Get("/hello", async (req, res) =>
             {
                 var queries = req.Queries;
                 var firstname = queries["firstname"];
                 var lastname = queries["lastname"];
-                res.SendString($"Hello {firstname} {lastname}, have a nice day");
+                await res.SendString($"Hello {firstname} {lastname}, have a nice day");
             });
 
             // Rendering a page for dynamic content
-            server.Get("/serverstatus", (req, res) =>
+            server.Get("/serverstatus", async (req, res) =>
             {
-                res.RenderPage("./pages/serverstates.ecs", new RenderParams
+                await res.RenderPage("./pages/statuspage.ecs", new RenderParams
                 {
                     { "uptime", DateTime.UtcNow.Subtract(startTime).TotalHours },
                     { "versiom", RedHttpServer.Version }
@@ -65,12 +73,12 @@ namespace TestServer
             });
 
             // WebSocket echo server
-            server.WebSocket("/echo", async (req, wsd) =>
+            server.WebSocket("/echo", (req, wsd) =>
             {
                 // Or we can use the logger from the plugin collection 
                 wsd.ServerPlugins.Use<ILogging>().Log("WS", "Echo server visited");
 
-                await wsd.SendText("Welcome to the echo test server");
+                wsd.SendText("Welcome to the echo test server");
                 wsd.OnTextReceived += (sender, eventArgs) =>
                 {
                     wsd.SendText("you sent: " + eventArgs.Text);

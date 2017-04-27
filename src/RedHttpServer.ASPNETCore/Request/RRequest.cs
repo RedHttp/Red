@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using RedHttpServerCore.Plugins.Interfaces;
 using ServiceStack;
+using static System.IO.File;
 
 namespace RedHttpServerCore.Request
 {
@@ -128,12 +129,15 @@ namespace RedHttpServerCore.Request
                     failed = true;
                     foreach (var str in filestreams.Values)
                         str.Close();
+                    var fp = Path.Combine(filePath, fname);
+                    if (Exists(fp))
+                        Delete(fp);
                     tcs.TrySetResult(false);
                     return;
                 }
                 if (!filestreams.TryGetValue(fname, out Stream stream))
                 {
-                    stream = File.Create(Path.Combine(filePath, fname));
+                    stream = Create(Path.Combine(filePath, fname));
                     filestreams.Add(fname, stream);
                 }
                 stream.Write(buffer, 0, bytes);

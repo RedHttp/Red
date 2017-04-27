@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using RedHttpServerCore.Plugins.Interfaces;
 
@@ -13,6 +14,8 @@ namespace RedHttpServerCore.Response
     /// </summary>
     public sealed class RResponse
     {
+        private static readonly Task CompletedTask = Task.CompletedTask;
+
         internal static readonly IDictionary<string, string> MimeTypes =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -121,9 +124,10 @@ namespace RedHttpServerCore.Response
         ///     Redirects the client to a given path or url
         /// </summary>
         /// <param name="redirectPath">The path or url to redirect to</param>
-        public void Redirect(string redirectPath)
+        public Task Redirect(string redirectPath)
         {
             UnderlyingResponse.Redirect(redirectPath);
+            return CompletedTask;
         }
 
         /// <summary>
@@ -133,7 +137,7 @@ namespace RedHttpServerCore.Response
         /// <param name="contentType">The mime type of the content</param>
         /// <param name="filename">If the data represents a file, the filename can be set through this</param>
         /// <param name="status">The status code for the response</param>
-        public async void SendString(string data, string contentType = "text/plain", string filename = "",
+        public async Task SendString(string data, string contentType = "text/plain", string filename = "",
             int status = (int) HttpStatusCode.OK)
         {
             UnderlyingResponse.StatusCode = status;
@@ -148,7 +152,7 @@ namespace RedHttpServerCore.Response
         /// </summary>
         /// <param name="data">The object to be serialized and send</param>
         /// <param name="status">The status code for the response</param>
-        public async void SendJson(object data, int status = (int) HttpStatusCode.OK)
+        public async Task SendJson(object data, int status = (int) HttpStatusCode.OK)
         {
             UnderlyingResponse.StatusCode = status;
             UnderlyingResponse.ContentType = "application/json";
@@ -161,7 +165,7 @@ namespace RedHttpServerCore.Response
         /// </summary>
         /// <param name="data">The object to be serialized and send</param>
         /// <param name="status">The status code for the response</param>
-        public async void SendXml(object data, int status = (int) HttpStatusCode.OK)
+        public async Task SendXml(object data, int status = (int) HttpStatusCode.OK)
         {
             UnderlyingResponse.StatusCode = status;
             UnderlyingResponse.ContentType = "application/xml";
@@ -178,7 +182,7 @@ namespace RedHttpServerCore.Response
         ///     extension
         /// </param>
         /// <param name="status">The status code for the response</param>
-        public async void SendFile(string filepath, string contentType = null, int status = (int) HttpStatusCode.OK)
+        public async Task SendFile(string filepath, string contentType = null, int status = (int) HttpStatusCode.OK)
         {
             UnderlyingResponse.StatusCode = status;
             if (contentType == null && !MimeTypes.TryGetValue(Path.GetExtension(filepath), out contentType))
@@ -201,7 +205,7 @@ namespace RedHttpServerCore.Response
         ///     extension
         /// </param>
         /// <param name="status">The status code for the response</param>
-        public async void SendFile(string filepath, long rangeStart, long rangeEnd, string contentType = "",
+        public async Task SendFile(string filepath, long rangeStart, long rangeEnd, string contentType = "",
             int status = (int) HttpStatusCode.PartialContent)
         {
             UnderlyingResponse.StatusCode = status;
@@ -224,7 +228,7 @@ namespace RedHttpServerCore.Response
         ///     extension
         /// </param>
         /// <param name="status">The status code for the response</param>
-        public async void Download(string filepath, string filename = "", string contentType = "",
+        public async Task Download(string filepath, string filename = "", string contentType = "",
             int status = (int) HttpStatusCode.OK)
         {
             UnderlyingResponse.StatusCode = status;
@@ -244,7 +248,7 @@ namespace RedHttpServerCore.Response
         /// <param name="pagefilepath">The path of the file to be rendered</param>
         /// <param name="parameters">The parameter collection used when replacing data</param>
         /// <param name="status">The status code for the response</param>
-        public async void RenderPage(string pagefilepath, RenderParams parameters, int status = (int) HttpStatusCode.OK)
+        public async Task RenderPage(string pagefilepath, RenderParams parameters, int status = (int) HttpStatusCode.OK)
         {
             UnderlyingResponse.StatusCode = status;
             UnderlyingResponse.ContentType = "text/html";

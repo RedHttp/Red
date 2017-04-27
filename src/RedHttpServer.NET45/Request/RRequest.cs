@@ -79,7 +79,7 @@ namespace RedHttpServerNet45.Request
         /// </summary>
         /// <param name="filePath">The directory to placed to file in</param>
         /// <param name="filerenamer">Function to rename the file(s)</param>
-        /// <param name="maxSizeKb">The max filesize allowed</param>
+        /// <param name="maxSizeKb">The max filesize allowed. Default is 1mb</param>
         /// <returns>Whether the file was saved succesfully</returns>
         public Task<bool> SaveBodyToFile(string filePath, Func<string, string> filerenamer = null,
             long maxSizeKb = 1024)
