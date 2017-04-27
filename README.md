@@ -15,8 +15,6 @@ Some of the use patterns has been inspired by nodejs and expressjs
 RedHttpServer can be installed from [NuGet](https://www.nuget.org/packages/RHttpServer/): Install-Package RHttpServer
 
 ### Example
-In this example, we listen locally on port 5000, and respond to GET, POST and WebSocket requests
-
 ```csharp
 // We serve static files, such as index.html from the 'public' directory
 var server = new RedHttpServer(5000, "public");
@@ -79,7 +77,7 @@ server.Get("/serverstatus", async (req, res) =>
 // WebSocket echo server
 server.WebSocket("/echo", (req, wsd) =>
 {
-    // Or we can use the logger from the plugin collection 
+    // We can also use the logger from the plugin collection 
     wsd.ServerPlugins.Use<ILogging>().Log("WS", "Echo server visited");
 
     wsd.SendText("Welcome to the echo test server");
