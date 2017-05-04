@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>RHttpServer</id>
-		<version>2.0.1</version>
+		<version>2.0.2</version>
 		<title>RHS - RedHttpServer</title>
 		<authors>Malte Rosenbjerg</authors>
 		<owners>Rosenbjerg Softworks</owners>
@@ -19,7 +19,7 @@ The RedHttpServer framework includes plugins for Json and Xml serialization/dese
 Furthermore a plugin for dynamic page rendering, which offers the ability to embed dynamically created content in the html file, even js objects and text, ecs or html files (and a couple more).
 See project page for more information.
 		</summary>
-		<releaseNotes>minor refactor and some fixes</releaseNotes>
+		<releaseNotes>All responses can now be awaited as they should + minor fixes</releaseNotes>
 		<copyright>Copyright 2017</copyright>
 		<tags>RedHttpServer RHttpServer red rhs netcore http server api rendering ecs</tags>
 		<dependencies>
