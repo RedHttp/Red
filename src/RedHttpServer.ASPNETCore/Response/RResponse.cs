@@ -15,7 +15,6 @@ namespace RedHttpServerCore.Response
     public sealed class RResponse
     {
         private static readonly Task CompletedTask = Task.CompletedTask;
-
         internal static readonly IDictionary<string, string> MimeTypes =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
