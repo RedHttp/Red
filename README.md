@@ -94,7 +94,7 @@ When serving static files, it not required to add a route action for every stati
 If no route action is provided for the requested route, a lookup will be performed, determining whether the route matches a file in the public file directory specified when creating an instance of the HttpServer class.
 
 ## Plug-ins
-RHttpServer is created to be easy to build on top of. 
+RedHttpServer is created to be easy to build on top of. 
 The server supports plug-ins, and offer a method to easily add new functionality.
 The plugin system works by registering plug-ins before starting the server, so all plug-ins are ready when serving requests.
 Some of the default functionality is implemented through plug-ins, and can easily customized or changed entirely.
