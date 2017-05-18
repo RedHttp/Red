@@ -91,7 +91,7 @@ server.Start();
 ```
 ### Static files
 When serving static files, it not required to add a route action for every static file.
-If no route action is provided for the requested route, a lookup will be performed, determining whether the route matches a file in the public file directory specified when creating an instance of the HttpServer class.
+If no route action is provided for the requested route, a lookup will be performed, determining whether the route matches a file in the public file directory specified when creating an instance of the RedHttpServer class.
 
 ## Plug-ins
 RedHttpServer is created to be easy to build on top of. 
