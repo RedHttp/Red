@@ -11,11 +11,14 @@ namespace RedHttpServerNet45.Response
     /// </summary>
     public class WebSocketDialog
     {
-        internal WebSocketDialog(WebSocketContext wsc)
+        internal WebSocketDialog(WebSocketContext wsc, RPluginCollection plugins)
         {
             UnderlyingContext = wsc;
             _ws = UnderlyingContext.WebSocket;
+            ServerPlugins = plugins;
         }
+
+        public RPluginCollection ServerPlugins { get; set; }
 
         private readonly WebSocket _ws;
 

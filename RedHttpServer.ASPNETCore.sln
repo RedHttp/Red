@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.0
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D9A21FF4-1C0B-45B1-8442-D89F53C67E2B}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestServer", "src\TestServer\TestServer.csproj", "{CFF58674-9536-4100-B627-6FFAC3719E06}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedHttpServer.NET45", "src\RedHttpServer.NET45\RedHttpServer.NET45.csproj", "{DFED1F90-EF2C-44FD-A940-2F1AA9E64203}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestServerNET45", "src\TestServerNET45\TestServerNET45.csproj", "{35C61633-7DAB-4640-B779-AC77CCDED4CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,10 @@ Global
 		{DFED1F90-EF2C-44FD-A940-2F1AA9E64203}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFED1F90-EF2C-44FD-A940-2F1AA9E64203}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFED1F90-EF2C-44FD-A940-2F1AA9E64203}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35C61633-7DAB-4640-B779-AC77CCDED4CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35C61633-7DAB-4640-B779-AC77CCDED4CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35C61633-7DAB-4640-B779-AC77CCDED4CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35C61633-7DAB-4640-B779-AC77CCDED4CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,5 +45,6 @@ Global
 		{331EB634-FAF3-4D7A-83F1-1D3A780F0273} = {D9A21FF4-1C0B-45B1-8442-D89F53C67E2B}
 		{CFF58674-9536-4100-B627-6FFAC3719E06} = {D9A21FF4-1C0B-45B1-8442-D89F53C67E2B}
 		{DFED1F90-EF2C-44FD-A940-2F1AA9E64203} = {D9A21FF4-1C0B-45B1-8442-D89F53C67E2B}
+		{35C61633-7DAB-4640-B779-AC77CCDED4CF} = {D9A21FF4-1C0B-45B1-8442-D89F53C67E2B}
 	EndGlobalSection
 EndGlobal

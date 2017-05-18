@@ -36,7 +36,6 @@
   <ItemGroup>
     <Reference Include="HttpMultipartParser, Version=2.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\HttpMultipartParser.2.2.3\lib\net452\HttpMultipartParser.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="ServiceStack.Text, Version=4.5.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ServiceStack.Text.4.5.8\lib\net45\ServiceStack.Text.dll</HintPath>
@@ -69,6 +68,7 @@
     <Compile Include="Plugins\Interfaces\IPageRenderer.cs" />
     <Compile Include="Plugins\Interfaces\IXmlConverter.cs" />
     <Compile Include="Handling\ResponseHandler.cs" />
+    <Compile Include="Request\FormDataParser.cs" />
     <Compile Include="Response\WebSocketDialog.cs" />
     <Compile Include="RedHttpServerException.cs" />
     <Compile Include="RouteTree.cs" />

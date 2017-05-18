@@ -1,18 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using RedHttpServerCore;
-using RedHttpServerCore.Plugins;
-using RedHttpServerCore.Plugins.Interfaces;
-using RedHttpServerCore.Response;
-using RedHttpServerCore.Request;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using RedHttpServerNet45;
+using RedHttpServerNet45.Plugins;
+using RedHttpServerNet45.Plugins.Interfaces;
+using RedHttpServerNet45.Response;
 
-namespace TestServer
+namespace TestServerNET45
 {
-    public class Program
+    class Program
     {
-        public static void Main(string[] args)
+        static void Main(string[] args)
         {
+
             // We serve static files, such as index.html from the 'public' directory
             var server = new RedHttpServer(5000, "public");
             var startTime = DateTime.UtcNow;
@@ -26,15 +29,15 @@ namespace TestServer
             {
                 await res.SendString($"URL: {req.Params["param1"]} / {req.Params["paramtwo"]} / {req.Params["somethingthird"]}");
             });
-            
+
             // Redirect to page on same host
             server.Get("/redirect", async (req, res) =>
             {
                 await res.Redirect("/redirect/test/here");
             });
 
-            
-            
+
+
             // Save uploaded file from request body 
             Directory.CreateDirectory("./uploads");
             server.Post("/upload", async (req, res) =>
@@ -94,7 +97,7 @@ namespace TestServer
             });
 
 
-            server.Start();
+            server.Start(true);
             Console.ReadKey();
         }
     }

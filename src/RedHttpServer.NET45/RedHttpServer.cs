@@ -25,7 +25,7 @@ namespace RedHttpServerNet45
         /// <summary>
         /// Build version of RedHttpServer
         /// </summary>
-        public static string Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public const string Version = "2.0.3";
 
         /// <summary>
         ///     Constructs a server instance with given port and using the given path as public folder.
@@ -185,7 +185,7 @@ namespace RedHttpServerNet45
                     return;
                 }
                 InitializePlugins();
-                _cors.Bind(RCorsPolicy, _rtman);
+                _cors.Bind(CorsPolicy, _rtman);
                 foreach (var listeningPrefix in listeningPrefixes)
                 {
                     _listener.Prefixes.Add($"http://{listeningPrefix}:{Port}/");
@@ -215,7 +215,7 @@ namespace RedHttpServerNet45
         /// <summary>
         ///     Cross-Origin Resource Sharing (CORS) policy
         /// </summary>
-        public RCorsPolicy RCorsPolicy { get; set; }
+        public RCorsPolicy CorsPolicy { get; set; }
 
         /// <summary>
         ///     Initializes any default plugin if no other plugin is registered to same interface
@@ -325,7 +325,7 @@ namespace RedHttpServerNet45
             RPluginCollection plugins, RHttpAction wsact)
         {
             var wsc = await context.AcceptWebSocketAsync(wsact.WSProtocol);
-            var wsd = new WebSocketDialog(wsc);
+            var wsd = new WebSocketDialog(wsc, plugins);
             wsact.WSAction(new RRequest(context.Request, reqPar, plugins), wsd);
             await wsd.ReadFromWebSocket();
         }

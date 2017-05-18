@@ -25,7 +25,7 @@ namespace RedHttpServerCore
         /// <summary>
         /// Build version of RedHttpServer
         /// </summary>
-        public const string Version = "2.0.2";
+        public const string Version = "2.0.3";
 
         /// <summary>
         ///     Constructs a server instance with given port and using the given path as public folder.
@@ -57,7 +57,7 @@ namespace RedHttpServerCore
         /// <summary>
         ///     Cross-Origin Resource Sharing (CORS) policy
         /// </summary>
-        public RCorsPolicy RCorsPolicy { get; set; }
+        public RCorsPolicy CorsPolicy { get; set; }
 
         /// <summary>
         ///     Starts the server
@@ -73,13 +73,13 @@ namespace RedHttpServerCore
                 .UseKestrel()
                 .ConfigureServices(s =>
                 {
-                    if (RCorsPolicy != null)
+                    if (CorsPolicy != null)
                         s.AddCors(options => options.AddPolicy("CorsPolicy", ConfigurePolicy));
                     s.AddRouting();
                 })
                 .Configure(app =>
                 {
-                    if (RCorsPolicy != null)
+                    if (CorsPolicy != null)
                         app.UseCors("CorsPolicy");
                     if (!string.IsNullOrWhiteSpace(PublicRoot) && Directory.Exists(PublicRoot))
                         app.UseFileServer(new FileServerOptions { FileProvider = new PhysicalFileProvider(Path.GetFullPath(PublicRoot)) });
@@ -95,16 +95,16 @@ namespace RedHttpServerCore
 
         private void ConfigurePolicy(CorsPolicyBuilder builder)
         {
-            builder = RCorsPolicy.AllowedOrigins.All(d => d == "*")
+            builder = CorsPolicy.AllowedOrigins.All(d => d == "*")
                 ? builder.AllowAnyOrigin()
-                : builder.WithOrigins(RCorsPolicy.AllowedOrigins.ToArray());
-            builder = RCorsPolicy.AllowedMethods.All(d => d == "*")
+                : builder.WithOrigins(CorsPolicy.AllowedOrigins.ToArray());
+            builder = CorsPolicy.AllowedMethods.All(d => d == "*")
                 ? builder.AllowAnyMethod()
-                : builder.WithOrigins(RCorsPolicy.AllowedMethods.ToArray());
-            if (RCorsPolicy.AllowedHeaders.All(d => d == "*"))
+                : builder.WithOrigins(CorsPolicy.AllowedMethods.ToArray());
+            if (CorsPolicy.AllowedHeaders.All(d => d == "*"))
                 builder.AllowAnyHeader();
             else
-                builder.WithOrigins(RCorsPolicy.AllowedHeaders.ToArray());
+                builder.WithOrigins(CorsPolicy.AllowedHeaders.ToArray());
         }
 
         /// <summary>

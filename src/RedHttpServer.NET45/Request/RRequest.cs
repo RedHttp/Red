@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using HttpMultipartParser;
 using RedHttpServerNet45.Plugins.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace RedHttpServerNet45.Request
 {
@@ -22,6 +25,8 @@ namespace RedHttpServerNet45.Request
         }
 
         private readonly RPluginCollection _rp;
+        private RFormCollection _postRFormData;
+        private static readonly RFormCollection EmptyNameValueCollection = new RFormCollection();
 
         /// <summary>
         ///     The query elements of the request
@@ -66,13 +71,29 @@ namespace RedHttpServerNet45.Request
         public async Task<T> ParseBodyAsync<T>() => await _rp.Use<IBodyParser>().ParseBodyAsync<T>(UnderlyingRequest);
 
         /// <summary>
-        ///     Returns form-data from post request, if any
+        ///     Returns form-data from post request, if any.
         /// </summary>
         /// <returns></returns>
-        public MultipartFormDataParser GetFormData()
+        public async Task<RFormCollection> GetFormDataAsync()
         {
-            return new MultipartFormDataParser(UnderlyingRequest.InputStream);
+            if (_postRFormData != null) return _postRFormData;
+            var ctype = UnderlyingRequest.ContentType;
+            if (ctype.Contains("x-www-form-urlencoded"))
+                return await FormDataParser.ParseUrlEncoded(UnderlyingRequest.InputStream);
+            if (ctype.Contains("multipart/form-data"))
+            {
+                var m = _webFormBoundaryRegex.Match(ctype);
+                if (m.Success)
+                {
+                    var boundary = m.Groups[1].Value;
+                    return await FormDataParser.ParseMultipart(UnderlyingRequest.InputStream, boundary);
+                }
+            }
+            _postRFormData = EmptyNameValueCollection;
+            return _postRFormData;
         }
+
+        private static readonly Regex _webFormBoundaryRegex= new Regex("boundary=([A-Za-z0-9-]+);?", RegexOptions.Compiled);
 
         /// <summary>
         ///     Save multipart form-data from request body, if any, to a file in the specified directory
