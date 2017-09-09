@@ -36,7 +36,16 @@ server.Get("/redirect", async (req, res) =>
     await res.Redirect("/redirect/test/here");
 });
 
-// Save uploaded file from request body 
+
+server.Post("/register", async (req, res) =>
+{
+    var registerForm = await req.GetFormDataAsync();
+    CreateUser(registerForm["username"][0], registerForm["password"][0]);
+    SaveUserImage(registerForm["username"][0], registerForm.Files[0]);
+    await res.SendString("User created!");
+});
+
+// Save uploaded file from request body
 Directory.CreateDirectory("./uploads");
 server.Post("/upload", async (req, res) =>
 {
@@ -55,12 +64,13 @@ server.Get("/file", async (req, res) =>
     await res.SendFile("testimg.jpeg");
 });
 
+
 // Using url queries to generate an answer
 server.Get("/hello", async (req, res) =>
 {
     var queries = req.Queries;
-    var firstname = queries["firstname"];
-    var lastname = queries["lastname"];
+    var firstname = queries["firstname"][0];
+    var lastname = queries["lastname"][0];
     await res.SendString($"Hello {firstname} {lastname}, have a nice day");
 });
 
