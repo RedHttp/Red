@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using RedHttpServerCore;
 using RedHttpServerCore.Plugins;
 using RedHttpServerCore.Plugins.Interfaces;
 using RedHttpServerCore.Response;
-using RedHttpServerCore.Request;
 
 namespace TestServer
 {
@@ -32,8 +32,6 @@ namespace TestServer
             {
                 await res.Redirect("/redirect/test/here");
             });
-
-            
             
             // Save uploaded file from request body 
             Directory.CreateDirectory("./uploads");

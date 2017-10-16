@@ -13,7 +13,7 @@
     <Copyright>Copyright © Rosenbjerg Softworks 2017</Copyright>
     <AssemblyTitle>RedHttpServer</AssemblyTitle>
     <VersionPrefix>2.0.0-alpha</VersionPrefix>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>RedHttpServer.ASPNETCore</AssemblyName>
     <PackageId>RedHttpServer.ASPNETCore</PackageId>
@@ -27,16 +27,17 @@
     <OutputTypeEx>library</OutputTypeEx>
     <StartupObject />
     <Version>2.0.3</Version>
+    <PackageTags>RedHttpServer RHttpServer red rhs netcore http server api rendering ecs</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HttpMultipartParser" Version="2.2.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Routing" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="1.0.1" />
-    <PackageReference Include="ServiceStack.Text.Core" Version="1.0.40" />
+    <PackageReference Include="HttpMultipartParser" Version="2.2.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="2.0.0" />
+    <PackageReference Include="ServiceStack.Text.Core" Version="1.0.44" />
   </ItemGroup>
 
 </Project>

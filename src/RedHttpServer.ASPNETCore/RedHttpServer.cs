@@ -76,6 +76,7 @@ namespace RedHttpServerCore
                     if (CorsPolicy != null)
                         s.AddCors(options => options.AddPolicy("CorsPolicy", ConfigurePolicy));
                     s.AddRouting();
+                    ConfigureServices?.Invoke(s);
                 })
                 .Configure(app =>
                 {
@@ -92,6 +93,11 @@ namespace RedHttpServerCore
             host.Start();
             Console.WriteLine($"RedHttpServer/{Version} running on port " + Port);
         }
+
+        /// <summary>
+        ///     Method to register ASP.NET Core Services, such as DbContext etc.
+        /// </summary>
+        public Action<IServiceCollection> ConfigureServices { get; set; }
 
         private void ConfigurePolicy(CorsPolicyBuilder builder)
         {
