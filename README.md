@@ -14,7 +14,7 @@ Some of the use patterns has been inspired by nodejs and expressjs
 ### Installation
 RedHttpServer can be installed from [NuGet](https://www.nuget.org/packages/RHttpServer/): Install-Package RHttpServer
 
-### Example
+### Examples
 ```csharp
 // We serve static files, such as index.html from the 'public' directory
 var server = new RedHttpServer(5000, "public");
@@ -138,5 +138,6 @@ RedHttpServer is released under MIT license, so it is free to use, even in comme
 
 Buy me a beer? 
 ```
-17c5b8n9LJxXg32EWSBQWABLgQEqAYfsMq
+16B6bzSgvBBprQteahougoDpbRHf8PnHvD (BTC)
+0x63761494aAf03141bDea42Fb1e519De0c01CcF10 (ETH)
 ```
