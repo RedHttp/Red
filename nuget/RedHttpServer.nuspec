@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>RHttpServer</id>
-		<version>2.0.4</version>
+		<version>2.0.5</version>
 		<title>RHS - RedHttpServer</title>
 		<authors>Malte Rosenbjerg</authors>
 		<owners>Rosenbjerg Softworks</owners>
@@ -19,7 +19,7 @@ The RedHttpServer framework includes plugins for Json and Xml serialization/dese
 Furthermore a plugin for dynamic page rendering, which offers the ability to embed dynamically created content in the html file, even js objects and text, ecs or html files (and a couple more).
 See project page for more information.
 		</summary>
-		<releaseNotes>Add option to register services in ASP.NET Core version</releaseNotes>
+		<releaseNotes>Fixed ASPNETCore version target framework</releaseNotes>
 		<copyright>Copyright 2017</copyright>
 		<tags>RedHttpServer RHttpServer red rhs rhttp netcore http server api rendering ecs</tags>
 		<dependencies>
@@ -42,20 +42,8 @@ See project page for more information.
 		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.dll" target="lib\net452" />
 		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.xml" target="lib\net452" />
 		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.pdb" target="lib\net452" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.dll" target="lib\Xamarin.Mac20" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.xml" target="lib\Xamarin.Mac20" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.pdb" target="lib\Xamarin.Mac20" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.dll" target="lib\Xamarin.iOS10" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.xml" target="lib\Xamarin.iOS10" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.pdb" target="lib\Xamarin.iOS10" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.dll" target="lib\MonoAndroid10" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.xml" target="lib\MonoAndroid10" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.pdb" target="lib\MonoAndroid10" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.dll" target="lib\MonoTouch10" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.xml" target="lib\MonoTouch10" />
-		<file src="..\src\RedHttpServer.NET45\bin\Release\RedHttpServer.NET45.pdb" target="lib\MonoTouch10" />
-		<file src="..\src\RedHttpServer.ASPNETCore\bin\Release\netstandard1.6\RedHttpServer.ASPNETCore.dll" target="lib\netstandard1.6" />
-		<file src="..\src\RedHttpServer.ASPNETCore\bin\Release\netstandard1.6\RedHttpServer.ASPNETCore.xml" target="lib\netstandard1.6" />
-		<file src="..\src\RedHttpServer.ASPNETCore\bin\Release\netstandard1.6\RedHttpServer.ASPNETCore.pdb" target="lib\netstandard1.6" />
+		<file src="..\src\RedHttpServer.ASPNETCore\bin\Release\netcoreapp2.0\RedHttpServer.ASPNETCore.dll" target="lib\netcoreapp2.0" />
+		<file src="..\src\RedHttpServer.ASPNETCore\bin\Release\netcoreapp2.0\RedHttpServer.ASPNETCore.xml" target="lib\netcoreapp2.0" />
+		<file src="..\src\RedHttpServer.ASPNETCore\bin\Release\netcoreapp2.0\RedHttpServer.ASPNETCore.pdb" target="lib\netcoreapp2.0" />
 	</files>
 </package>

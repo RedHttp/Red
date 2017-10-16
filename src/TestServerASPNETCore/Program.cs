@@ -1,13 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
 using RedHttpServerCore;
 using RedHttpServerCore.Plugins;
 using RedHttpServerCore.Plugins.Interfaces;
 using RedHttpServerCore.Response;
 
-namespace TestServer
+namespace TestServerASPNETCore
 {
     public class Program
     {
@@ -26,13 +24,13 @@ namespace TestServer
             {
                 await res.SendString($"URL: {req.Params["param1"]} / {req.Params["paramtwo"]} / {req.Params["somethingthird"]}");
             });
-            
+
             // Redirect to page on same host
             server.Get("/redirect", async (req, res) =>
             {
                 await res.Redirect("/redirect/test/here");
             });
-            
+
             // Save uploaded file from request body 
             Directory.CreateDirectory("./uploads");
             server.Post("/upload", async (req, res) =>
@@ -90,8 +88,6 @@ namespace TestServer
                     wsd.SendText("you sent: " + eventArgs.Text);
                 };
             });
-
-
             server.Start();
             Console.ReadKey();
         }

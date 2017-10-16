@@ -12,12 +12,10 @@
     <Description>A Http server framework using Kestrel and the .NET platform</Description>
     <Copyright>Copyright © Rosenbjerg Softworks 2017</Copyright>
     <AssemblyTitle>RedHttpServer</AssemblyTitle>
-    <VersionPrefix>2.0.0-alpha</VersionPrefix>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>RedHttpServer.ASPNETCore</AssemblyName>
     <PackageId>RedHttpServer.ASPNETCore</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>

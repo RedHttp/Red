@@ -25,7 +25,7 @@ namespace RedHttpServerCore
         /// <summary>
         /// Build version of RedHttpServer
         /// </summary>
-        public const string Version = "2.0.3";
+        public const string Version = "2.0.5";
 
         /// <summary>
         ///     Constructs a server instance with given port and using the given path as public folder.
@@ -37,6 +37,7 @@ namespace RedHttpServerCore
         {
             Port = port;
             PublicRoot = publicDir;
+
         }
 
         /// <summary>
