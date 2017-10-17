@@ -16,56 +16,14 @@ RedHttpServer can be installed from [NuGet](https://www.nuget.org/packages/RHttp
 
 ### Examples
 ```csharp
-// We serve static files, such as index.html from the 'public' directory
-var server = new RedHttpServer(5000, "public");
+// Serving static files, such as index.html, from the directory './public' and listens for requests on port 5000
+var server = new RedHttpServer(5000, "./public");
 var startTime = DateTime.UtcNow;
-
-// We log to terminal here
-var logger = new TerminalLogging();
-server.Plugins.Register<ILogging, TerminalLogging>(logger);
-
-// URL param demo
-server.Get("/:param1/:paramtwo/:somethingthird", async (req, res) =>
-{
-    await res.SendString($"URL: {req.Params["param1"]} / {req.Params["paramtwo"]} / {req.Params["somethingthird"]}");
-});
-
-// Redirect to page on same host
-server.Get("/redirect", async (req, res) =>
-{
-    await res.Redirect("/redirect/test/here");
-});
-
-
-server.Post("/register", async (req, res) =>
-{
-    var registerForm = await req.GetFormDataAsync();
-    CreateUser(registerForm["username"][0], registerForm["password"][0]);
-    SaveUserImage(registerForm["username"][0], registerForm.Files[0]);
-    await res.SendString("User created!");
-});
-
-// Save uploaded file from request body
-Directory.CreateDirectory("./uploads");
-server.Post("/upload", async (req, res) =>
-{
-    if (await req.SaveBodyToFile("./uploads"))
-    {
-        await res.SendString("OK");
-        // We can use logger reference directly
-        logger.Log("UPL", "File uploaded");
-    }
-    else
-        await res.SendString("Error", status: 413);
-});
-
-server.Get("/file", async (req, res) =>
-{
-    await res.SendFile("testimg.jpeg");
-});
 
 
 // Using url queries to generate an answer
+// Fx. the request "/hello?firstname=John&lastname=Doe"
+// will get the text reponse "Hello John Doe, have a nice day"
 server.Get("/hello", async (req, res) =>
 {
     var queries = req.Queries;
@@ -74,17 +32,89 @@ server.Get("/hello", async (req, res) =>
     await res.SendString($"Hello {firstname} {lastname}, have a nice day");
 });
 
-// Rendering a page for dynamic content
+
+// URL parameter demonstration
+server.Get("/:param1/:paramtwo/:somethingthird", async (req, res) =>
+{
+    await res.SendString($"URL: {req.Params["param1"]} / {req.Params["paramtwo"]} / {req.Params["somethingthird"]}");
+});
+
+
+// Redirect request to another page
+// In this example the client is redirected to
+// another site on the same domain
+server.Get("/redirect", async (req, res) =>
+{
+    await res.Redirect("/redirect/test/here");
+});
+
+
+// Handling data sent as forms (FormData)
+// This example shows how a simple user registration
+// with profile picture can be handled
+server.Post("/register", async (req, res) =>
+{
+    var form = await req.GetFormDataAsync();
+    
+    var username = form["username"][0];
+    var password = form["password"][0];
+    var profilePicture = form.Files[0];
+    
+    CreateUser(username, password);
+    SaveUserImage(username, profilePicture);
+    
+    await res.SendString("User registered!");
+});
+
+
+// Save uploaded file from request body
+// In this example the file is saved in the './uploads' 
+// directory using the filename it was uploaded with
+server.Post("/upload", async (req, res) =>
+{
+    if (await req.SaveBodyToFile("./uploads"))
+    {
+        await res.SendString("OK");
+    }
+    else
+    {
+        await res.SendString("Error", status: 413);
+    }
+});
+
+
+// Save file uploaded in FormData object
+server.Post("/formupload", async (req, res) =>
+{
+    var form = await req.GetFormDataAsync();
+    var file = form.Files[0];
+    
+    using (var outputfile = File.Create("./uploads/" + file.FileName))
+    {
+        await file.CopyToAsync(outputfile);
+    }
+    await res.SendString("OK");
+});
+
+
+// Rendering a page with dynamic content
+// In this example we create RenderParams for a very simple
+// server status page, which only shows uptime in hours and
+// and which version of the server framework is used
 server.Get("/serverstatus", async (req, res) =>
 {
     await res.RenderPage("./pages/statuspage.ecs", new RenderParams
     {
         { "uptime", DateTime.UtcNow.Subtract(startTime).TotalHours },
-        { "versiom", RedHttpServer.Version }
+        { "version", RedHttpServer.Version }
     });
 });
 
+
 // WebSocket echo server
+// Clients can connects to "/echo" using the WebSocket protocol
+// This example simply echoes any text message received from a 
+// client back with "You sent: " prepended to the message
 server.WebSocket("/echo", (req, wsd) =>
 {
     // We can also use the logger from the plugin collection 
@@ -93,9 +123,10 @@ server.WebSocket("/echo", (req, wsd) =>
     wsd.SendText("Welcome to the echo test server");
     wsd.OnTextReceived += (sender, eventArgs) =>
     {
-        wsd.SendText("you sent: " + eventArgs.Text);
+        wsd.SendText("You sent: " + eventArgs.Text);
     };
 });
+
 
 server.Start();
 ```
