@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>EcsRendererPlugin</AssemblyName>
+    <RootNamespace>EcsRendererPlugin</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RedHttpServer\RedHttpServer.csproj" />
+  </ItemGroup>
+</Project>

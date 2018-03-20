@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using RedHttpServerCore;
-using RedHttpServerCore.Plugins;
-using RedHttpServerCore.Plugins.Interfaces;
-using RedHttpServerCore.Response;
+using System.Net;
+using Red.CookieSessions;
+using EcsRendererPlugin;
+using Red;
 
 namespace TestServerASPNETCore
 {
@@ -13,16 +14,14 @@ namespace TestServerASPNETCore
         {
             // We serve static files, such as index.html from the 'public' directory
             var server = new RedHttpServer(5000, "public");
+            server.Use(new EcsRenderer());
+            server.Use(new CookieSessions(new CookieSessionSettings(TimeSpan.FromDays(1))));
             var startTime = DateTime.UtcNow;
-
-            // We log to terminal here
-            var logger = new TerminalLogging();
-            server.Plugins.Register<ILogging, TerminalLogging>(logger);
 
             // URL param demo
             server.Get("/:param1/:paramtwo/:somethingthird", async (req, res) =>
             {
-                await res.SendString($"URL: {req.Params["param1"]} / {req.Params["paramtwo"]} / {req.Params["somethingthird"]}");
+                await res.SendString($"URL: {req.Parameters["param1"]} / {req.Parameters["paramtwo"]} / {req.Parameters["somethingthird"]}");
             });
 
             // Redirect to page on same host
@@ -32,17 +31,13 @@ namespace TestServerASPNETCore
             });
 
             // Save uploaded file from request body 
-            Directory.CreateDirectory("./uploads");
+            Directory.CreateDirectory("uploads");
             server.Post("/upload", async (req, res) =>
             {
-                if (await req.SaveBodyToFile("./uploads"))
-                {
+                if (await req.SaveFiles("uploads"))
                     await res.SendString("OK");
-                    // We can use logger reference directly
-                    logger.Log("UPL", "File uploaded");
-                }
                 else
-                    await res.SendString("Error", status: 413);
+                    await res.SendString("Error", status: HttpStatusCode.NotAcceptable);
             });
 
             server.Get("/file", async (req, res) =>
@@ -54,35 +49,38 @@ namespace TestServerASPNETCore
             server.Post("/formdata", async (req, res) =>
             {
                 var form = await req.GetFormDataAsync();
-                await res.SendString("Hello " + form["firstname"][0]);
+                await res.SendString("Hello " + form["firstname"]);
             });
 
             // Using url queries to generate an answer
             server.Get("/hello", async (req, res) =>
             {
                 var queries = req.Queries;
-                var firstname = queries["firstname"];
-                var lastname = queries["lastname"];
-                await res.SendString($"Hello {firstname} {lastname}, have a nice day");
+                await res.SendString($"Hello {queries["firstname"]} {queries["lastname"]}, have a nice day");
             });
 
             // Rendering a page for dynamic content
             server.Get("/serverstatus", async (req, res) =>
             {
-                await res.RenderPage("./pages/statuspage.ecs", new RenderParams
+                try
                 {
-                    { "uptime", DateTime.UtcNow.Subtract(startTime).TotalHours },
-                    { "versiom", RedHttpServer.Version }
-                });
+                    await res.RenderPage("pages/statuspage.ecs", new RenderParams
+                    {
+                        { "uptime", DateTime.UtcNow.Subtract(startTime).TotalHours },
+                        { "version", RedHttpServer.Version }
+                    });
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             });
 
             // WebSocket echo server
-            server.WebSocket("/echo", (req, wsd) =>
+            server.WebSocket("/echo", async (req, wsd) =>
             {
-                // Or we can use the logger from the plugin collection 
-                wsd.ServerPlugins.Use<ILogging>().Log("WS", "Echo server visited");
-
-                wsd.SendText("Welcome to the echo test server");
+                await wsd.SendText("Welcome to the echo test server");
                 wsd.OnTextReceived += (sender, eventArgs) =>
                 {
                     wsd.SendText("you sent: " + eventArgs.Text);
