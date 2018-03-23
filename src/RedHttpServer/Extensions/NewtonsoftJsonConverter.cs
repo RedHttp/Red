@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
-using Red.Plugins.Interfaces;
+using Red.Interfaces;
 
-namespace Red.Plugins
+namespace Red.Extensions
 {
     /// <summary>
     ///     Very simple JsonConverter plugin using Newtonsoft.Json generic methods
@@ -20,7 +20,7 @@ namespace Red.Plugins
 
         public void Initialize(RedHttpServer server)
         {
-            // Nothing to init
+            server.Plugins.Register<IJsonConverter>(this);
         }
     }
 }

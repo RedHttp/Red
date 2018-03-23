@@ -1,4 +1,4 @@
-﻿namespace Red
+﻿namespace Red.Interfaces
 {
     /// <summary>
     /// Interface for all extension modules for Red. 

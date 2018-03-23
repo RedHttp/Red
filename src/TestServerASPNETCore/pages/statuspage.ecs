@@ -5,7 +5,7 @@
     <title>Status page</title>
 </head>
 <body>
-    <b>Uptime: <% uptime %></b>
+    <b>Uptime in minutes: <% uptime %></b></br>
     <b>Version: <% version %></b>
 </body>
 </html>

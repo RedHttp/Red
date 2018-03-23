@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Red.Interfaces;
 
 namespace Red
 {
@@ -36,6 +37,18 @@ namespace Red
                 : builder.WithOrigins(CorsPolicy.AllowedHeaders.ToArray());
         }
         
+        private void Initialize()
+        {
+            foreach (var plugin in _plugins)
+            {
+                plugin.Initialize(this);
+            }
+            
+            foreach (var middleware in _middlewareStack)
+            {
+                middleware.Initialize(this);
+            }
+        }
         
         private void SetRoutes(IRouteBuilder rb)
         {

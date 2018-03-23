@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Red.Plugins.Interfaces;
+using Red.Interfaces;
 
 namespace EcsRendererPlugin
 {
@@ -24,12 +24,10 @@ namespace EcsRendererPlugin
 
         private readonly ConcurrentDictionary<string, string> _renderCache = new ConcurrentDictionary<string, string>();
         private readonly bool _cachePages;
-        private IJsonConverter _jsonConverter;
 
-        public EcsPageRenderer(bool renderCaching, IJsonConverter jsonConverter)
+        public EcsPageRenderer(bool renderCaching)
         {
             _cachePages = renderCaching;
-            _jsonConverter = jsonConverter;
         }
 
         private static string InternalRenderNoCacheRec(StringBuilder pageContent, RenderParams parameters)

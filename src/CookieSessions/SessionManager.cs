@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Red;
+using Red.Interfaces;
 
 namespace Red.CookieSessions
 {

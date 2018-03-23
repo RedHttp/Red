@@ -4,7 +4,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Red.Plugins.Interfaces;
+using Red.Interfaces;
 
 namespace Red
 {

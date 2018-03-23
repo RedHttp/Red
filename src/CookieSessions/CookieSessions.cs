@@ -1,6 +1,8 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using Red;
+using Red.Interfaces;
 
 namespace Red.CookieSessions
 {
@@ -41,44 +43,4 @@ namespace Red.CookieSessions
         }
         
     }
-    public class Session
-    {
-        private readonly SessionManager<Session> _manager;
-        public object Data;
-
-        public Session(object sessionData, SessionManager<Session> manager)
-        {
-            Data = sessionData;
-            _manager = manager;
-        }
-
-        public void Renew(Request request)
-        {
-            var cookie = _manager.RenewSession(request.Cookies[_manager.TokenName]);
-            if (cookie != "")
-                request.UnderlyingRequest.HttpContext.Response.Headers.Add("Set-Cookie", cookie);
-        }
-
-        public void Close(Request request)
-        {
-            if (_manager.CloseSession(request.Cookies[_manager.TokenName], out var cookie))
-                request.UnderlyingRequest.HttpContext.Response.Headers.Add("Set-Cookie", cookie);
-        }
-    }
-
-    public static class CookieSessionExtensions
-    {
-        public static void OpenSession(this Request request, object sessionData)
-        {
-            var manager = request.ServerPlugins.Get<SessionManager<Session>>();
-            var session = new Session(sessionData, manager);
-            var cookie = manager.OpenSession(session);
-            request.UnderlyingRequest.HttpContext.Response.Headers.Add("Set-Cookie", cookie);
-        }
-        public static Session GetSession(this Request request)
-        {
-            return request.GetData<Session>();
-        }
-    }
-    
 }

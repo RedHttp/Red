@@ -1,12 +1,12 @@
-namespace Red.Plugins.Interfaces
+namespace Red.Interfaces
 {
     /// <summary>
-    ///     Interface for classes used for Json serialization and deserialization
+    ///     Interface for classes used for XML serialization and deserialization
     /// </summary>
-    public interface IJsonConverter
+    public interface IXmlConverter
     {
         /// <summary>
-        ///     Method to serialize data to JSON
+        ///     Method to serialize data to XML
         /// </summary>
         /// <param name="obj"></param>
         /// <typeparam name="T"></typeparam>
@@ -14,11 +14,11 @@ namespace Red.Plugins.Interfaces
         string Serialize<T>(T obj);
 
         /// <summary>
-        ///     Method to deserialize JSON data to specified type
+        ///     Method to deserialize XML data to specified type
         /// </summary>
-        /// <param name="jsonData"></param>
+        /// <param name="xmlData"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        T Deserialize<T>(string jsonData);
+        T Deserialize<T>(string xmlData);
     }
 }

@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Red.Plugins;
-using Red.Plugins.Interfaces;
+using Red.Extensions;
+using Red.Interfaces;
 
 namespace Red
 {
@@ -24,13 +24,17 @@ namespace Red
         /// <summary>
         ///     Constructs a server instance with given port and using the given path as public folder.
         ///     Set path to null or empty string if none wanted
-        /// </summary>C:\Users\Malte\Documents\GitHub\RedHttpServer.CSharp\src\RedHttpServer.ASPNETCore\RedHttpServer.cs
+        /// </summary>
         /// <param name="port">The port that the server should listen on</param>
         /// <param name="publicDir">Path to use as public dir. Set to null or empty string if none wanted</param>
         public RedHttpServer(int port = 5000, string publicDir = "")
         {
             Port = port;
             PublicRoot = publicDir;
+            
+            Use(new NewtonsoftJsonConverter());
+            Use(new InbuiltXmlConverter());
+            Use(new BodyParser());
         }
 
         /// <summary>
@@ -93,7 +97,6 @@ namespace Red
         /// </summary>
         public Action<IServiceCollection> ConfigureServices { get; set; }
 
-
         /// <summary>
         ///     Starts the server
         ///     <para />
@@ -104,33 +107,23 @@ namespace Red
             Start(localOnly ? "localhost" : "*");
         }
 
+        /// <summary>
+        ///     Register middleware module
+        /// </summary>
+        /// <param name="middleware"></param>
         public void Use(IRedMiddleware middleware)
         {
             _middlewareStack.Add(middleware);
         }
+        /// <summary>
+        ///     Register extension module
+        /// </summary>
+        /// <param name="extension"></param>
         public void Use(IRedExtension extension)
         {
             _plugins.Add(extension);
         }
         
-        /// <summary>
-        ///     Initializes any default plugin if no other plugin is registered to same interface
-        ///     <para />
-        ///     Should be called after you have registered all your non-default plugins
-        /// </summary>
-        private void Initialize()
-        {
-            if (!Plugins.IsRegistered<IJsonConverter>())
-                Plugins.Register<IJsonConverter>(new NewtonsoftJsonConverter());
-
-            if (!Plugins.IsRegistered<IXmlConverter>())
-                Plugins.Register<IXmlConverter>(new InbuiltXmlConverter());
-
-            foreach (var plugin in _plugins)
-            {
-                plugin.Initialize(this);
-            }
-        }
 
         /// <summary>
         ///     Add action to handle GET requests to a given route

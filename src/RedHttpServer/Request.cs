@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using Red.Plugins.Interfaces;
 
 namespace Red
 {
@@ -15,7 +14,6 @@ namespace Red
     public sealed class Request
     {
         private readonly Dictionary<Type, object> _data = new Dictionary<Type, object>();
-        private static readonly Type StringType = typeof(string);
         private static readonly IFormCollection EmptyFormCol =
             new FormCollection(new Dictionary<string, StringValues>());
 
@@ -92,34 +90,6 @@ namespace Red
             _data[typeof(TData)] = data;
         }
         
-        
-        /// <summary>
-        ///     Returns the body deserialized or parsed to specified type, if possible, default if not
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public async Task<T> ParseBodyAsync<T>()
-        {
-            var t = typeof(T);
-            using (var sr = new StreamReader(UnderlyingRequest.Body))
-            {
-                if (t == StringType)
-                    return (T) (object) await sr.ReadToEndAsync();
-                switch (UnderlyingRequest.ContentType)
-                {
-                    case "application/xml":
-                    case "text/xml":
-                        return ServerPlugins.Get<IXmlConverter>().Deserialize<T>(await sr.ReadToEndAsync());
-                    case "application/json":
-                    case "text/json":
-                        return ServerPlugins.Get<IJsonConverter>().Deserialize<T>(await sr.ReadToEndAsync());
-                    default:
-                        return default(T);
-                }
-            }
-        }
-        
-
         /// <summary>
         ///     Save multipart form-data from request body, if any, to a file in the specified directory
         /// </summary>

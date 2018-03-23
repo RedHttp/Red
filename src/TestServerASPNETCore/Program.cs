@@ -15,7 +15,12 @@ namespace TestServerASPNETCore
             // We serve static files, such as index.html from the 'public' directory
             var server = new RedHttpServer(5000, "public");
             server.Use(new EcsRenderer());
-            server.Use(new CookieSessions(new CookieSessionSettings(TimeSpan.FromDays(1))));
+            server.Use(new CookieSessions(new CookieSessionSettings(TimeSpan.FromDays(1))
+            {
+                HttpOnly = false,
+                Secure = false,
+                Excluded = { "/login" }
+            }));
             var startTime = DateTime.UtcNow;
 
             // URL param demo
@@ -24,6 +29,12 @@ namespace TestServerASPNETCore
                 await res.SendString($"URL: {req.Parameters["param1"]} / {req.Parameters["paramtwo"]} / {req.Parameters["somethingthird"]}");
             });
 
+            server.Get("/login", async (req, res) =>
+            {
+                req.OpenSession(new {Name = "benny"});
+                await res.SendString("ok");
+            });
+            
             // Redirect to page on same host
             server.Get("/redirect", async (req, res) =>
             {
@@ -55,6 +66,7 @@ namespace TestServerASPNETCore
             // Using url queries to generate an answer
             server.Get("/hello", async (req, res) =>
             {
+                Console.WriteLine(req.GetSession().Data);
                 var queries = req.Queries;
                 await res.SendString($"Hello {queries["firstname"]} {queries["lastname"]}, have a nice day");
             });
@@ -66,7 +78,7 @@ namespace TestServerASPNETCore
                 {
                     await res.RenderPage("pages/statuspage.ecs", new RenderParams
                     {
-                        { "uptime", DateTime.UtcNow.Subtract(startTime).TotalHours },
+                        { "uptime", DateTime.UtcNow.Subtract(startTime).TotalMinutes },
                         { "version", RedHttpServer.Version }
                     });
                 }

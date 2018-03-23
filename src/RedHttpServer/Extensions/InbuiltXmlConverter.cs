@@ -3,9 +3,9 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Red.Plugins.Interfaces;
+using Red.Interfaces;
 
-namespace Red.Plugins
+namespace Red.Extensions
 {
     /// <summary>
     ///     Very simple XmlConverter plugin using System.Xml.Serialization
@@ -51,7 +51,7 @@ namespace Red.Plugins
 
         public void Initialize(RedHttpServer server)
         {
-            // Nothing to init
+            server.Plugins.Register<IXmlConverter>(this);
         }
     }
 }

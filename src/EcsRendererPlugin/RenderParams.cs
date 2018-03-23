@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Red.Plugins.Interfaces;
+using Red.Interfaces;
 
 namespace EcsRendererPlugin
 {

@@ -1,24 +1,23 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Red.Plugins.Interfaces;
-using Red.Request;
+using Red.Interfaces;
 
-namespace BodyParserPlugin
+namespace Red.Extensions
 {
-    public static class BodyParserExtension
+    /// <summary>
+    ///     Very simple JsonConverter plugin using Newtonsoft.Json generic methods
+    /// </summary>
+    internal sealed class BodyParser : IBodyParser, IRedExtension
     {
         private static readonly Type StringType = typeof(string);
-        public static IJsonConverter JsonConverter;
-        public static IXmlConverter XmlConverter;
+        
+        public void Initialize(RedHttpServer server)
+        {
+            server.Plugins.Register<IBodyParser>(this);
+        }
 
-        /// <summary>
-        ///     Returns the body deserialized or parsed to specified type, if possible, default if not
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static async Task<T> ParseBodyAsync<T>(this RRequest request)
+        public async Task<T> Parse<T>(Request request)
         {
             var t = typeof(T);
             using (var sr = new StreamReader(request.UnderlyingRequest.Body))
@@ -29,10 +28,10 @@ namespace BodyParserPlugin
                 {
                     case "application/xml":
                     case "text/xml":
-                        return XmlConverter.Deserialize<T>(await sr.ReadToEndAsync());
+                        return request.ServerPlugins.Get<IXmlConverter>().Deserialize<T>(await sr.ReadToEndAsync());
                     case "application/json":
                     case "text/json":
-                        return JsonConverter.Deserialize<T>(await sr.ReadToEndAsync());
+                        return request.ServerPlugins.Get<IJsonConverter>().Deserialize<T>(await sr.ReadToEndAsync());
                     default:
                         return default(T);
                 }

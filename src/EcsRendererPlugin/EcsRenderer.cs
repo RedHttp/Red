@@ -1,5 +1,5 @@
 ﻿using Red;
-using Red.Plugins.Interfaces;
+using Red.Interfaces;
 
 namespace EcsRendererPlugin
 {
@@ -14,7 +14,8 @@ namespace EcsRendererPlugin
         
         public void Initialize(RedHttpServer server)
         {
-            var renderer = new EcsPageRenderer(_renderCaching, server.Plugins.Get<IJsonConverter>());
+            RenderParams.Converter = server.Plugins.Get<IJsonConverter>();
+            var renderer = new EcsPageRenderer(_renderCaching);
             server.Plugins.Register(renderer);
         }
     }
