@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Red
 {
-    class HandlerWrapper
+    internal class HandlerWrapper
     {
         public HandlerWrapper(string path, HttpMethodEnum method, Func<Request, Response, Task> handler)
         {

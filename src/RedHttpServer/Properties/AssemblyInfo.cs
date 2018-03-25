@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("RedHttpServer.ASPNETCore")]
+[assembly: AssemblyCompany("Rosenbjerg Softworks")]
+[assembly: AssemblyProduct("RedHttpServer")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible

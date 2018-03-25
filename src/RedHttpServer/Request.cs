@@ -14,8 +14,6 @@ namespace Red
     public sealed class Request
     {
         private readonly Dictionary<Type, object> _data = new Dictionary<Type, object>();
-        private static readonly IFormCollection EmptyFormCol =
-            new FormCollection(new Dictionary<string, StringValues>());
 
         internal Request(HttpRequest req, PluginCollection plugins)
         {
@@ -27,12 +25,12 @@ namespace Red
         /// <summary>
         /// The available plugins
         /// </summary>
-        public PluginCollection ServerPlugins { get; set; }
+        public PluginCollection ServerPlugins { get; }
 
         /// <summary>
         ///     The underlying HttpRequest
         ///     <para />
-        ///     The implementation of RRequest is leaky, to avoid limiting you
+        ///     The implementation of Request is leaky, to avoid limiting you
         /// </summary>
         public HttpRequest UnderlyingRequest { get; }
 
@@ -58,45 +56,47 @@ namespace Red
 
         /// <summary>
         ///     Returns the body stream of the request
-        ///     and null if the request does not contain a body
         /// </summary>
-        /// <returns></returns>
-        public Stream GetBodyStream() => UnderlyingRequest.Body;
+        public Stream BodyStream => UnderlyingRequest.Body;
 
         /// <summary>
-        ///     Returns form-data from post request, if any
+        ///     Returns form-data from request, if any, null otherwise. 
         /// </summary>
-        /// <returns></returns>
         public async Task<IFormCollection> GetFormDataAsync()
         {
             if (!UnderlyingRequest.HasFormContentType)
-                return EmptyFormCol;
+                return null;
             return await UnderlyingRequest.ReadFormAsync();
         }
         
         /// <summary>
-        ///     Get data attached to request by middleware
+        ///     Get data attached to request by middleware. The middleware should specify the type to lookup
         /// </summary>
         /// <typeparam name="TData"></typeparam>
-        /// <returns></returns>
+        /// <returns>Object of specified type, registered to request. Otherwise default</returns>
         public TData GetData<TData>()
         {
             if (_data.TryGetValue(typeof(TData), out var data))
                 return (TData) data;
             return default(TData);
         }
+        /// <summary>
+        ///     Function that middleware can use to attach data to the request, so the next handlers has access to the data
+        /// </summary>
+        /// <typeparam name="TData"></typeparam>
+        /// <param name="data"></param>
         public void SetData<TData>(TData data)
         {
             _data[typeof(TData)] = data;
         }
         
         /// <summary>
-        ///     Save multipart form-data from request body, if any, to a file in the specified directory
+        ///     Save all files in requests to specified directory.
         /// </summary>
         /// <param name="saveDir">The directory to place the file(s) in</param>
         /// <param name="fileRenamer">Function to rename the file(s)</param>
         /// <param name="maxSizeKb">The max total filesize allowed</param>
-        /// <returns>Whether the file was saved succesfully</returns>
+        /// <returns>Whether the file(s) was saved succesfully</returns>
         public async Task<bool> SaveFiles(string saveDir, Func<string, string> fileRenamer = null,
             long maxSizeKb = 4096)
         {

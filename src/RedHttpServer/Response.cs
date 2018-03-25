@@ -15,8 +15,8 @@ namespace Red
     public sealed class Response
     {
         private static readonly Task CompletedTask = Task.CompletedTask;
-        
-        internal static readonly IDictionary<string, string> MimeTypes =
+
+        private static readonly IDictionary<string, string> MimeTypes =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
                 #region extension to MIME type list
@@ -101,27 +101,27 @@ namespace Red
         /// <summary>
         ///     Add header item to response
         /// </summary>
-        /// <param name="fieldName"></param>
-        /// <param name="fieldValue"></param>
-        public void AddHeader(string fieldName, string fieldValue)
+        /// <param name="headerName">The name of the header</param>
+        /// <param name="headerValue">The value of the header</param>
+        public void AddHeader(string headerName, string headerValue)
         {
-            UnderlyingResponse.Headers.Add(fieldName, fieldValue);
+            UnderlyingResponse.Headers.Add(headerName, headerValue);
         }
 
         /// <summary>
         ///     The underlying HttpResponse
         ///     <para />
-        ///     The implementation of RRequest is leaky, to avoid limiting you
+        ///     The implementation of Request is leaky, to avoid limiting you
         /// </summary>
         public HttpResponse UnderlyingResponse { get; }
 
         /// <summary>
-        /// The available plugins
+        ///     The available plugins registered to the server
         /// </summary>
-        public PluginCollection ServerPlugins { get; set; }
+        public PluginCollection ServerPlugins { get; }
 
         /// <summary>
-        /// Bool indicating whether the response has been sent
+        ///     Bool indicating whether the response has been sent
         /// </summary>
         public bool Closed { get; set; }
 
@@ -145,10 +145,13 @@ namespace Red
         public async Task SendString(string data, string contentType = "text/plain", string fileName = "",
             HttpStatusCode status = HttpStatusCode.OK)
         {
-            await SendString(this.UnderlyingResponse, data, contentType, fileName, status);
+            await SendString(UnderlyingResponse, data, contentType, fileName, status);
             Closed = true;
         }
-        internal static async Task SendString(HttpResponse response, string data, string contentType = "text/plain", string fileName = "",
+        /// <summary>
+        ///     Static helper for use in middleware
+        /// </summary>
+        public static async Task SendString(HttpResponse response, string data, string contentType = "text/plain", string fileName = "",
             HttpStatusCode status = HttpStatusCode.OK)
         {
             response.StatusCode = (int) status;
@@ -166,7 +169,10 @@ namespace Red
         {
             await SendString(status.ToString(), status: status);
         }
-        internal static async Task SendStatus(HttpResponse response, HttpStatusCode status)
+        /// <summary>
+        ///     Static helper for use in middleware
+        /// </summary>
+        public static async Task SendStatus(HttpResponse response, HttpStatusCode status)
         {
             await SendString(response, status.ToString(), status: status);
         }
@@ -192,6 +198,29 @@ namespace Red
             var xml = ServerPlugins.Get<IXmlConverter>().Serialize(data);
             await SendString(xml, "application/xml", status: status);
         }
+        
+        /// <summary>
+        ///     Sends all data in stream to response
+        /// </summary>
+        /// <param name="dataStream">The stream to copy data from</param>
+        /// <param name="contentType">The mime type of the data in the stream</param>
+        /// <param name="fileName">The filename that the browser should see the data as. Optional</param>
+        /// <param name="dispose">Whether to call dispose on stream when done sending</param>
+        /// <param name="status">The status code for the response</param>
+        public async Task SendStream(Stream dataStream, string contentType, string fileName = "", bool dispose = true, HttpStatusCode status = HttpStatusCode.OK)
+        {
+            UnderlyingResponse.StatusCode = (int)status;
+            UnderlyingResponse.ContentType = contentType;
+            if (fileName != "")
+                UnderlyingResponse.Headers.Add("Content-disposition", $"inline; filename=\"{fileName}\"");
+            await dataStream.CopyToAsync(UnderlyingResponse.Body);
+            if (dispose) 
+                dataStream.Dispose();
+            Closed = true;
+        }
+
+        
+        
 
         /// <summary>
         ///     Sends file as response and requests the data to be displayed in-browser if possible
@@ -204,19 +233,14 @@ namespace Red
         /// <param name="status">The status code for the response</param>
         public async Task SendFile(string filePath, string contentType = null, HttpStatusCode status = HttpStatusCode.OK)
         {
-            await SendFile(this, filePath, contentType, status);
-        }
-        internal static async Task SendFile(Response instance, string filePath, string contentType = null, HttpStatusCode status = HttpStatusCode.OK)
-        {
-            instance.UnderlyingResponse.StatusCode = (int) status;
+            UnderlyingResponse.StatusCode = (int)status;
             if (contentType == null && !MimeTypes.TryGetValue(Path.GetExtension(filePath), out contentType))
                 contentType = "application/octet-stream";
-            instance.UnderlyingResponse.ContentType = contentType;
-            instance.UnderlyingResponse.Headers.Add("Accept-Ranges", "bytes");
-            instance.UnderlyingResponse.Headers.Add("Content-disposition",
-                "inline; filename=\"" + Path.GetFileName(filePath) + "\"");
-            await instance.UnderlyingResponse.SendFileAsync(filePath);
-            instance.Closed = true;
+            UnderlyingResponse.ContentType = contentType;
+            UnderlyingResponse.Headers.Add("Accept-Ranges", "bytes");
+            UnderlyingResponse.Headers.Add("Content-disposition", $"inline; filename=\"{Path.GetFileName(filePath)}\"");
+            await UnderlyingResponse.SendFileAsync(filePath);
+            Closed = true;
         }
 
         /// <summary>
@@ -233,45 +257,37 @@ namespace Red
         public async Task SendFile(string filePath, long rangeStart, long rangeEnd, string contentType = "",
             HttpStatusCode status = HttpStatusCode.PartialContent)
         {
-            await SendFile(this.UnderlyingResponse, filePath, rangeStart, rangeEnd, contentType, status);
-            Closed = true;
-        }
-        
-        internal static async Task SendFile(HttpResponse response, string filepath, long rangeStart, long rangeEnd, string contentType = "",
-            HttpStatusCode status = HttpStatusCode.PartialContent)
-        {
-            response.StatusCode = (int) status;
-            if (contentType == null && !MimeTypes.TryGetValue(Path.GetExtension(filepath), out contentType))
+            UnderlyingResponse.StatusCode = (int)status;
+            if (contentType == null && !MimeTypes.TryGetValue(Path.GetExtension(filePath), out contentType))
                 contentType = "application/octet-stream";
-            response.ContentType = contentType;
-            response.Headers.Add("Accept-Ranges", "bytes");
-            response.Headers.Add("Content-disposition",
-                "inline; filename=\"" + Path.GetFileName(filepath) + "\"");
-            await response.SendFileAsync(filepath, rangeStart, rangeEnd);
+            UnderlyingResponse.ContentType = contentType;
+            UnderlyingResponse.Headers.Add("Accept-Ranges", "bytes");
+            UnderlyingResponse.Headers.Add("Content-disposition",
+                "inline; filename=\"" + Path.GetFileName(filePath) + "\"");
+            await UnderlyingResponse.SendFileAsync(filePath, rangeStart, rangeEnd);
+            Closed = true;
         }
 
         /// <summary>
         ///     Sends file as response and requests the data to be downloaded as an attachment
         /// </summary>
-        /// <param name="filepath">The local path of the file to send</param>
-        /// <param name="filename">The name filename the client receives the file with, defaults to using the actual filename</param>
+        /// <param name="filePath">The local path of the file to send</param>
+        /// <param name="fileName">The name filename the client receives the file with, defaults to using the actual filename</param>
         /// <param name="contentType">
         ///     The mime type for the file, when set to null, the system will try to detect based on file
         ///     extension
         /// </param>
         /// <param name="status">The status code for the response</param>
-        public async Task Download(string filepath, string filename = "", string contentType = "",
+        public async Task Download(string filePath, string fileName = null, string contentType = "",
             HttpStatusCode status = HttpStatusCode.OK)
         {
             UnderlyingResponse.StatusCode = (int) status;
-            if (contentType == null && !MimeTypes.TryGetValue(Path.GetExtension(filepath), out contentType))
+            if (contentType == null && !MimeTypes.TryGetValue(Path.GetExtension(filePath), out contentType))
                 contentType = "application/octet-stream";
             UnderlyingResponse.ContentType = contentType;
-            UnderlyingResponse.Headers.Add("Content-disposition", "attachment; filename=\"" +
-                                                                           (string.IsNullOrEmpty(filename)
-                                                                               ? Path.GetFileName(filepath)
-                                                                               : filename) + "\"");
-            await UnderlyingResponse.SendFileAsync(filepath);
+            var name = string.IsNullOrEmpty(fileName) ? Path.GetFileName(filePath) : fileName;
+            UnderlyingResponse.Headers.Add("Content-disposition", $"attachment; filename=\"{name}\"");
+            await UnderlyingResponse.SendFileAsync(filePath);
             Closed = true;
         }
 

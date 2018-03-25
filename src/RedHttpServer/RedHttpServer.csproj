@@ -6,13 +6,13 @@
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <PropertyGroup>
-    <Description>A Http server framework using Kestrel and the .NET platform</Description>
-    <Copyright>Copyright © Rosenbjerg Softworks 2017</Copyright>
+    <Description>A Http server framework built on ASP.NET Core and Kestrel. Designed with a simple and easy-to-use API inspired by express.js</Description>
+    <Copyright>Copyright © Rosenbjerg 2018</Copyright>
     <AssemblyTitle>RedHttpServer</AssemblyTitle>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>RedHttpServer</AssemblyName>
-    <PackageId>RedHttpServer</PackageId>
+    <PackageId>RHttpServer</PackageId>
     <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
@@ -21,8 +21,17 @@
     <ApplicationIcon />
     <OutputTypeEx>library</OutputTypeEx>
     <StartupObject />
-    <Version>2.0.3</Version>
-    <PackageTags>RedHttpServer RHttpServer red rhs netcore http server api rendering ecs</PackageTags>
+    <Version>3.0.0</Version>
+    <PackageTags>Red redhttpserver rhttpserver rhs netcore http server web api rendering ecs</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageIconUrl>https://rosenbjerg.dk/red/logo.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <Authors>Malte Rosenbjerg</Authors>
+    <PackageReleaseNotes>Re-design of some parts. Introducing a simple yet reasonable powerful middleware and extension system</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.0.0" />

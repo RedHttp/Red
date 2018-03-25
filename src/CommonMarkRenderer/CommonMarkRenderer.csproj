@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RootNamespace>Red.MarkdownRenderer</RootNamespace>
+    <AssemblyName>Red.MarkdownRenderer</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CommonMark.NET" Version="0.15.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RedHttpServer\RedHttpServer.csproj" />
+  </ItemGroup>
+</Project>

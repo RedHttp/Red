@@ -8,36 +8,39 @@ using Microsoft.AspNetCore.Http;
 namespace Red
 {
     /// <summary>
-    ///     Represents a websocket dialog between server and a client
+    ///     Represents a websocket dialog between the server and a client
     /// </summary>
     public sealed class WebSocketDialog
     {
-        internal WebSocketDialog(HttpContext ctx, WebSocket ws, PluginCollection plugins)
+        internal WebSocketDialog(HttpContext ctx, WebSocket underlyingWebSocket, PluginCollection plugins)
         {
             UnderlyingRequest = ctx.Request;
-            _ws = ws;
+            UnderlyingWebSocket = underlyingWebSocket;
             ServerPlugins = plugins;
         }
 
-        private readonly WebSocket _ws;
-
         /// <summary>
-        /// The available plugins
+        ///     The underlying WebSocket
         /// </summary>
-        public PluginCollection ServerPlugins { get; set; }
+        public readonly WebSocket UnderlyingWebSocket;
 
         /// <summary>
-        ///     The underlying WebSocketContext
+        ///     The available plugins registered to the server
         /// </summary>
-        public HttpRequest UnderlyingRequest { get; set; }
+        public readonly PluginCollection ServerPlugins;
 
         /// <summary>
-        ///     Raised when binary websocket messages are received
+        ///     The underlying HttpRequest
+        /// </summary>
+        public readonly HttpRequest UnderlyingRequest;
+
+        /// <summary>
+        ///     Raised when binary WebSocket messages are received
         /// </summary>
         public event EventHandler<BinaryMessageEventArgs> OnBinaryReceived;
 
         /// <summary>
-        ///     Raised when text messages are received
+        ///     Raised when text WebSocket messages are received
         /// </summary>
         public event EventHandler<TextMessageEventArgs> OnTextReceived;
 
@@ -53,19 +56,18 @@ namespace Red
         /// <param name="endOfMessage"></param>
         public async Task SendText(string text, bool endOfMessage = true)
         {
-            await _ws.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(text)), WebSocketMessageType.Text,
-                endOfMessage,
-                CancellationToken.None);
+            await UnderlyingWebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(text)),
+                WebSocketMessageType.Text, endOfMessage, CancellationToken.None);
         }
 
         /// <summary>
-        ///     Send binary data using the websocket
+        ///     Send binary message using websocket
         /// </summary>
         /// <param name="data"></param>
         /// <param name="endOfMessage"></param>
-        public async Task SendBinary(ArraySegment<byte> data, bool endOfMessage = true)
+        public async Task SendBytes(ArraySegment<byte> data, bool endOfMessage = true)
         {
-            await _ws.SendAsync(data, WebSocketMessageType.Binary, endOfMessage,
+            await UnderlyingWebSocket.SendAsync(data, WebSocketMessageType.Binary, endOfMessage,
                 CancellationToken.None);
         }
 
@@ -78,7 +80,7 @@ namespace Red
         public async Task Close(WebSocketCloseStatus status = WebSocketCloseStatus.NormalClosure,
             string description = "")
         {
-            await _ws.CloseAsync(status, description, CancellationToken.None);
+            await UnderlyingWebSocket.CloseAsync(status, description, CancellationToken.None);
         }
 
         internal async Task ReadFromWebSocket()
@@ -86,7 +88,8 @@ namespace Red
             var buffer = new byte[0x1000];
             try
             {
-                var received = await _ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                var received =
+                    await UnderlyingWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                 while (!received.CloseStatus.HasValue)
                 {
                     switch (received.MessageType)
@@ -102,10 +105,13 @@ namespace Red
                                     received.EndOfMessage));
                             break;
                         case WebSocketMessageType.Close:
-                            await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+                            await UnderlyingWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "",
+                                CancellationToken.None);
                             break;
                     }
-                    received = await _ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+                    received = await UnderlyingWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer),
+                        CancellationToken.None);
                 }
             }
             catch (WebSocketException)
@@ -114,8 +120,9 @@ namespace Red
             finally
             {
                 OnClosed?.Invoke(this, EventArgs.Empty);
-                await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
-                _ws.Dispose();
+                await UnderlyingWebSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "",
+                    CancellationToken.None);
+                UnderlyingWebSocket.Dispose();
             }
         }
 

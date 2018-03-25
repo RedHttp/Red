@@ -10,7 +10,7 @@ using Red.Interfaces;
 
 namespace Red.CookieSessions
 {
-    public class SessionManager<TSess> : IRedMiddleware
+    public class SessionManager<TSess>
     {
         private readonly Random _random = new Random();
         private readonly string _cookie;
@@ -22,7 +22,7 @@ namespace Red.CookieSessions
         public readonly string ExpiredCookie;
 
         /// <summary>
-        /// 
+        ///     Constructor for SessionManager
         /// </summary>
         /// <param name="settings">The settings for the cookie sessions</param>
         public SessionManager(CookieSessionSettings settings)
@@ -37,17 +37,6 @@ namespace Red.CookieSessions
             _cookie = d + p + h + s + ss;
             ExpiredCookie = $"{settings.TokenName}=;{_cookie} Expires=Thu, 01 Jan 1970 00:00:00 GMT";
             Maintain();
-        }
-
-        private static string BuildCookie(CookieSessionSettings settings)
-        {
-            
-            var d = settings.Domain == "" ? "" : $" Domain={settings.Domain};";
-            var p = settings.Path == "" ? "" : $" Path={settings.Path};";
-            var h = settings.HttpOnly ? " HttpOnly;" : "";
-            var s = settings.Secure ? " Secure;" : "";
-            var ss = settings.SameSite == SameSiteSetting.None ? "" : $" SameSite={settings.SameSite};";
-            return d + p + h + s + ss;
         }
 
         // Simple maintainer loop
@@ -150,17 +139,6 @@ namespace Red.CookieSessions
 
             public TSess SessionData { get; }
             public DateTime Expires { get; set; }
-        }
-
-        public void Initialize(RedHttpServer server)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> Process(string path, HttpMethodEnum method, Request req, Response res,
-            PluginCollection plugins)
-        {
-            throw new NotImplementedException();
         }
     }
 }

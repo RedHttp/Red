@@ -12,7 +12,7 @@ using Red.Interfaces;
 namespace Red
 {
     /// <summary>
-    /// A HTTP server based on Kestrel, with use-patterns inspired by express.js
+    /// An Http server based on ASP.NET Core with Kestrel, with use-patterns inspired by express.js
     /// </summary>
     public partial class RedHttpServer
     {
@@ -30,7 +30,7 @@ namespace Red
         public RedHttpServer(int port = 5000, string publicDir = "")
         {
             Port = port;
-            PublicRoot = publicDir;
+            _publicRoot = publicDir;
             
             Use(new NewtonsoftJsonConverter());
             Use(new InbuiltXmlConverter());
@@ -48,14 +48,9 @@ namespace Red
         public int Port { get; }
 
         /// <summary>
-        ///     The publicly available folder root
-        /// </summary>
-        private string PublicRoot { get; }
-
-        /// <summary>
         ///     Cross-Origin Resource Sharing (CORS) policy
         /// </summary>
-        public RCorsPolicy CorsPolicy { get; set; }
+        public CorsPolicy CorsPolicy { get; set; }
 
         /// <summary>
         ///     Starts the server
@@ -80,8 +75,8 @@ namespace Red
                 {
                     if (CorsPolicy != null)
                         app.UseCors("CorsPolicy");
-                    if (!string.IsNullOrWhiteSpace(PublicRoot) && Directory.Exists(PublicRoot))
-                        app.UseFileServer(new FileServerOptions { FileProvider = new PhysicalFileProvider(Path.GetFullPath(PublicRoot)) });
+                    if (!string.IsNullOrWhiteSpace(_publicRoot) && Directory.Exists(_publicRoot))
+                        app.UseFileServer(new FileServerOptions { FileProvider = new PhysicalFileProvider(Path.GetFullPath(_publicRoot)) });
                     if (_wsHandlers.Any())
                         app.UseWebSockets();
                     app.UseRouter(SetRoutes);
@@ -95,7 +90,7 @@ namespace Red
         /// <summary>
         ///     Method to register ASP.NET Core Services, such as DbContext etc.
         /// </summary>
-        public Action<IServiceCollection> ConfigureServices { get; set; }
+        public Action<IServiceCollection> ConfigureServices { private get; set; }
 
         /// <summary>
         ///     Starts the server
@@ -108,28 +103,21 @@ namespace Red
         }
 
         /// <summary>
-        ///     Register middleware module
-        /// </summary>
-        /// <param name="middleware"></param>
-        public void Use(IRedMiddleware middleware)
-        {
-            _middlewareStack.Add(middleware);
-        }
-        /// <summary>
-        ///     Register extension module
+        ///     Register extension modules and middleware
         /// </summary>
         /// <param name="extension"></param>
         public void Use(IRedExtension extension)
         {
+            if (extension is IRedWebSocketMiddleware wsMiddleware)
+                _wsMiddlewareStack.Add(wsMiddleware);
+            if (extension is IRedMiddleware middleware)
+                _middlewareStack.Add(middleware);
             _plugins.Add(extension);
         }
         
 
         /// <summary>
         ///     Add action to handle GET requests to a given route
-        ///     <para />
-        ///     Should always be idempotent.
-        ///     (Receiving the same GET request one or multiple times should yield same result)
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
@@ -155,9 +143,6 @@ namespace Red
 
         /// <summary>
         ///     Add action to handle PUT requests to a given route.
-        ///     <para />
-        ///     Should always be idempotent.
-        ///     (Receiving the same PUT request one or multiple times should yield same result)
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>
@@ -171,9 +156,6 @@ namespace Red
 
         /// <summary>
         ///     Add action to handle DELETE requests to a given route.
-        ///     <para />
-        ///     Should always be idempotent.
-        ///     (Receiving the same DELETE request one or multiple times should yield same result)
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="action">The action that wil respond to the request</param>

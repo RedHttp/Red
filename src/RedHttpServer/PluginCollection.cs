@@ -16,11 +16,9 @@ namespace Red
 
         /// <summary>
         ///     Register a plugin to the collection.
-        ///     Should be done before starting the server
+        ///     Preferably before starting the server
         /// </summary>s
-        /// <typeparam name="TKey">The type-key to look-up</typeparam>
-        /// <typeparam name="TImpl">The implementing class of the plugin</typeparam>
-        /// <returns>Whether the any plugin is registered to TPluginInterface</returns>
+        /// <typeparam name="TKey">The type-key to register the plugin to</typeparam>
         public void Register<TKey>(TKey plugin)
         {
             var type = typeof(TKey);

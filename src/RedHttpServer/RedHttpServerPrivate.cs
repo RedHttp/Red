@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal.Networking;
 using Red.Interfaces;
 
 namespace Red
@@ -15,8 +16,10 @@ namespace Red
     {
         
         private readonly List<IRedMiddleware> _middlewareStack = new List<IRedMiddleware>();
+        private readonly List<IRedWebSocketMiddleware> _wsMiddlewareStack = new List<IRedWebSocketMiddleware>();
         private readonly List<IRedExtension> _plugins = new List<IRedExtension>();
-        
+
+        private readonly string _publicRoot;
         private List<HandlerWrapper> _handlers = new List<HandlerWrapper>();
         
         private List<Tuple<string, Action<Request, WebSocketDialog>>> _wsHandlers =
@@ -42,11 +45,6 @@ namespace Red
             foreach (var plugin in _plugins)
             {
                 plugin.Initialize(this);
-            }
-            
-            foreach (var middleware in _middlewareStack)
-            {
-                middleware.Initialize(this);
             }
         }
         
@@ -75,7 +73,7 @@ namespace Red
                 var url = context.Request.Path.Value;
                 var method = ParseHttpMethod(context.Request.Method);
                 foreach (var middleware in _middlewareStack)
-                    if (!await middleware.Process(url, method, req, res, Plugins) || res.Closed) return;
+                    if (!await middleware.Process(url, method, req, res) || res.Closed) return;
                 await handler(req, res);
             }
             catch (Exception e)
@@ -91,8 +89,11 @@ namespace Red
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {
+                    var url = context.Request.Path.Value;
                     var webSocket = await context.WebSockets.AcceptWebSocketAsync();
                     var wsd = new WebSocketDialog(context, webSocket, Plugins);
+                    foreach (var middleware in _wsMiddlewareStack)
+                        if (!await middleware.Process(url, req, wsd)) return;
                     handler(req, wsd);
                     await wsd.ReadFromWebSocket();
                 }

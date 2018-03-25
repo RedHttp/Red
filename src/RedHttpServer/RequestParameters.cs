@@ -19,7 +19,6 @@ namespace Red
         ///     Get the request data fora given parameter
         /// </summary>
         /// <param name="paramId"></param>
-        /// <returns></returns>
         public string this[string paramId] => _ctx.GetRouteValue(paramId).ToString();
     }
 }
