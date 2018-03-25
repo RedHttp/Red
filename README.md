@@ -1,5 +1,5 @@
 # RedHttpServer
-### Cross-platform http server with websocket support
+### Cross-platform http server framework with websocket support
 
 A Http web server framework built on ASP.NET Core and Kestrel, but with an API inspired by the simplicity of express.js
 
@@ -14,14 +14,14 @@ The server supports both middleware modules and extension modules, and offers a 
 
 I have created a couple already; three are inbuilt, but can easily be replaced:
 
-NewtonsoftJsonConverter - uses [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
-XmlConverter - uses System.Xml.Serialization
-BodyParser - uses both the Json- and Xml converter to parse request body to an object, depending on content-type.
+* NewtonsoftJsonConverter - uses [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+* XmlConverter - uses System.Xml.Serialization
+* BodyParser - uses both the Json- and Xml converter to parse request body to an object, depending on content-type.
 
 And three more split out into separate projects:
-[CookieSessions](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/CookieSessions) simple session management middleware that uses cookies with authentication tokens.
-[EcsRenderer](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/EcsRenderer) simple template rendering extension. See more info about the format by clicking the link.
-[CommonMarkRenderer](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/CommonMarkRenderer) simple CommonMark/Markdown renderer extension - uses [CommonMark.NET](https://github.com/Knagis/CommonMark.NET)
+- [CookieSessions](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/CookieSessions) simple session management middleware that uses cookies with authentication tokens.
+- [EcsRenderer](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/EcsRenderer) simple template rendering extension. See more info about the format by clicking the link.
+- [CommonMarkRenderer](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/CommonMarkRenderer) simple CommonMark/Markdown renderer extension - uses [CommonMark.NET](https://github.com/Knagis/CommonMark.NET)
 
 ### Example
 ```csharp
