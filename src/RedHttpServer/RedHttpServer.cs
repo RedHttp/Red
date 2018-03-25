@@ -33,7 +33,7 @@ namespace Red
             _publicRoot = publicDir;
             
             Use(new NewtonsoftJsonConverter());
-            Use(new InbuiltXmlConverter());
+            Use(new XmlConverter());
             Use(new BodyParser());
         }
 
