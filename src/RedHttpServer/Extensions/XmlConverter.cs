@@ -10,7 +10,7 @@ namespace Red.Extensions
     /// <summary>
     ///     Very simple XmlConverter plugin using System.Xml.Serialization
     /// </summary>
-    internal sealed class InbuiltXmlConverter : IXmlConverter, IRedExtension
+    internal sealed class XmlConverter : IXmlConverter, IRedExtension
     {
         public string Serialize<T>(T obj)
         {

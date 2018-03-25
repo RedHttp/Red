@@ -11,14 +11,17 @@ RedHttpServer can be installed from [NuGet](https://www.nuget.org/packages/RHttp
 ## Middleware and plugins
 RedHttpServer is created to be easy to build on top of. 
 The server supports both middleware modules and extension modules, and offers a method to register these. 
-I have created a couple already:
 
-NewtonsoftJsonConverter, which is inbuilt. Uses [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
-XmlConverter, which is also inbuilt. Uses System.Xml.Serialization
+I have created a couple already; three are inbuilt, but can easily be replaced:
 
-[CookieSessions](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/CookieSessions)
-[EcsRenderer](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/EcsRenderer)
-[CommonMarkRenderer](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/CommonMarkRenderer) using [CommonMark.NET](https://github.com/Knagis/CommonMark.NET)
+NewtonsoftJsonConverter - uses [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+XmlConverter - uses System.Xml.Serialization
+BodyParser - uses both the Json- and Xml converter to parse request body to an object, depending on content-type.
+
+And three more split out into separate projects:
+[CookieSessions](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/CookieSessions) simple session management middleware that uses cookies with authentication tokens.
+[EcsRenderer](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/EcsRenderer) simple template rendering extension. See more info about the format by clicking the link.
+[CommonMarkRenderer](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/CommonMarkRenderer) simple CommonMark/Markdown renderer extension - uses [CommonMark.NET](https://github.com/Knagis/CommonMark.NET)
 
 ### Example
 ```csharp
