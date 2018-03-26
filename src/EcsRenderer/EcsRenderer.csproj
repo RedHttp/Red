@@ -9,7 +9,7 @@
     <Description>Simple template rendering engine extension for RedHttpServer</Description>
     <Copyright>Copyright © Rosenbjerg 2018</Copyright>
     <PackageLicenseUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp/blob/master/LICENSE.md</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/EcsRenderer</PackageProjectUrl>
     <RepositoryUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>ecs render template extension red redhttpserver rhttpserver</PackageTags>

@@ -8,7 +8,7 @@
     <Description>Simple session management middleware for RedHttpServer. Uses cookies with authentication tokens</Description>
     <Copyright>Copyright © Rosenbjerg 2018</Copyright>
     <PackageLicenseUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp/blob/master/LICENSE.md</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/CookieSessions</PackageProjectUrl>
     <RepositoryUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>session management middleware cookie red redhttpserver rhttpserver</PackageTags>
