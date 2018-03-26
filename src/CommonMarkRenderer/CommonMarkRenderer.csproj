@@ -1,13 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <RootNamespace>Red.MarkdownRenderer</RootNamespace>
-    <AssemblyName>Red.MarkdownRenderer</AssemblyName>
+    <RootNamespace>Red.CommonMarkRenderer</RootNamespace>
+    <AssemblyName>Red.CommonMarkRenderer</AssemblyName>
+    <Copyright>Copyright © Rosenbjerg 2018</Copyright>
+    <PackageLicenseUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>commonmark markdown renderer extension red redhttpserver rhttpserver</PackageTags>
+    <Authors>Malte Rosenbjerg</Authors>
+    <Company>Rosenbjerg Softworks</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Simple CommonMark renderer extension for RedHttpServer. Uses CommonMark.Net</Description>
+    <PackageReleaseNotes>First release</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CommonMark.NET" Version="0.15.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RedHttpServer\RedHttpServer.csproj" />
+    <PackageReference Include="RHttpServer" Version="3.0.0" />
   </ItemGroup>
 </Project>

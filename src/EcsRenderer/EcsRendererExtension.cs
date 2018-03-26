@@ -1,8 +1,7 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
-using Red;
 
-namespace EcsRendererPlugin
+namespace Red.EcsRenderer
 {
     public static class EcsRendererExtension
     {

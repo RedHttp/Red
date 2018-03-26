@@ -1,9 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Red.Interfaces;
 
-namespace EcsRendererPlugin
+namespace Red.EcsRenderer
 {
     /// <inheritdoc />
     /// <summary>

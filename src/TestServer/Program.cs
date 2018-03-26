@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using Red.CookieSessions;
-using EcsRendererPlugin;
 using Red;
-using Red.MarkdownRenderer;
+using Red.CommonMarkRenderer;
+using Red.CookieSessions;
+using Red.EcsRenderer;
 
-namespace TestServerASPNETCore
+namespace TestServer
 {
     public class Program
     {
@@ -52,6 +51,7 @@ namespace TestServerASPNETCore
             Directory.CreateDirectory("uploads");
             server.Post("/upload", async (req, res) =>
             {
+                var username = (string) req.GetSession().Data;
                 if (await req.SaveFiles("uploads"))
                     await res.SendString("OK");
                 else
@@ -87,19 +87,11 @@ namespace TestServerASPNETCore
             // Rendering a page for dynamic content
             server.Get("/serverstatus", async (req, res) =>
             {
-                try
+                await res.RenderPage("pages/statuspage.ecs", new RenderParams
                 {
-                    await res.RenderPage("pages/statuspage.ecs", new RenderParams
-                    {
-                        { "uptime", DateTime.UtcNow.Subtract(startTime).TotalMinutes },
-                        { "version", RedHttpServer.Version }
-                    });
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
+                    { "uptime", DateTime.UtcNow.Subtract(startTime).TotalMinutes },
+                    { "version", RedHttpServer.Version }
+                });
             });
 
             // WebSocket echo server

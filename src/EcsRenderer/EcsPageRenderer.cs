@@ -2,14 +2,11 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Mime;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
-using Red.Interfaces;
 
-namespace EcsRendererPlugin
+namespace Red.EcsRenderer
 {
 
     /// <summary>

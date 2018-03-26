@@ -7,6 +7,6 @@
     <ProjectReference Include="..\CommonMarkRenderer\CommonMarkRenderer.csproj" />
     <ProjectReference Include="..\CookieSessions\CookieSessions.csproj" />
     <ProjectReference Include="..\EcsRenderer\EcsRenderer.csproj" />
-    <ProjectReference Include="..\RedHttpServer\RedHttpServer.csproj" />
+    <ProjectReference Include="TestServer.csproj" />
   </ItemGroup>
 </Project>

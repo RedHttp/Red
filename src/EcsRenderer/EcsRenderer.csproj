@@ -3,8 +3,19 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName>Red.EcsRenderer</AssemblyName>
     <RootNamespace>Red.EcsRenderer</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Malte Rosenbjerg</Authors>
+    <Company>Rosenbjerg Softworks</Company>
+    <Description>Simple template rendering engine extension for RedHttpServer</Description>
+    <Copyright>Copyright © Rosenbjerg 2018</Copyright>
+    <PackageLicenseUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>ecs render template extension red redhttpserver rhttpserver</PackageTags>
+    <PackageReleaseNotes>First release</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RedHttpServer\RedHttpServer.csproj" />
+    <PackageReference Include="RHttpServer" Version="3.0.0" />
   </ItemGroup>
 </Project>

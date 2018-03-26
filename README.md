@@ -65,7 +65,6 @@ server.Post("/formdata", async (req, res) =>
 // Using url queries to generate an answer
 server.Get("/hello", async (req, res) =>
 {
-	Console.WriteLine(req.GetSession().Data);
 	var queries = req.Queries;
 	await res.SendString($"Hello {queries["firstname"]} {queries["lastname"]}, have a nice day");
 });

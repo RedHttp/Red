@@ -1,7 +1,6 @@
-﻿using Red;
-using Red.Interfaces;
+﻿using Red.Interfaces;
 
-namespace EcsRendererPlugin
+namespace Red.EcsRenderer
 {
     /// <summary>
     ///     RedExtension for EcsRenderer

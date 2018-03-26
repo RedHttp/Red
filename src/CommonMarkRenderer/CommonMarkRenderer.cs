@@ -2,7 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Red.MarkdownRenderer
+namespace Red.CommonMarkRenderer
 {
     /// <summary>
     ///     CommonMark Renderer using CommonMark.NET converter
