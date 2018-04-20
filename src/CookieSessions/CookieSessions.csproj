@@ -13,7 +13,8 @@
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>session management middleware cookie red redhttpserver rhttpserver</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>First release</PackageReleaseNotes>
+    <PackageReleaseNotes>Is now using generics instead of just an object</PackageReleaseNotes>
+    <Version>1.1.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="RHttpServer" Version="3.0.0" />
