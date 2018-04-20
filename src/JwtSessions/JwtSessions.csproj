@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="JWT" Version="4.0.0" />
+    <PackageReference Include="RHttpServer" Version="3.0.0" />
+  </ItemGroup>
+</Project>

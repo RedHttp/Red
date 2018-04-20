@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>Red.HandlebarsRenderer</AssemblyName>
+    <RootNamespace>Red.HandlebarsRenderer</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Malte Rosenbjerg</Authors>
+    <Company>Rosenbjerg Softworks</Company>
+    <Description>Simple Handlebars renderer extension for RedHttpServer. Uses Handlebars.Net</Description>
+    <Copyright>Copyright © Rosenbjerg 2018</Copyright>
+    <PackageLicenseUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/HandlebarsRenderer</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>handlebars template templating renderer extension red redhttpserver rhttpserver</PackageTags>
+    <PackageReleaseNotes>First release</PackageReleaseNotes>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Handlebars.Net" Version="1.9.0" />
+    <PackageReference Include="RHttpServer" Version="3.0.0" />
+  </ItemGroup>
+</Project>

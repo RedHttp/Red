@@ -1,4 +1,4 @@
-# CommonMark renderer for RedHttpServer
+# CommonMark renderer extension for RedHttpServer
 CommonMark renderer is an extension for RedHttpServer, to render CommonMark (and Markdown) using [CommonMark.NET](https://github.com/Knagis/CommonMark.NET)
 
 ### Usage

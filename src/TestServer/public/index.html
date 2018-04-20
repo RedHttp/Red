@@ -1,3 +1,27 @@
 <html>
+<head></head>
+<body>
 HEJ
+<script>
+    
+    const jwt = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjQyMjQ4NDEsImRhdGEiOnsiVXNlcm5hbWUiOiJiZW5ueSJ9fQ.6cFIhBo8BahEjWI40fENeQ8dXXWhZvGLq6OPbPpCpVI";
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/hello?firstname=Mark&lastname=9000", true);
+    xhr.setRequestHeader("Authorization", jwt);
+    xhr.onload = function (e) {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                console.log(xhr.responseText);
+            } else {
+                console.error(xhr.statusText);
+            }
+        }
+    };
+    xhr.onerror = function (e) {
+        console.error(xhr.statusText);
+    };
+    xhr.send(null);
+</script>
+</body>
 </html>

@@ -11,7 +11,13 @@ After installing and referencing this library, the `Red.Request` has the extensi
 
 ### Example
 ```csharp
-server.Use(new CookieSessions(new CookieSessionSettings(TimeSpan.FromDays(1))
+class MySession 
+{
+    public string Username;
+}
+...
+
+server.Use(new CookieSessions<MySession>(new CookieSessionSettings(TimeSpan.FromDays(1))
 {   // We allow unauthenticated users to send requests to /login, so we can authenticate them
     Excluded = { "/login" }
 }));
@@ -20,7 +26,7 @@ server.Post("/login", async (req, res) =>
     var form = await res.GetFormDataAsync();
     if (ValidForm(form) && Authenticate(form["username"], form["password"]))
     {
-        req.OpenSession(form["username"]); // Here we just have the username as session-data
+        req.OpenSession(new MySession {Username = form["username"]}); // Here we just have the username as session-data
         await res.SendStatus(HttpStatusCode.OK);
     }
     else 
@@ -29,13 +35,13 @@ server.Post("/login", async (req, res) =>
 // Only authenticated users are allowed to /friends
 server.Get("/friends", async (req, res) => 
 {
-    var username = (string) req.GetSession().Data; // We know which user, by looking at session-data
-    var friends = database.GetFriendsOfUser(username);
+    var session = req.GetSession<MySession>();
+    var friends = database.GetFriendsOfUser(session.Username);
     await res.SendJson(friends);
 });
 server.Post("/logout", async (req, res) => 
 {
-    req.GetSession().Close();
+    req.GetSession<MySession>().Close();
     await res.SendStatus(HttpStatusCode.OK);
 });
 ```

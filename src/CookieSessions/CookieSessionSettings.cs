@@ -12,6 +12,7 @@ namespace Red.CookieSessions
         public bool Secure = true;
         public SameSiteSetting SameSite = SameSiteSetting.Strict;
         public string TokenName = "session_token";
+        public bool AutoRenew = false;
         public readonly HashSet<string> Excluded = new HashSet<string>();
 
         public CookieSessionSettings(TimeSpan sessionLength)
