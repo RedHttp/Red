@@ -13,6 +13,7 @@
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>session management middleware jwt token red redhttpserver rhttpserver</PackageTags>
     <PackageReleaseNotes>First release</PackageReleaseNotes>
+    <PackageId>Red.JwtSessions</PackageId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="JWT" Version="4.0.0" />

@@ -6,7 +6,7 @@ After installing and referencing this library, the `Red.Request` has the extensi
 
 `OpenSession(sessionData)` will open a new session and add a header to the response associated with the request.
 
-`GetSession()` will return then `Session` object which has two methods: `Renew()` and `Close()`, and the field `Data`, which holds the session-data object
+`GetSession<TSession>()` will return the `CookieSession` object wrapping the `TSession`-data, which has two methods: `Renew()` and `Close()`, and the field `Data`, which holds the session-data object
 
 
 ### Example
