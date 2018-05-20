@@ -15,7 +15,7 @@ class MySession
 ...
 server.Use(new JwtSessions<MySession>(new JwtSessionSettings(TimeSpan.FromDays(1), "my secret secret")
 {
-    Excluded = {"/login" } // We allow people to send requests without a valid Authorization to /login, where we can authenticate them
+    ShouldAuthenticate = path => path != "/login" // We allow people to send requests without a valid Authorization to /login, where we can authenticate them
 }));
 
 server.Get("/login", async (req, res) =>

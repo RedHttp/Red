@@ -30,18 +30,22 @@ namespace Red.CookieSessions
             var s = settings.Secure ? " Secure;" : "";
             var ss = settings.SameSite == SameSiteSetting.None ? "" : $" SameSite={settings.SameSite};";
             _cookie = d + p + h + s + ss;
-            _expiredCookie = $"{settings.TokenName}=;{_cookie} Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age={(int)settings.SessionLength.TotalSeconds};";
+            _expiredCookie =
+                $"{settings.TokenName}=;{_cookie} Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age={(int) settings.SessionLength.TotalSeconds};";
             Maintain();
         }
-        
+
         private readonly Random _random = new Random();
         private readonly string _cookie;
-        private readonly ConcurrentDictionary<string, CookieSession> _sessions = new ConcurrentDictionary<string, CookieSession>();
+
+        private readonly ConcurrentDictionary<string, CookieSession> _sessions =
+            new ConcurrentDictionary<string, CookieSession>();
+
         private readonly RandomNumberGenerator _tokenGenerator = RandomNumberGenerator.Create();
 
         private readonly string _tokenName;
         private readonly string _expiredCookie;
-        private CookieSessionSettings _settings;
+        private readonly CookieSessionSettings _settings;
 
         /// <summary>
         ///     Do not invoke. Is invoked by the server when it starts. 
@@ -54,26 +58,13 @@ namespace Red.CookieSessions
         /// <summary>
         ///     Do not invoke. Is invoked by the server with every websocket request
         /// </summary>
-        public async Task<bool> Process(string path, Request req, WebSocketDialog wsd)
+        public async Task<bool> Process(string path, Request req, Response res, WebSocketDialog wsd)
         {
-            if (_settings.Excluded.Contains(path))
-                return true;
-            var res = req.UnderlyingRequest.HttpContext.Response;
-            if (!req.Cookies.ContainsKey(_tokenName) || req.Cookies[_tokenName] == "")
+            if (_settings.ShouldAuthenticate(path))
             {
-                await Response.SendStatus(res, HttpStatusCode.Unauthorized);
-                return false;
+                return await Authenticate(req, res);
             }
 
-            if (!TryAuthenticateToken(req.Cookies[_tokenName], out var session))
-            {
-                res.Headers.Add("Set-Cookie", _expiredCookie);
-                await Response.SendStatus(res, HttpStatusCode.Unauthorized);
-                return false;
-            }
-            req.SetData(session.Data);
-            if (_settings.AutoRenew) 
-                session.Renew(req);
             return true;
         }
 
@@ -82,26 +73,14 @@ namespace Red.CookieSessions
         /// </summary>
         public async Task<bool> Process(string path, HttpMethodEnum method, Request req, Response res)
         {
-            if (_settings.Excluded.Contains(path))
-                return true;
-            if (!req.Cookies.ContainsKey(_tokenName) || req.Cookies[_tokenName] == "")
+            if (_settings.ShouldAuthenticate(path))
             {
-                await res.SendStatus(HttpStatusCode.Unauthorized);
-                return false;
+                return await Authenticate(req, res);
             }
 
-            if (!TryAuthenticateToken(req.Cookies[_tokenName], out var session))
-            {
-                res.AddHeader("Set-Cookie", _expiredCookie);
-                await res.SendStatus(HttpStatusCode.Unauthorized);
-                return false;
-            }
-            if (_settings.AutoRenew)
-                session.Renew(req);
-            req.SetData(session);
             return true;
         }
-        
+
         // Simple maintainer loop
         private async void Maintain()
         {
@@ -116,6 +95,34 @@ namespace Red.CookieSessions
             }
         }
 
+        /// <summary>
+        /// Authenticates a request and sets the sessionData if valid, and responds with 401 when invalid
+        /// </summary>
+        /// <param name="req">The given request</param>
+        /// <param name="res">The response for the request</param>
+        /// <returns>True when valid</returns>
+        public async Task<bool> Authenticate(Request req, Response res)
+        {
+            if (!req.Cookies.ContainsKey(_tokenName) || req.Cookies[_tokenName] == "")
+            {
+                await _settings.OnNotAuthenticated(req, res);
+                return false;
+            }
+
+            if (!TryAuthenticateToken(req.Cookies[_tokenName], out var session))
+            {
+                res.AddHeader("Set-Cookie", _expiredCookie);
+                await _settings.OnNotAuthenticated(req, res);
+                return false;
+            }
+
+            if (_settings.AutoRenew)
+                session.Renew(req);
+            req.SetData(session);
+
+            return true;
+        }
+
         private bool TryAuthenticateToken(string token, out CookieSession data)
         {
             if (!_sessions.TryGetValue(token, out var s) || s.Expires <= DateTime.UtcNow)
@@ -127,7 +134,7 @@ namespace Red.CookieSessions
             data = s;
             return true;
         }
-        
+
         private string GenerateToken()
         {
             var data = new byte[32];
@@ -177,8 +184,8 @@ namespace Red.CookieSessions
 
             public TSession Data { get; }
             public DateTime Expires { get; internal set; }
-            
-            
+
+
             /// <summary>
             ///    Renews the session expiry time and updates the cookie
             /// </summary>
@@ -200,6 +207,5 @@ namespace Red.CookieSessions
                     request.UnderlyingRequest.HttpContext.Response.Headers.Add("Set-Cookie", cookie);
             }
         }
-        
     }
 }

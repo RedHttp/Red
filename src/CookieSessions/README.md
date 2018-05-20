@@ -19,7 +19,7 @@ class MySession
 
 server.Use(new CookieSessions<MySession>(new CookieSessionSettings(TimeSpan.FromDays(1))
 {   // We allow unauthenticated users to send requests to /login, so we can authenticate them
-    Excluded = { "/login" }
+    ShouldAuthenticate = path => path != "/login" // We allow people to send requests without a valid Authorization to /login, where we can authenticate them
 }));
 server.Post("/login", async (req, res) =>
 {

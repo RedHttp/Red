@@ -24,12 +24,9 @@ namespace TestServer
           
             server.Use(new CookieSessions<MySess>(new CookieSessionSettings(TimeSpan.FromDays(1))
             {
+                Secure = false,
                 AutoRenew = true,
-                Excluded = {"/login", "/jwtlogin"} // We allow people to send requests to /login, where we can authenticate them
-            }));
-            server.Use(new JwtSessions<MySess>(new JwtSessionSettings(TimeSpan.FromDays(1), "my secret secret")
-            {
-                Excluded = {"/login", "/jwtlogin"} // We allow people to send requests to /login, where we can authenticate them
+                ShouldAuthenticate = path => !path.Contains("login") // We allow people to send requests to /login, where we can authenticate them
             }));
             var startTime = DateTime.UtcNow;
 

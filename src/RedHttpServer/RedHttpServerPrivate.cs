@@ -73,7 +73,12 @@ namespace Red
                 var url = context.Request.Path.Value;
                 var method = ParseHttpMethod(context.Request.Method);
                 foreach (var middleware in _middlewareStack)
-                    if (!await middleware.Process(url, method, req, res) || res.Closed) return;
+                {
+                    if (!await middleware.Process(url, method, req, res) || res.Closed)
+                    {
+                        return;
+                    }
+                }
                 await handler(req, res);
             }
             catch (Exception e)
@@ -85,6 +90,7 @@ namespace Red
         private async Task WrapWebsocketHandler(HttpContext context, Action<Request, WebSocketDialog> handler)
         {
             var req = new Request(context.Request, Plugins);
+            var res = new Response(context.Response, Plugins);
             try
             {
                 if (context.WebSockets.IsWebSocketRequest)
@@ -93,17 +99,26 @@ namespace Red
                     var webSocket = await context.WebSockets.AcceptWebSocketAsync();
                     var wsd = new WebSocketDialog(context, webSocket, Plugins);
                     foreach (var middleware in _wsMiddlewareStack)
-                        if (!await middleware.Process(url, req, wsd)) return;
+                    {
+                        if (!await middleware.Process(url, req, res, wsd) || res.Closed)
+                        {
+                            return;
+                        }
+                    }
                     handler(req, wsd);
                     await wsd.ReadFromWebSocket();
                 }
                 else
-                    await Response.SendStatus(context.Response, HttpStatusCode.BadRequest);
+                {
+                    if (!res.Closed)
+                        await res.SendStatus(HttpStatusCode.BadRequest);
+                }
                 
             }
             catch (Exception e)
             {
-                await Response.SendStatus(context.Response, HttpStatusCode.InternalServerError);
+                if (!res.Closed)
+                    await res.SendStatus(HttpStatusCode.InternalServerError);
             }
         }
 

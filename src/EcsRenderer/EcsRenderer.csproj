@@ -16,6 +16,6 @@
     <PackageReleaseNotes>First release</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="RHttpServer" Version="3.0.0" />
+    <PackageReference Include="RHttpServer" Version="3.1.0" />
   </ItemGroup>
 </Project>

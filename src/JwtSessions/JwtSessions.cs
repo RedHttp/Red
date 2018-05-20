@@ -39,19 +39,17 @@ namespace JwtSessions
         /// <summary>
         ///     Do not invoke. Is invoked by the server with every websocket request
         /// </summary>
-        public async Task<bool> Process(string path, Request req, WebSocketDialog wsd)
+        public async Task<bool> Process(string path, Request req, Response res, WebSocketDialog wsd)
         {
-            if (_settings.Excluded.Contains(path))
+            if (!_settings.ShouldAuthenticate(path))
                 return true;
-            
-            var res = req.UnderlyingRequest.HttpContext.Response;
             
             string token = null;
             string auth = req.Headers["Authorization"];
 
             if (string.IsNullOrEmpty(auth))
             {
-                await Response.SendStatus(res, HttpStatusCode.Unauthorized);
+                await _settings.OnNotAuthenticated(req, res);
                 return false;
             }
 
@@ -59,16 +57,10 @@ namespace JwtSessions
             {
                 token = auth.Substring("Bearer ".Length).Trim();
             }
-
-            if (string.IsNullOrEmpty(token))
+            
+            if (string.IsNullOrEmpty(token) || !TryAuthenticateToken(token, out var session))
             {
-                await Response.SendStatus(res, HttpStatusCode.Unauthorized);
-                return false;
-            }
-          
-            if (!TryAuthenticateToken(token, out var session))
-            {
-                await Response.SendStatus(res, HttpStatusCode.Unauthorized);
+                await _settings.OnNotAuthenticated(req, res);
                 return false;
             }
             
@@ -81,14 +73,14 @@ namespace JwtSessions
         /// </summary>
         public async Task<bool> Process(string path, HttpMethodEnum method, Request req, Response res)
         {
-            if (_settings.Excluded.Contains(path))
+            if (!_settings.ShouldAuthenticate(path))
                 return true;
             string token = null;
             string auth = req.Headers["Authorization"];
 
             if (string.IsNullOrEmpty(auth))
             {
-                await res.SendStatus(HttpStatusCode.Unauthorized);
+                await _settings.OnNotAuthenticated(req, res);
                 return false;
             }
 
@@ -99,7 +91,7 @@ namespace JwtSessions
           
             if (string.IsNullOrEmpty(token) || !TryAuthenticateToken(token, out var session))
             {
-                await res.SendStatus(HttpStatusCode.Unauthorized);
+                await _settings.OnNotAuthenticated(req, res);
                 return false;
             }
             
