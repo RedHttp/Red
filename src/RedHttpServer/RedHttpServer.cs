@@ -1,9 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Red.Extensions;
@@ -16,11 +19,7 @@ namespace Red
     /// </summary>
     public partial class RedHttpServer
     {
-        /// <summary>
-        /// Build version of RedHttpServer
-        /// </summary>
-        public const string Version = "3.0.0";
-
+        
         /// <summary>
         ///     Constructs a server instance with given port and using the given path as public folder.
         ///     Set path to null or empty string if none wanted
@@ -42,6 +41,11 @@ namespace Red
         /// </summary>
         public PluginCollection Plugins { get; } = new PluginCollection();
 
+        /// <summary>
+        /// The version of the library
+        /// </summary>
+        public string Version { get; } = typeof(RedHttpServer).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+        
         /// <summary>
         ///     The port that the server is listening on
         /// </summary>
@@ -114,30 +118,27 @@ namespace Red
                 _middlewareStack.Add(middleware);
             _plugins.Add(extension);
         }
-        
 
+
+        
         /// <summary>
         ///     Add action to handle GET requests to a given route
         /// </summary>
         /// <param name="route">The route to respond to</param>
-        /// <param name="action">The action that wil respond to the request</param>
-        public void Get(string route, Func<Request, Response, Task> action)
+        /// <param name="handlers">The handlers that wil respond to the request</param>
+        public void Get(string route, params Func<Request, Response, Task>[] handlers)
         {
-            if (_handlers == null)
-                throw new RedHttpServerException("Cannot add route handlers after server is started");
-            _handlers.Add(new HandlerWrapper(route, HttpMethodEnum.GET, action));
+            AddHandlers(route, GetMethod, handlers);
         }
 
         /// <summary>
         ///     Add action to handle POST requests to a given route
         /// </summary>
         /// <param name="route">The route to respond to</param>
-        /// <param name="action">The action that wil respond to the request</param>
-        public void Post(string route, Func<Request, Response, Task> action)
+        /// <param name="handlers">The handlers that wil respond to the request</param>
+        public void Post(string route, params Func<Request, Response, Task>[] handlers)
         {
-            if (_handlers == null)
-                throw new RedHttpServerException("Cannot add route handlers after server is started");
-            _handlers.Add(new HandlerWrapper(route, HttpMethodEnum.POST, action));
+            AddHandlers(route, PostMethod, handlers);
         }
 
 
@@ -145,12 +146,10 @@ namespace Red
         ///     Add action to handle PUT requests to a given route.
         /// </summary>
         /// <param name="route">The route to respond to</param>
-        /// <param name="action">The action that wil respond to the request</param>
-        public void Put(string route, Func<Request, Response, Task> action)
+        /// <param name="handlers">The handlers that wil respond to the request</param>
+        public void Put(string route, params Func<Request, Response, Task>[] handlers)
         {
-            if (_handlers == null)
-                throw new RedHttpServerException("Cannot add route handlers after server is started");
-            _handlers.Add(new HandlerWrapper(route, HttpMethodEnum.PUT, action));
+            AddHandlers(route, PutMethod, handlers);
         }
 
 
@@ -158,25 +157,41 @@ namespace Red
         ///     Add action to handle DELETE requests to a given route.
         /// </summary>
         /// <param name="route">The route to respond to</param>
-        /// <param name="action">The action that wil respond to the request</param>
-        public void Delete(string route, Func<Request, Response, Task> action)
+        /// <param name="handlers">The handlers that wil respond to the request</param>
+        public void Delete(string route, params Func<Request, Response, Task>[] handlers)
         {
-            if (_handlers == null)
-                throw new RedHttpServerException("Cannot add route handlers after server is started");
-            _handlers.Add(new HandlerWrapper(route, HttpMethodEnum.DELETE, action));
+            AddHandlers(route, DeleteMethod, handlers);
         }
-
-
+        
         /// <summary>
         ///     Add action to handle WEBSOCKET requests to a given route. <para/>
         /// </summary>
         /// <param name="route">The route to respond to</param>
-        /// <param name="action">The action that wil respond to the request</param>
-        public void WebSocket(string route, Action<Request, WebSocketDialog> action)
+        /// <param name="handlers">The handlers that wil respond to the request</param>
+        public void WebSocket(string route, params Action<Request, WebSocketDialog, Response>[] handlers)
         {
+            if (handlers.Length == 0)
+                throw new RedHttpServerException("A route requires at least one handler");
+            
             if (_wsHandlers == null)
                 throw new RedHttpServerException("Cannot add route handlers after server is started");
-            _wsHandlers.Add(new Tuple<string, Action<Request, WebSocketDialog>>(route, action));
+            
+            _wsHandlers.Add(new WsHandlerWrapper(route, handlers));
+        }
+        /// <summary>
+        ///     Add action to handle WEBSOCKET requests to a given route. <para/>
+        /// </summary>
+        /// <param name="route">The route to respond to</param>
+        /// <param name="handlers">The handlers that wil respond to the request</param>
+        public void WebSocket(string route, params Action<Request, WebSocketDialog>[] handlers)
+        {
+            if (handlers.Length == 0)
+                throw new RedHttpServerException("A route requires at least one handler");
+            
+            if (_wsHandlers == null)
+                throw new RedHttpServerException("Cannot add route handlers after server is started");
+            
+            _wsHandlers.Add(new WsHandlerWrapper(route, handlers));
         }
     }
 }

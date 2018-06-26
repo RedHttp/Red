@@ -14,6 +14,7 @@ namespace Red
     public sealed class Request
     {
         private readonly Dictionary<Type, object> _data = new Dictionary<Type, object>();
+        private IFormCollection _form;
 
         internal Request(HttpRequest req, PluginCollection plugins)
         {
@@ -66,7 +67,12 @@ namespace Red
         {
             if (!UnderlyingRequest.HasFormContentType)
                 return null;
-            return await UnderlyingRequest.ReadFormAsync();
+
+            if (_form != null)
+                return _form;
+
+            _form =  await UnderlyingRequest.ReadFormAsync();
+            return _form;
         }
         
         /// <summary>

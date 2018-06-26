@@ -14,6 +14,10 @@ namespace Red
 {
     public partial class RedHttpServer
     {
+        private const string GetMethod = "GET";
+        private const string PostMethod = "POST";
+        private const string PutMethod = "PUT";
+        private const string DeleteMethod = "DELETE";
         
         private readonly List<IRedMiddleware> _middlewareStack = new List<IRedMiddleware>();
         private readonly List<IRedWebSocketMiddleware> _wsMiddlewareStack = new List<IRedWebSocketMiddleware>();
@@ -22,8 +26,7 @@ namespace Red
         private readonly string _publicRoot;
         private List<HandlerWrapper> _handlers = new List<HandlerWrapper>();
         
-        private List<Tuple<string, Action<Request, WebSocketDialog>>> _wsHandlers =
-            new List<Tuple<string, Action<Request, WebSocketDialog>>>();
+        private List<WsHandlerWrapper> _wsHandlers = new List<WsHandlerWrapper>();
         
         private void ConfigurePolicy(CorsPolicyBuilder builder)
         {
@@ -56,38 +59,37 @@ namespace Red
             foreach (var handlerWrapper in _handlers)
             {
                 var path = ConvertParameter(handlerWrapper.Path, urlParam, generalParam);
-                rb.MapVerb(handlerWrapper.Method.ToString(), path, ctx => WrapHandler(ctx, handlerWrapper.Handler));
+                rb.MapVerb(handlerWrapper.Method, path, ctx => WrapHandler(ctx, handlerWrapper));
             }
             _handlers = null;
-            
-            foreach (var method in _wsHandlers)
-                rb.MapGet(ConvertParameter(method.Item1, urlParam, generalParam), ctx => WrapWebsocketHandler(ctx, method.Item2));
+
+            foreach (var handlerWrapper in _wsHandlers)
+            {
+                var path = ConvertParameter(handlerWrapper.Path, urlParam, generalParam);
+                rb.MapGet(path, ctx => WrapWebsocketHandler(ctx, handlerWrapper));
+            }
             _wsHandlers = null;
         }
-        private async Task WrapHandler(HttpContext context, Func<Request, Response, Task> handler)
+        private async Task WrapHandler(HttpContext context, HandlerWrapper handlerWrapper)
         {
             var req = new Request(context.Request, Plugins);
             var res = new Response(context.Response, Plugins);
             try
             {
-                var url = context.Request.Path.Value;
-                var method = ParseHttpMethod(context.Request.Method);
                 foreach (var middleware in _middlewareStack)
                 {
-                    if (!await middleware.Process(url, method, req, res) || res.Closed)
-                    {
-                        return;
-                    }
+                    if (res.Closed) return;
+                    await middleware.Process(req, res);
                 }
-                await handler(req, res);
+                handlerWrapper.Process(req, res);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 if (!res.Closed)
                     await res.SendStatus(HttpStatusCode.InternalServerError);
             }
         }
-        private async Task WrapWebsocketHandler(HttpContext context, Action<Request, WebSocketDialog> handler)
+        private async Task WrapWebsocketHandler(HttpContext context, WsHandlerWrapper handlerWrapper)
         {
             var req = new Request(context.Request, Plugins);
             var res = new Response(context.Response, Plugins);
@@ -95,17 +97,14 @@ namespace Red
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {
-                    var url = context.Request.Path.Value;
                     var webSocket = await context.WebSockets.AcceptWebSocketAsync();
                     var wsd = new WebSocketDialog(context, webSocket, Plugins);
                     foreach (var middleware in _wsMiddlewareStack)
                     {
-                        if (!await middleware.Process(url, req, res, wsd) || res.Closed)
-                        {
-                            return;
-                        }
+                        if (res.Closed) break;
+                        await middleware.Process(req, wsd, res);
                     }
-                    handler(req, wsd);
+                    handlerWrapper.Process(req, wsd, res);
                     await wsd.ReadFromWebSocket();
                 }
                 else
@@ -113,7 +112,6 @@ namespace Red
                     if (!res.Closed)
                         await res.SendStatus(HttpStatusCode.BadRequest);
                 }
-                
             }
             catch (Exception e)
             {
@@ -122,23 +120,16 @@ namespace Red
             }
         }
 
-        private static HttpMethodEnum ParseHttpMethod(string str)
+        private void AddHandlers(string route, string method, Func<Request, Response, Task>[] handlers)
         {
-            switch (str.ToUpperInvariant())
-            {
-                case "GET":
-                    return HttpMethodEnum.GET;
-                case "POST":
-                    return HttpMethodEnum.POST;
-                case "PUT":
-                    return HttpMethodEnum.PUT;
-                case "DELETE":
-                    return HttpMethodEnum.DELETE;
-                default:
-                    throw new ArgumentException();
-            }
+            if (_handlers == null) // Handlers are set to null after they have been loaded
+                throw new RedHttpServerException("Cannot add route handlers after server is started");
+            
+            if (handlers.Length == 0)
+                throw new RedHttpServerException("A route requires at least one handler");
+            
+            _handlers.Add(new HandlerWrapper(route, method, handlers));
         }
-
         private static string ConvertParameter(string parameter, Regex urlParam, Regex generalParam)
         {
             parameter = parameter.Trim('/');

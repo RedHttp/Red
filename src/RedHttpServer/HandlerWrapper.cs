@@ -1,18 +1,30 @@
 ﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Red
 {
     internal class HandlerWrapper
     {
-        public HandlerWrapper(string path, HttpMethodEnum method, Func<Request, Response, Task> handler)
+        public HandlerWrapper(string path, string method, Func<Request, Response, Task>[] handlers)
         {
             Path = path;
             Method = method;
-            Handler = handler;
+            _handlers = handlers;
         }
         public readonly string Path;
-        public readonly HttpMethodEnum Method;
-        public readonly Func<Request, Response, Task> Handler;
+        public readonly string Method;
+        private readonly Func<Request, Response, Task>[] _handlers;
+        
+        public void Process(Request req, Response res)
+        {
+            foreach (var handler in _handlers)
+            {
+                if (res.Closed) break;
+                handler(req, res);
+            }
+        }
+
     }
 }

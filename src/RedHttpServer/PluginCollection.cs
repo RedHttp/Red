@@ -19,12 +19,14 @@ namespace Red
         ///     Preferably before starting the server
         /// </summary>s
         /// <typeparam name="TKey">The type-key to register the plugin to</typeparam>
-        public void Register<TKey>(TKey plugin)
+        /// <param name="plugin">The plugin to register</param>
+        /// <param name="overwrite"></param>
+        public void Register<TKey>(TKey plugin, bool overwrite = false)
         {
             var type = typeof(TKey);
-            if (_plugins.ContainsKey(type))
+            if (!overwrite && _plugins.ContainsKey(type))
                 throw new RedHttpServerException("You can only register one plugin to a plugin interface");
-            _plugins.Add(type, plugin);
+            _plugins[type] = plugin;
         }
 
         /// <summary>
