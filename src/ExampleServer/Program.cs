@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 using JwtSessions;
 using Red;
 using Red.CommonMarkRenderer;
@@ -21,13 +22,25 @@ namespace TestServer
             // We serve static files, such as index.html from the 'public' directory
             var server = new RedHttpServer(5000, "public");
             server.Use(new EcsRenderer());
-          
-            server.Use(new CookieSessions<MySess>(new CookieSessionSettings(TimeSpan.FromDays(1))
+
+            var sessions = new CookieSessions<MySess>(new CookieSessionSettings(TimeSpan.FromDays(1))
             {
                 Secure = false,
-                AutoRenew = true,
-                ShouldAuthenticate = path => !path.Contains("login") // We allow people to send requests to /login, where we can authenticate them
-            }));
+                AutoRenew = true
+            });
+            
+            server.Use(sessions);
+
+
+            Func<Request, Response, Task> auth = async (req, res) =>
+            {
+                if (req.GetSession<MySess>() == null)
+                {
+                    await res.SendStatus(HttpStatusCode.Unauthorized);
+                    res.Closed = true;
+                }
+            };
+            
             var startTime = DateTime.UtcNow;
 
             // URL param demo

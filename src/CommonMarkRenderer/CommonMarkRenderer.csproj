@@ -15,9 +15,10 @@
     <Description>Simple CommonMark renderer extension for RedHttpServer. Uses CommonMark.Net</Description>
     <PackageReleaseNotes>First release</PackageReleaseNotes>
     <PackageId>Red.CommonMarkRenderer</PackageId>
+    <PackageIconUrl>https://rosenbjerg.dk/red/logo.png</PackageIconUrl>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CommonMark.NET" Version="0.15.1" />
-    <PackageReference Include="RHttpServer" Version="3.1.0" />
+    <PackageReference Include="RHttpServer" Version="3.2.0" />
   </ItemGroup>
 </Project>

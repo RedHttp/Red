@@ -39,18 +39,14 @@ namespace JwtSessions
         /// <summary>
         ///     Do not invoke. Is invoked by the server with every websocket request
         /// </summary>
-        public async Task<bool> Process(string path, Request req, Response res, WebSocketDialog wsd)
+        public async Task Process(Request req, WebSocketDialog wsd, Response res)
         {
-            if (!_settings.ShouldAuthenticate(path))
-                return true;
-            
             string token = null;
             string auth = req.Headers["Authorization"];
 
             if (string.IsNullOrEmpty(auth))
             {
-                await _settings.OnNotAuthenticated(req, res);
-                return false;
+                return;
             }
 
             if (auth.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
@@ -60,28 +56,23 @@ namespace JwtSessions
             
             if (string.IsNullOrEmpty(token) || !TryAuthenticateToken(token, out var session))
             {
-                await _settings.OnNotAuthenticated(req, res);
-                return false;
+                return;
             }
             
             req.SetData(session.Data);
-            return true;
         }
 
         /// <summary>
         ///     Do not invoke. Is invoked by the server with every request
         /// </summary>
-        public async Task<bool> Process(string path, HttpMethodEnum method, Request req, Response res)
+        public async Task Process(Request req, Response res)
         {
-            if (!_settings.ShouldAuthenticate(path))
-                return true;
             string token = null;
             string auth = req.Headers["Authorization"];
 
             if (string.IsNullOrEmpty(auth))
             {
-                await _settings.OnNotAuthenticated(req, res);
-                return false;
+                return;
             }
 
             if (auth.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
@@ -91,12 +82,10 @@ namespace JwtSessions
           
             if (string.IsNullOrEmpty(token) || !TryAuthenticateToken(token, out var session))
             {
-                await _settings.OnNotAuthenticated(req, res);
-                return false;
+                return;
             }
             
             req.SetData(session.Data);
-            return true;
         }
         
         private bool TryAuthenticateToken(string authorization, out JwtSession data)
@@ -105,6 +94,7 @@ namespace JwtSessions
             {
                 var json = new JwtBuilder()
                     .WithSecret(_settings.Secret)
+                    .WithAlgorithm(_settings.Algoritm)
                     .MustVerifySignature()
                     .Decode(authorization);
                 data = JsonConvert.DeserializeObject<JwtSession>(json);
@@ -125,8 +115,8 @@ namespace JwtSessions
         internal string NewSession(TSession sessionData)
         {
             var token = new JwtBuilder()
-                .WithAlgorithm(_settings.Algoritm)
                 .WithSecret(_settings.Secret)
+                .WithAlgorithm(_settings.Algoritm)
                 .AddClaim("exp", DateTimeOffset.UtcNow.Add(_settings.SessionLength).ToUnixTimeSeconds())
                 .AddClaim("data", sessionData)
                 .Build();
