@@ -15,7 +15,6 @@ namespace Test
         static void Main(string[] args)
         {
             var server = new RedHttpServer(5000);
-            
             Func<Request, Response, Task> auth = async (req, res) =>
             {
                 if (true)

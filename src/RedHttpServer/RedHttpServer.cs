@@ -44,7 +44,7 @@ namespace Red
         /// <summary>
         /// The version of the library
         /// </summary>
-        public string Version { get; } = typeof(RedHttpServer).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+        public static string Version { get; } = typeof(RedHttpServer).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
         
         /// <summary>
         ///     The port that the server is listening on

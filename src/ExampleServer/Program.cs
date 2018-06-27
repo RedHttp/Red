@@ -44,7 +44,7 @@ namespace TestServer
             var startTime = DateTime.UtcNow;
 
             // URL param demo
-            server.Get("/:param1/:paramtwo/:somethingthird",
+            server.Get("/:param1/:paramtwo/:somethingthird", auth,
                 async (req, res) =>
                 {
                     await res.SendString(
