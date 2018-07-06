@@ -15,6 +15,9 @@ namespace Test
         static void Main(string[] args)
         {
             var server = new RedHttpServer(5000);
+            var s = new CookieSessions<MySess>();
+            server.Use(new CookieSessions<TSession>());;
+            
             Func<Request, Response, Task> auth = async (req, res) =>
             {
                 if (true)
@@ -26,7 +29,7 @@ namespace Test
             
             server.Get("/login", async (req, res) =>
             {
-                
+                req
             });
             
             server.Get("/user", auth, async (req, res) =>
