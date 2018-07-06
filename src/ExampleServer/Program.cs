@@ -25,26 +25,24 @@ namespace TestServer
 
             var sessions = new CookieSessions<MySess>(new CookieSessionSettings(TimeSpan.FromDays(1))
             {
-                Secure = false,
-                AutoRenew = true
+                Secure = false
             });
             
             server.Use(sessions);
 
 
-            Func<Request, Response, Task> auth = async (req, res) =>
+            async Task Auth(Request req, Response res)
             {
                 if (req.GetSession<MySess>() == null)
                 {
                     await res.SendStatus(HttpStatusCode.Unauthorized);
-                    res.Closed = true;
                 }
-            };
-            
+            }
+
             var startTime = DateTime.UtcNow;
 
             // URL param demo
-            server.Get("/:param1/:paramtwo/:somethingthird", auth,
+            server.Get("/:param1/:paramtwo/:somethingthird", Auth,
                 async (req, res) =>
                 {
                     await res.SendString(
@@ -63,10 +61,8 @@ namespace TestServer
                 // To make it easy to test the session system only using the browser and no credentials
                 await res.SendJwtToken(new MySess {Username = "benny"});
             });
-            server.Get("/logout", async (req, res) =>
+            server.Get("/logout", Auth, async (req, res) =>
             {
-                // To make it easy to test the session system only using the browser and no credentials
-
                 req.GetSession<MySess>().Close(req);
                 await res.SendStatus(HttpStatusCode.OK);
             });
@@ -78,7 +74,7 @@ namespace TestServer
             });
 
             // Redirect to page on same host
-            server.Get("/redirect", async (req, res) => { await res.Redirect("/redirect/test/here"); });
+            server.Get("/redirect", Auth, async (req, res) => { await res.Redirect("/redirect/test/here"); });
 
             // Save uploaded file from request body 
             Directory.CreateDirectory("uploads");
@@ -100,7 +96,7 @@ namespace TestServer
             });
 
             // Using url queries to generate an answer
-            server.Get("/hello", async (req, res) =>
+            server.Get("/hello", Auth, async (req, res) =>
             {
                 var session = req.GetData<MySess>();
                 var queries = req.Queries;
