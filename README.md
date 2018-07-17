@@ -19,9 +19,12 @@ I have created a couple already; three are inbuilt, but can easily be replaced:
 * BodyParser - uses both the Json- and Xml converter to parse request body to an object, depending on content-type.
 
 And three more split out into separate projects:
-- [CookieSessions](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/CookieSessions) simple session management middleware that uses cookies with authentication tokens.
-- [EcsRenderer](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/EcsRenderer) simple template rendering extension. See more info about the format by clicking the link.
-- [CommonMarkRenderer](https://github.com/rosenbjerg/RedHttpServer.CSharp/tree/master/src/CommonMarkRenderer) simple CommonMark/Markdown renderer extension - uses [CommonMark.NET](https://github.com/Knagis/CommonMark.NET)
+- [CookieSessions](https://github.com/rosenbjerg/Red.CookieSessions) simple session management middleware that uses cookies with authentication tokens.
+- [JwtSessions](https://github.com/rosenbjerg/Red.JwtSessions) simple session management middleware that uses cookies with authentication tokens.
+- [EcsRenderer](https://github.com/rosenbjerg/Red.EcsRenderer) simple template rendering extension. See more info about the format by clicking the link.
+- [CommonMarkRenderer](https://github.com/rosenbjerg/Red.CommonMarkRenderer) simple CommonMark/Markdown renderer extension - uses [CommonMark.NET](https://github.com/Knagis/CommonMark.NET)
+- [HandlebarsRenderer](https://github.com/rosenbjerg/Red.HandlebarsRenderer) simple Handlebars renderer extension - uses [Handlebars.Net](https://github.com/rexm/Handlebars.Net)
+
 
 ### Example
 ```csharp
