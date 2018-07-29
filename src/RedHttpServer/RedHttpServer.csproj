@@ -6,7 +6,7 @@
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <PropertyGroup>
-    <Description>A Http server framework built on ASP.NET Core and Kestrel. Designed with a simple and easy-to-use API inspired by express.js</Description>
+    <Description>Red is a http and websocket server framework built on asp.net core and kestrel. The API provided is inspired by express.js and designed to be simple and easy to use</Description>
     <Copyright>Copyright © Rosenbjerg 2018</Copyright>
     <AssemblyTitle>RedHttpServer</AssemblyTitle>
     <TargetFramework>netcoreapp2.0</TargetFramework>
@@ -21,19 +21,19 @@
     <ApplicationIcon />
     <OutputTypeEx>library</OutputTypeEx>
     <StartupObject />
-    <Version>3.2.1</Version>
-    <PackageTags>red redhttpserver redhttp rhttpserver rhs http server web api</PackageTags>
+    <Version>3.2.2</Version>
+    <PackageTags>red redhttpserver redhttp rhttpserver rhs http server web api expressjs http websocket middleware</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageProjectUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/rosenbjerg/Red</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/rosenbjerg/Red/blob/master/LICENSE.md</PackageLicenseUrl>
     <PackageIconUrl>https://rosenbjerg.dk/red/logo.png</PackageIconUrl>
-    <RepositoryUrl>https://github.com/rosenbjerg/RedHttpServer.CSharp</RepositoryUrl>
+    <RepositoryUrl>https://github.com/rosenbjerg/Red</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <Authors>Malte Rosenbjerg</Authors>
-    <PackageReleaseNotes>bugfix for plugin collection</PackageReleaseNotes>
-    <AssemblyVersion>3.2.1.0</AssemblyVersion>
-    <FileVersion>3.2.1.0</FileVersion>
+    <PackageReleaseNotes>async websocket handlers and signature change for overload for convenience</PackageReleaseNotes>
+    <AssemblyVersion>3.2.2.0</AssemblyVersion>
+    <FileVersion>3.2.2.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.0.0" />

@@ -45,7 +45,11 @@ namespace Red
         /// The version of the library
         /// </summary>
         public static string Version { get; } = typeof(RedHttpServer).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
-        
+
+        /// <summary>
+        /// Whether details about an exception should be send with the code 500 response. For debugging
+        /// </summary>
+        public bool RespondWithExceptionDetails { get; set; } = false;
         /// <summary>
         ///     The port that the server is listening on
         /// </summary>
@@ -168,7 +172,7 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
-        public void WebSocket(string route, params Action<Request, WebSocketDialog, Response>[] handlers)
+        public void WebSocket(string route, params Func<Request, Response, WebSocketDialog, Task>[] handlers)
         {
             if (handlers.Length == 0)
                 throw new RedHttpServerException("A route requires at least one handler");
@@ -183,7 +187,7 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
-        public void WebSocket(string route, params Action<Request, WebSocketDialog>[] handlers)
+        public void WebSocket(string route, params Func<Request, WebSocketDialog, Task>[] handlers)
         {
             if (handlers.Length == 0)
                 throw new RedHttpServerException("A route requires at least one handler");

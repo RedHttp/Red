@@ -105,6 +105,7 @@ namespace Red
         /// <param name="headerValue">The value of the header</param>
         public void AddHeader(string headerName, string headerValue)
         {
+            if (Closed) throw new RedHttpServerException("A response has already been sent.");
             UnderlyingResponse.Headers.Add(headerName, headerValue);
         }
 

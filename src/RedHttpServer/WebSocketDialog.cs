@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.Http;
 namespace Red
 {
     /// <summary>
-    ///     Represents a websocket dialog between the server and a client
+    ///     Represents a websocket dialog between the server and a client.
+    ///     The WebSocketDialog will only start reading from the websocket after the handlers have been processed.
     /// </summary>
     public sealed class WebSocketDialog
     {

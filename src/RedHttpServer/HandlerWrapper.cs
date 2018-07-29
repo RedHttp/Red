@@ -17,12 +17,12 @@ namespace Red
         public readonly string Method;
         private readonly Func<Request, Response, Task>[] _handlers;
         
-        public void Process(Request req, Response res)
+        public async Task Process(Request req, Response res)
         {
             foreach (var handler in _handlers)
             {
                 if (res.Closed) break;
-                handler(req, res);
+                await handler(req, res);
             }
         }
 

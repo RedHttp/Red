@@ -81,12 +81,21 @@ namespace Red
                     if (res.Closed) return;
                     await middleware.Process(req, res);
                 }
-                handlerWrapper.Process(req, res);
+                await handlerWrapper.Process(req, res);
             }
-            catch (Exception)
-            {
+            catch (Exception e)
+            { 
                 if (!res.Closed)
-                    await res.SendStatus(HttpStatusCode.InternalServerError);
+                {
+                    if (RespondWithExceptionDetails)
+                    {
+                        await res.SendString(e.ToString(), status: HttpStatusCode.InternalServerError);
+                    }
+                    else
+                    {
+                        await res.SendStatus(HttpStatusCode.InternalServerError);
+                    }
+                }
             }
         }
         private async Task WrapWebsocketHandler(HttpContext context, WsHandlerWrapper handlerWrapper)
@@ -104,7 +113,7 @@ namespace Red
                         if (res.Closed) break;
                         await middleware.Process(req, wsd, res);
                     }
-                    handlerWrapper.Process(req, wsd, res);
+                    await handlerWrapper.Process(req, wsd, res);
                     await wsd.ReadFromWebSocket();
                 }
                 else
@@ -116,7 +125,16 @@ namespace Red
             catch (Exception e)
             {
                 if (!res.Closed)
-                    await res.SendStatus(HttpStatusCode.InternalServerError);
+                {
+                    if (!RespondWithExceptionDetails)
+                    {
+                        await res.SendStatus(HttpStatusCode.InternalServerError);
+                    }
+                    else
+                    {
+                        await res.SendString(e.ToString(), status: HttpStatusCode.InternalServerError);
+                    }
+                }
             }
         }
 

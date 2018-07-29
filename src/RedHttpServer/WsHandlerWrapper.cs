@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Red
 {
     internal class WsHandlerWrapper
     {
-        public WsHandlerWrapper(string path, Action<Request, WebSocketDialog, Response>[] handlers)
+        public WsHandlerWrapper(string path, Func<Request, Response, WebSocketDialog, Task>[] handlers)
         {
             Path = path;
             _handlers = handlers;
         }
-        public WsHandlerWrapper(string path, Action<Request, WebSocketDialog>[] handlers)
+        public WsHandlerWrapper(string path, Func<Request, WebSocketDialog, Task>[] handlers)
         {
             Path = path;
             _simple = true;
@@ -18,14 +19,14 @@ namespace Red
         }
 
 
-        public void Process(Request req, WebSocketDialog wsd, Response res)
+        public async Task Process(Request req, WebSocketDialog wsd, Response res)
         {
             if (_simple)
             {
                 foreach (var handler in _simpleHandlers)
                 {
                     if (res.Closed) break;
-                    handler(req, wsd);
+                    await handler(req, wsd);
                 }
             }
             else
@@ -33,7 +34,7 @@ namespace Red
                 foreach (var handler in _handlers)
                 {
                     if (res.Closed) break;
-                    handler(req, wsd, res);
+                    await handler(req, res, wsd);
                 }
             }
         }
@@ -41,7 +42,7 @@ namespace Red
         private readonly bool _simple;
         
         public readonly string Path;
-        private readonly Action<Request, WebSocketDialog, Response>[] _handlers;
-        private readonly Action<Request, WebSocketDialog>[] _simpleHandlers;
+        private readonly Func<Request, Response, WebSocketDialog, Task>[] _handlers;
+        private readonly Func<Request, WebSocketDialog, Task>[] _simpleHandlers;
     }
 }
