@@ -17,7 +17,7 @@ namespace Red
         public readonly string Method;
         private readonly Func<Request, Response, Task>[] _handlers;
         
-        public async Task Process(Request req, Response res)
+        public async Task Invoke(Request req, Response res)
         {
             foreach (var handler in _handlers)
             {

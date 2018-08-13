@@ -10,16 +10,16 @@ namespace Red
             Path = path;
             _handlers = handlers;
         }
+
         public WsHandlerWrapper(string path, Func<Request, WebSocketDialog, Task>[] handlers)
         {
             Path = path;
             _simple = true;
-            
             _simpleHandlers = handlers;
         }
 
 
-        public async Task Process(Request req, WebSocketDialog wsd, Response res)
+        public async Task Invoke(Request req, WebSocketDialog wsd, Response res)
         {
             if (_simple)
             {

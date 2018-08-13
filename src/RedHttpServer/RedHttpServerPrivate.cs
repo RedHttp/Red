@@ -72,8 +72,8 @@ namespace Red
         }
         private async Task WrapHandler(HttpContext context, HandlerWrapper handlerWrapper)
         {
-            var req = new Request(context.Request, Plugins);
-            var res = new Response(context.Response, Plugins);
+            var req = new Request(context, Plugins);
+            var res = new Response(context, Plugins);
             try
             {
                 foreach (var middleware in _middlewareStack)
@@ -81,7 +81,7 @@ namespace Red
                     if (res.Closed) return;
                     await middleware.Process(req, res);
                 }
-                await handlerWrapper.Process(req, res);
+                await handlerWrapper.Invoke(req, res);
             }
             catch (Exception e)
             { 
@@ -100,8 +100,8 @@ namespace Red
         }
         private async Task WrapWebsocketHandler(HttpContext context, WsHandlerWrapper handlerWrapper)
         {
-            var req = new Request(context.Request, Plugins);
-            var res = new Response(context.Response, Plugins);
+            var req = new Request(context, Plugins);
+            var res = new Response(context, Plugins);
             try
             {
                 if (context.WebSockets.IsWebSocketRequest)
@@ -113,13 +113,12 @@ namespace Red
                         if (res.Closed) break;
                         await middleware.Process(req, wsd, res);
                     }
-                    await handlerWrapper.Process(req, wsd, res);
+                    await handlerWrapper.Invoke(req, wsd, res);
                     await wsd.ReadFromWebSocket();
                 }
                 else
                 {
-                    if (!res.Closed)
-                        await res.SendStatus(HttpStatusCode.BadRequest);
+                    await res.SendStatus(HttpStatusCode.BadRequest);
                 }
             }
             catch (Exception e)
@@ -157,5 +156,6 @@ namespace Red
                 parameter = urlParam.Replace(parameter, match => "{" + match.Value.TrimStart(':') + "}");
             return parameter;
         }
+
     }
 }

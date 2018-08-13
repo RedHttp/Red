@@ -47,7 +47,7 @@ namespace Red
         public static string Version { get; } = typeof(RedHttpServer).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
 
         /// <summary>
-        /// Whether details about an exception should be send with the code 500 response. For debugging
+        /// Whether details about an exception should be sent together with the code 500 response. For debugging
         /// </summary>
         public bool RespondWithExceptionDetails { get; set; } = false;
         /// <summary>

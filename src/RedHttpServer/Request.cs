@@ -16,24 +16,32 @@ namespace Red
         private readonly Dictionary<Type, object> _data = new Dictionary<Type, object>();
         private IFormCollection _form;
 
-        internal Request(HttpRequest req, PluginCollection plugins)
+        internal Request(HttpContext context, PluginCollection plugins)
         {
-            UnderlyingRequest = req;
-            Parameters = new RequestParameters(req.HttpContext);
+            UnderlyingContext = context;
+            Parameters = new RequestParameters(context);
             ServerPlugins = plugins;
         }
-
-        /// <summary>
-        /// The available plugins
-        /// </summary>
-        public PluginCollection ServerPlugins { get; }
 
         /// <summary>
         ///     The underlying HttpRequest
         ///     <para />
         ///     The implementation of Request is leaky, to avoid limiting you
         /// </summary>
-        public HttpRequest UnderlyingRequest { get; }
+        public HttpRequest UnderlyingRequest => UnderlyingContext.Request;
+        
+        /// <summary>
+        ///     The underlying HttpContext
+        ///     <para />
+        ///     The implementation of Request is leaky, to avoid limiting you
+        /// </summary>
+        public HttpContext UnderlyingContext { get; set; }
+
+        /// <summary>
+        /// The available plugins
+        /// </summary>
+        public PluginCollection ServerPlugins { get; }
+
 
         /// <summary>
         ///     The url parameters of the request

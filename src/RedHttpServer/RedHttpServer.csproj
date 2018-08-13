@@ -21,7 +21,7 @@
     <ApplicationIcon />
     <OutputTypeEx>library</OutputTypeEx>
     <StartupObject />
-    <Version>3.2.2</Version>
+    <Version>3.3.0</Version>
     <PackageTags>red redhttpserver redhttp rhttpserver rhs http server web api expressjs http websocket middleware</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -31,9 +31,10 @@
     <RepositoryUrl>https://github.com/rosenbjerg/Red</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <Authors>Malte Rosenbjerg</Authors>
-    <PackageReleaseNotes>async websocket handlers and signature change for overload for convenience</PackageReleaseNotes>
-    <AssemblyVersion>3.2.2.0</AssemblyVersion>
-    <FileVersion>3.2.2.0</FileVersion>
+    <PackageReleaseNotes>added support for automatic handling of range requests on dynamic file handlers (Response.SendFile)</PackageReleaseNotes>
+    <AssemblyVersion>3.3.0.0</AssemblyVersion>
+    <FileVersion>3.3.0.0</FileVersion>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.0.0" />

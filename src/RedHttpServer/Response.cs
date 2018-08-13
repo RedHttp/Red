@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Runtime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Red.Interfaces;
@@ -83,6 +86,7 @@ namespace Red
                 {".tk", "application/x-tcl"},
                 {".txt", "text/plain"},
                 {".war", "application/java-archive"},
+                {".webm", "video/webm"},
                 {".wbmp", "image/vnd.wap.wbmp"},
                 {".wmv", "video/x-ms-wmv"},
                 {".xml", "text/xml"},
@@ -92,9 +96,9 @@ namespace Red
                 #endregion
             };
 
-        internal Response(HttpResponse resp, PluginCollection plugins)
+        internal Response(HttpContext context, PluginCollection plugins)
         {
-            UnderlyingResponse = resp;
+            UnderlyingContext = context;
             ServerPlugins = plugins;
         }
 
@@ -114,7 +118,14 @@ namespace Red
         ///     <para />
         ///     The implementation of Request is leaky, to avoid limiting you
         /// </summary>
-        public HttpResponse UnderlyingResponse { get; }
+        public HttpResponse UnderlyingResponse => UnderlyingContext.Response;
+
+        /// <summary>
+        ///     The underlying HttpContext
+        ///     <para />
+        ///     The implementation of Request is leaky, to avoid limiting you
+        /// </summary>
+        public HttpContext UnderlyingContext { get; set; }
 
         /// <summary>
         ///     The available plugins registered to the server
@@ -130,11 +141,14 @@ namespace Red
         ///     Redirects the client to a given path or url
         /// </summary>
         /// <param name="redirectPath">The path or url to redirect to</param>
-        public Task Redirect(string redirectPath)
+        /// <param name="permanent">Whether to respond with a temporary or permanent redirect</param>
+        public Task Redirect(string redirectPath, bool permanent = false)
         {
-            UnderlyingResponse.Redirect(redirectPath);
-            return CompletedTask;
+            UnderlyingResponse.Redirect(redirectPath, permanent);
+            return CompletedRedirectTask;
         }
+        // Cached completed task for Redirect member function
+        private static readonly Task CompletedRedirectTask = Task.FromResult(true);
 
         /// <summary>
         ///     Sends data as text
@@ -142,26 +156,39 @@ namespace Red
         /// <param name="data">The text data to send</param>
         /// <param name="contentType">The mime type of the content</param>
         /// <param name="fileName">If the data represents a file, the filename can be set through this</param>
+        /// <param name="attachment">Whether the file should be sent as attachment or inline</param>
         /// <param name="status">The status code for the response</param>
         public async Task SendString(string data, string contentType = "text/plain", string fileName = "",
-            HttpStatusCode status = HttpStatusCode.OK)
+            bool attachment = false, HttpStatusCode status = HttpStatusCode.OK)
         {
-            await SendString(UnderlyingResponse, data, contentType, fileName, status);
+            await SendString(UnderlyingResponse, data, contentType, fileName, attachment, status);
             Closed = true;
         }
+
         /// <summary>
         ///     Static helper for use in middleware
         /// </summary>
-        public static async Task SendString(HttpResponse response, string data, string contentType = "text/plain", string fileName = "",
-            HttpStatusCode status = HttpStatusCode.OK)
+        public static async Task SendString(HttpResponse response, string data, string contentType = "text/plain",
+            string fileName = "",
+            bool attachment = false, HttpStatusCode status = HttpStatusCode.OK)
         {
             response.StatusCode = (int) status;
             response.ContentType = contentType;
             if (!string.IsNullOrEmpty(fileName))
-                response.Headers.Add("Content-disposition", $"inline; filename=\"{fileName}\"");
+                response.Headers.Add("Content-disposition",
+                    $"{(attachment ? "attachment" : "inline")}; filename=\"{fileName}\"");
             await response.WriteAsync(data);
         }
-        
+
+        /// <summary>
+        ///     Send a empty response with a status code
+        /// </summary>
+        /// <param name="response">The HttpResponse object</param>
+        /// <param name="status">The status code for the response</param>
+        public static async Task SendStatus(HttpResponse response, HttpStatusCode status)
+        {
+            await SendString(response, status.ToString(), status: status);
+        }
         /// <summary>
         ///     Send a empty response with a status code
         /// </summary>
@@ -169,13 +196,6 @@ namespace Red
         public async Task SendStatus(HttpStatusCode status)
         {
             await SendString(status.ToString(), status: status);
-        }
-        /// <summary>
-        ///     Static helper for use in middleware
-        /// </summary>
-        public static async Task SendStatus(HttpResponse response, HttpStatusCode status)
-        {
-            await SendString(response, status.ToString(), status: status);
         }
 
         /// <summary>
@@ -199,30 +219,29 @@ namespace Red
             var xml = ServerPlugins.Get<IXmlConverter>().Serialize(data);
             await SendString(xml, "application/xml", status: status);
         }
-        
+
         /// <summary>
         ///     Sends all data in stream to response
         /// </summary>
         /// <param name="dataStream">The stream to copy data from</param>
         /// <param name="contentType">The mime type of the data in the stream</param>
         /// <param name="fileName">The filename that the browser should see the data as. Optional</param>
+        /// <param name="attachment">Whether the file should be sent as attachment or inline</param>
         /// <param name="dispose">Whether to call dispose on stream when done sending</param>
         /// <param name="status">The status code for the response</param>
-        public async Task SendStream(Stream dataStream, string contentType, string fileName = "", bool dispose = true, HttpStatusCode status = HttpStatusCode.OK)
+        public async Task SendStream(Stream dataStream, string contentType, string fileName = "",
+            bool attachment = false, bool dispose = true, HttpStatusCode status = HttpStatusCode.OK)
         {
-            UnderlyingResponse.StatusCode = (int)status;
+            UnderlyingResponse.StatusCode = (int) status;
             UnderlyingResponse.ContentType = contentType;
-            if (fileName != "")
-                UnderlyingResponse.Headers.Add("Content-disposition", $"inline; filename=\"{fileName}\"");
+            if (!string.IsNullOrEmpty(fileName))
+                AddHeader("Content-disposition", $"{(attachment ? "attachment" : "inline")}; filename=\"{fileName}\"");
             await dataStream.CopyToAsync(UnderlyingResponse.Body);
-            if (dispose) 
+            if (dispose)
                 dataStream.Dispose();
             Closed = true;
         }
 
-        
-        
-
         /// <summary>
         ///     Sends file as response and requests the data to be displayed in-browser if possible
         /// </summary>
@@ -231,41 +250,46 @@ namespace Red
         ///     The mime type for the file, when set to null, the system will try to detect based on file
         ///     extension
         /// </param>
+        /// <param name="handleRanges">Whether to enable handling of range-requests for the file(s) served</param>
         /// <param name="status">The status code for the response</param>
-        public async Task SendFile(string filePath, string contentType = null, HttpStatusCode status = HttpStatusCode.OK)
+        public async Task SendFile(string filePath, string contentType = null, bool handleRanges = true,
+            HttpStatusCode status = HttpStatusCode.OK)
         {
-            UnderlyingResponse.StatusCode = (int)status;
-            if (contentType == null && !MimeTypes.TryGetValue(Path.GetExtension(filePath), out contentType))
-                contentType = "application/octet-stream";
-            UnderlyingResponse.ContentType = contentType;
-            UnderlyingResponse.Headers.Add("Accept-Ranges", "bytes");
-            UnderlyingResponse.Headers.Add("Content-disposition", $"inline; filename=\"{Path.GetFileName(filePath)}\"");
-            await UnderlyingResponse.SendFileAsync(filePath);
-            Closed = true;
-        }
+            if (handleRanges) AddHeader("Accept-Ranges", "bytes");
 
-        /// <summary>
-        ///     Sends file as response and requests the data to be displayed in-browser if possible
-        /// </summary>
-        /// <param name="filePath">The local path of the file to send</param>
-        /// <param name="rangeStart">The offset in the file</param>
-        /// <param name="rangeEnd">The position of the last byte to send, in the file</param>
-        /// <param name="contentType">
-        ///     The mime type for the file, when set to null, the system will try to detect based on file
-        ///     extension
-        /// </param>
-        /// <param name="status">The status code for the response</param>
-        public async Task SendFile(string filePath, long rangeStart, long rangeEnd, string contentType = "",
-            HttpStatusCode status = HttpStatusCode.PartialContent)
-        {
-            UnderlyingResponse.StatusCode = (int)status;
-            if (contentType == null && !MimeTypes.TryGetValue(Path.GetExtension(filePath), out contentType))
-                contentType = "application/octet-stream";
-            UnderlyingResponse.ContentType = contentType;
-            UnderlyingResponse.Headers.Add("Accept-Ranges", "bytes");
-            UnderlyingResponse.Headers.Add("Content-disposition",
-                "inline; filename=\"" + Path.GetFileName(filePath) + "\"");
-            await UnderlyingResponse.SendFileAsync(filePath, rangeStart, rangeEnd);
+            var fileSize = new FileInfo(filePath).Length;
+            var range = UnderlyingContext.Request.GetTypedHeaders().Range;
+
+            if (range != null && range.Ranges.Any())
+            {
+                var firstRange = range.Ranges.First();
+                if (range.Unit != "bytes" || (!firstRange.From.HasValue && !firstRange.To.HasValue))
+                {
+                    await SendStatus(HttpStatusCode.BadRequest);
+                    return;
+                }
+
+                var offset = firstRange.From ?? fileSize - firstRange.To.Value;
+                var length = firstRange.To.HasValue
+                    ? fileSize - offset - (fileSize - firstRange.To.Value)
+                    : fileSize - offset;
+
+                UnderlyingResponse.StatusCode = (int) HttpStatusCode.PartialContent;
+                UnderlyingResponse.ContentType = GetMime(contentType, filePath);
+                UnderlyingResponse.ContentLength = length;
+                AddHeader("Content-Disposition", $"inline; filename=\"{Path.GetFileName(filePath)}\"");
+                AddHeader("Content-Range", $"bytes {offset}-{offset + length - 1}/{fileSize}");
+                await UnderlyingResponse.SendFileAsync(filePath, offset, length);
+            }
+            else
+            {
+                UnderlyingResponse.StatusCode = (int) status;
+                UnderlyingResponse.ContentType = GetMime(contentType, filePath);
+                UnderlyingResponse.ContentLength = fileSize;
+                AddHeader("Content-Disposition", $"inline; filename=\"{Path.GetFileName(filePath)}\"");
+                await UnderlyingResponse.SendFileAsync(filePath);
+            }
+
             Closed = true;
         }
 
@@ -283,14 +307,21 @@ namespace Red
             HttpStatusCode status = HttpStatusCode.OK)
         {
             UnderlyingResponse.StatusCode = (int) status;
-            if (contentType == null && !MimeTypes.TryGetValue(Path.GetExtension(filePath), out contentType))
-                contentType = "application/octet-stream";
-            UnderlyingResponse.ContentType = contentType;
+            UnderlyingResponse.ContentType = GetMime(contentType, filePath);
             var name = string.IsNullOrEmpty(fileName) ? Path.GetFileName(filePath) : fileName;
-            UnderlyingResponse.Headers.Add("Content-disposition", $"attachment; filename=\"{name}\"");
+            AddHeader("Content-disposition", $"attachment; filename=\"{name}\"");
             await UnderlyingResponse.SendFileAsync(filePath);
             Closed = true;
         }
 
+
+        private static string GetMime(string contentType, string filePath,
+            string defaultContentType = "application/octet-stream")
+        {
+            if (string.IsNullOrEmpty(contentType) &&
+                !MimeTypes.TryGetValue(Path.GetExtension(filePath), out contentType))
+                contentType = defaultContentType;
+            return contentType;
+        }
     }
 }
