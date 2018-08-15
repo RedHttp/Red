@@ -48,6 +48,7 @@ namespace Red
         /// Whether details about an exception should be sent together with the code 500 response. For debugging
         /// </summary>
         public bool RespondWithExceptionDetails { get; set; } = false;
+
         /// <summary>
         ///     The port that the server is listening on
         /// </summary>
