@@ -2,11 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Red.Extensions;
@@ -56,11 +54,6 @@ namespace Red
         public int Port { get; }
 
         /// <summary>
-        ///     Cross-Origin Resource Sharing (CORS) policy
-        /// </summary>
-        public CorsPolicy CorsPolicy { get; set; }
-
-        /// <summary>
         ///     Starts the server
         ///     The server will handle requests for hostnames
         ///     Protocol and port will be added automatically
@@ -72,22 +65,19 @@ namespace Red
             var urls = hostnames.Select(url => $"http://{url}:{Port}").ToArray();
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .ConfigureServices(s =>
+                .ConfigureServices(services =>
                 {
-                    if (CorsPolicy != null)
-                        s.AddCors(options => options.AddPolicy("CorsPolicy", ConfigurePolicy));
-                    s.AddRouting();
-                    ConfigureServices?.Invoke(s);
+                    services.AddRouting();
+                    ConfigureServices?.Invoke(services);
                 })
                 .Configure(app =>
                 {
-                    if (CorsPolicy != null)
-                        app.UseCors("CorsPolicy");
                     if (!string.IsNullOrWhiteSpace(_publicRoot) && Directory.Exists(_publicRoot))
                         app.UseFileServer(new FileServerOptions { FileProvider = new PhysicalFileProvider(Path.GetFullPath(_publicRoot)) });
                     if (_wsHandlers.Any())
                         app.UseWebSockets();
                     app.UseRouter(SetRoutes);
+                    ConfigureApplication?.Invoke(app);
                 })
                 .UseUrls(urls)
                 .Build();
@@ -96,9 +86,14 @@ namespace Red
         }
 
         /// <summary>
-        ///     Method to register ASP.NET Core Services, such as DbContext etc.
+        ///     Method to register additional ASP.NET Core Services
         /// </summary>
         public Action<IServiceCollection> ConfigureServices { private get; set; }
+        
+        /// <summary>
+        ///     Method to configure the ASP.NET Core application additionally
+        /// </summary>
+        public Action<IApplicationBuilder> ConfigureApplication { private get; set; }
 
         /// <summary>
         ///     Starts the server

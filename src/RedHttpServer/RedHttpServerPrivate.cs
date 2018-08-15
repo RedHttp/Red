@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal.Networking;
 using Red.Interfaces;
 
 namespace Red
@@ -27,21 +24,6 @@ namespace Red
         private List<HandlerWrapper> _handlers = new List<HandlerWrapper>();
         
         private List<WsHandlerWrapper> _wsHandlers = new List<WsHandlerWrapper>();
-        
-        private void ConfigurePolicy(CorsPolicyBuilder builder)
-        {
-            builder = CorsPolicy.AllowedOrigins.All(d => d == "*")
-                ? builder.AllowAnyOrigin()
-                : builder.WithOrigins(CorsPolicy.AllowedOrigins.ToArray());
-            
-            builder = CorsPolicy.AllowedMethods.All(d => d == "*")
-                ? builder.AllowAnyMethod()
-                : builder.WithOrigins(CorsPolicy.AllowedMethods.ToArray());
-            
-            builder = CorsPolicy.AllowedHeaders.All(d => d == "*")
-                ? builder.AllowAnyHeader()
-                : builder.WithOrigins(CorsPolicy.AllowedHeaders.ToArray());
-        }
         
         private void Initialize()
         {
