@@ -17,7 +17,6 @@ namespace Red
     /// </summary>
     public partial class RedHttpServer
     {
-        
         /// <summary>
         ///     Constructs a server instance with given port and using the given path as public folder.
         ///     Set path to null or empty string if none wanted
@@ -55,37 +54,39 @@ namespace Red
         public int Port { get; }
 
         /// <summary>
-        ///     Starts the server
-        ///     The server will handle requests for hostnames
-        ///     Protocol and port will be added automatically
+        ///     Starts the server.
+        ///     If no hostnames are provided, localhost will be used.
         /// </summary>
-        /// <param name="hostnames">The host names the server is handling requests for</param>
+        /// <param name="hostnames">The host names the server is handling requests for. Protocol and port will be added automatically</param>
         public void Start(params string[] hostnames)
         {
-            Initialize();
-            var urls = hostnames.Select(url => $"http://{url}:{Port}").ToArray();
-            var host = new WebHostBuilder()
-                .UseKestrel()
-                .ConfigureServices(services =>
-                {
-                    services.AddRouting();
-                    ConfigureServices?.Invoke(services);
-                })
-                .Configure(app =>
-                {
-                    if (!string.IsNullOrWhiteSpace(_publicRoot) && Directory.Exists(_publicRoot))
-                        app.UseFileServer(new FileServerOptions { FileProvider = new PhysicalFileProvider(Path.GetFullPath(_publicRoot)) });
-                    if (_wsHandlers.Any())
-                        app.UseWebSockets();
-                    app.UseRouter(SetRoutes);
-                    ConfigureApplication?.Invoke(app);
-                })
-                .UseUrls(urls)
-                .Build();
-            host.Start();
+            Build(hostnames);
+            _host.Start();
             Console.WriteLine($"RedHttpServer/{Version} running on port " + Port);
         }
+        
+        /// <summary>
+        ///     Attempts to stop the running server using IWebHost.StopAsync
+        /// </summary>
+        public Task StopAsync()
+        {
+            return _host?.StopAsync();
+        }
 
+        /// <summary>
+        ///     Run the server using IWebHost.RunAsync and return the task so it can be awaited.
+        ///     If no hostnames are provided, localhost will be used.
+        /// </summary>
+        /// <param name="hostnames">The host names the server is handling requests for. Protocol and port will be added automatically</param>
+        /// <returns></returns>
+        public Task RunAsync(params string[] hostnames)
+        {
+            Build(hostnames);
+            Console.WriteLine($"Starting RedHttpServer/{Version} on port " + Port);
+            var runTask = _host.RunAsync();
+            return runTask;
+        }
+        
         /// <summary>
         ///     Method to register additional ASP.NET Core Services
         /// </summary>
@@ -96,17 +97,7 @@ namespace Red
         /// </summary>
         public Action<IApplicationBuilder> ConfigureApplication { private get; set; }
 
-        /// <summary>
-        ///     Starts the server
-        ///     <para />
-        /// </summary>
-        /// <param name="localOnly">Whether to only listn locally</param>
-        public void Start(bool localOnly = false)
-        {
-            Start(localOnly ? "localhost" : "*");
-        }
-
-        /// <summary>
+  /// <summary>
         ///     Register extension modules and middleware
         /// </summary>
         /// <param name="extension"></param>

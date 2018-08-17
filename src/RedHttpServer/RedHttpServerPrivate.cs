@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Red.Interfaces;
 
 namespace Red
@@ -20,10 +26,41 @@ namespace Red
         private readonly List<IRedWebSocketMiddleware> _wsMiddlewareStack = new List<IRedWebSocketMiddleware>();
         private readonly List<IRedExtension> _plugins = new List<IRedExtension>();
 
+        private IWebHost _host;
         private readonly string _publicRoot;
         private List<HandlerWrapper> _handlers = new List<HandlerWrapper>();
         
         private List<WsHandlerWrapper> _wsHandlers = new List<WsHandlerWrapper>();
+        
+        private void Build(string[] hostnames)
+        {
+            if (_host != default)
+            {
+                throw new RedHttpServerException("The server is already running");
+            }
+            Initialize();
+            var urls = hostnames.Length != 0 
+                ? hostnames.Select(url => $"http://{url}:{Port}").ToArray()
+                : new []{ $"http://localhost:{Port}" };
+            _host = new WebHostBuilder()
+                .UseKestrel()
+                .ConfigureServices(services =>
+                {
+                    services.AddRouting();
+                    ConfigureServices?.Invoke(services);
+                })
+                .Configure(app =>
+                {
+                    if (!string.IsNullOrWhiteSpace(_publicRoot) && Directory.Exists(_publicRoot))
+                        app.UseFileServer(new FileServerOptions { FileProvider = new PhysicalFileProvider(Path.GetFullPath(_publicRoot)) });
+                    if (_wsHandlers.Any())
+                        app.UseWebSockets();
+                    app.UseRouter(SetRoutes);
+                    ConfigureApplication?.Invoke(app);
+                })
+                .UseUrls(urls)
+                .Build();
+        }
         
         private void Initialize()
         {

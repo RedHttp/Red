@@ -12,9 +12,9 @@ namespace Test
     
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            var server = new RedHttpServer(5000);
+            var server = new RedHttpServer(5001);
             server.RespondWithExceptionDetails = true;
 
             async Task Auth(Request req, Response res, WebSocketDialog wsd)
@@ -22,7 +22,7 @@ namespace Test
                 
             }
 
-            server.Get("/exception", async (req, res) => { throw new Exception("oh no!"); });
+            server.Get("/exception", async (req, res) => throw new Exception("oh no!"));
 
             server.Get("/index", async (req, res) => await res.SendFile("./index.html"));
             server.Get("/webm", async (req, res) => await res.SendFile("./Big_Buck_Bunny_alt.webm"));
@@ -36,9 +36,7 @@ namespace Test
                 
             });
 
-            server.Start();
-            Console.WriteLine("Hello World!");
-            Console.Read();
+            await server.RunAsync();
         }
     }
 }
