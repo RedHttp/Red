@@ -18,7 +18,7 @@ I have created a couple already; three are inbuilt, but can easily be replaced:
 * XmlConverter - uses System.Xml.Serialization
 * BodyParser - uses both the Json- and Xml converter to parse request body to an object, depending on content-type.
 
-And three more split out into separate projects:
+And five more split out into separate projects:
 - [CookieSessions](https://github.com/rosenbjerg/Red.CookieSessions) simple session management middleware that uses cookies with authentication tokens.
 - [JwtSessions](https://github.com/rosenbjerg/Red.JwtSessions) simple session management middleware that uses cookies with authentication tokens.
 - [EcsRenderer](https://github.com/rosenbjerg/Red.EcsRenderer) simple template rendering extension. See more info about the format by clicking the link.
@@ -34,12 +34,12 @@ And three more split out into separate projects:
 
     var sessions = new CookieSessions<MySess>(new CookieSessionSettings(TimeSpan.FromDays(1))
     {
-	Secure = false
+	Secure = false // To be able to use cookies without https in development
     });
 
     server.Use(sessions);
 
-
+    // Middleware that closes requests without a valid session
     async Task Auth(Request req, Response res)
     {
 	if (req.GetSession<MySess>() == null)
@@ -58,6 +58,12 @@ And three more split out into separate projects:
 		$"URL: {req.Parameters["param1"]} / {req.Parameters["paramtwo"]} / {req.Parameters["somethingthird"]}");
 	});
 
+    server.Post("/login", async (req, res) =>
+    {
+	// Here we could authenticate the user properly, with credentials sent in a form, or similar
+	req.OpenSession(new MySess {Username = "benny"});
+	await res.SendStatus(HttpStatusCode.OK);
+    });
     server.Get("/login", async (req, res) =>
     {
 	// To make it easy to test the session system only using the browser and no credentials
@@ -75,19 +81,13 @@ And three more split out into separate projects:
 	req.GetSession<MySess>().Close(req);
 	await res.SendStatus(HttpStatusCode.OK);
     });
-    server.Post("/login", async (req, res) =>
-    {
-	// Here we could authenticate the user properly, with credentials sent in a form, or similar
-	req.OpenSession(new MySess {Username = "benny"});
-	await res.SendStatus(HttpStatusCode.OK);
-    });
 
-    // Redirect to page on same host
+    // Redirect to page on same host, but only if authenticated
     server.Get("/redirect", Auth, async (req, res) => { await res.Redirect("/redirect/test/here"); });
 
-    // Save uploaded file from request body 
+    // Save uploaded file from request body, but only if authenticated
     Directory.CreateDirectory("uploads");
-    server.Post("/upload", async (req, res) =>
+    server.Post("/upload", Auth, async (req, res) =>
     {
 	if (await req.SaveFiles("uploads"))
 	    await res.SendString("OK");
@@ -104,7 +104,7 @@ And three more split out into separate projects:
 	await res.SendString("Hello " + form["firstname"]);
     });
 
-    // Using url queries to generate an answer
+    // Using url queries to generate an answer, but only if authenticated
     server.Get("/hello", Auth, async (req, res) =>
     {
 	var session = req.GetData<MySess>();
