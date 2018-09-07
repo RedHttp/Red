@@ -9,7 +9,7 @@
     <Description>Red is a http and websocket server framework built on asp.net core and kestrel. The API provided is inspired by express.js and designed to be simple and easy to use</Description>
     <Copyright>Copyright © Rosenbjerg 2018</Copyright>
     <AssemblyTitle>RedHttpServer</AssemblyTitle>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>RedHttpServer</AssemblyName>
     <PackageId>RHttpServer</PackageId>
