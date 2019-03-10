@@ -1,5 +1,3 @@
-# RedHttpServer
-
 ## Features
 - Extensible - support for middleware and plugins
 - WebSocket support - no plugins required
