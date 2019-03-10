@@ -35,7 +35,7 @@ namespace Red
         ///     <para />
         ///     The implementation of Request is leaky, to avoid limiting you
         /// </summary>
-        public HttpContext UnderlyingContext { get; set; }
+        public HttpContext UnderlyingContext { get; }
 
         /// <summary>
         /// The available plugins
