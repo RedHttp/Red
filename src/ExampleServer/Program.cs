@@ -2,32 +2,31 @@
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using JwtSessions;
 using Red;
 using Red.CommonMarkRenderer;
 using Red.CookieSessions;
 using Red.EcsRenderer;
+using Red.JwtSessions;
 
 namespace TestServer
 {
     public class Program
     {
-        class MySess
+        class MySess : CookieSessionBase
         {
             public string Username;
         }
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             // We serve static files, such as index.html from the 'public' directory
             var server = new RedHttpServer(5000, "public");
             server.Use(new EcsRenderer());
 
-            var sessions = new CookieSessions<MySess>(new CookieSessionSettings(TimeSpan.FromDays(1))
+            var sessions = new CookieSessions<MySess>(TimeSpan.FromDays(1))
             {
-                Secure = false
-            });
-            
+                Secure = false // for development
+            };
             server.Use(sessions);
 
 
@@ -123,8 +122,7 @@ namespace TestServer
                 await wsd.SendText("Welcome to the echo test server");
                 wsd.OnTextReceived += (sender, eventArgs) => { wsd.SendText("you sent: " + eventArgs.Text); };
             });
-            server.Start();
-            Console.ReadKey();
+            await server.RunAsync();
         }
     }
 }

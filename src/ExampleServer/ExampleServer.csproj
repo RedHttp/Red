@@ -2,12 +2,13 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Red.CommonMarkRenderer" Version="1.0.0" />
-    <PackageReference Include="Red.CookieSessions" Version="2.0.0" />
-    <PackageReference Include="Red.EcsRenderer" Version="1.0.0" />
-    <PackageReference Include="Red.JwtSessions" Version="2.0.0" />
-    <PackageReference Include="RHttpServer" Version="3.2.1" />
+    <PackageReference Include="Red.CommonMarkRenderer" Version="1.1.0" />
+    <PackageReference Include="Red.CookieSessions" Version="3.0.1" />
+    <PackageReference Include="Red.EcsRenderer" Version="1.2.0" />
+    <PackageReference Include="Red.JwtSessions" Version="2.1.0" />
+    <PackageReference Include="RHttpServer" Version="3.5.2" />
   </ItemGroup>
 </Project>
