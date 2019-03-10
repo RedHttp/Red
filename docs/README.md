@@ -31,13 +31,13 @@ await server.RunAsync();
 
 ### Find it all at NuGet
 [RedHttpServer](https://www.nuget.org/packages/RHttpServer/)
-  - Authentication middleware
-    - [CookieSessions](https://www.nuget.org/packages/Red.CookieSessions/)
-    - [JwtSessions](https://www.nuget.org/packages/Red.JwtSessions/)
-  - Rendering plugins
-    - [HandlebarsRenderer](https://www.nuget.org/packages/Red.HandlebarsRenderer/)
-    - [CommonMarkRenderer](https://www.nuget.org/packages/Red.CommonMarkRenderer/)
-    - [EcsRenderer](https://www.nuget.org/packages/Red.EcsRenderer/)
+Authentication middleware
+- [CookieSessions](https://www.nuget.org/packages/Red.CookieSessions/)
+- [JwtSessions](https://www.nuget.org/packages/Red.JwtSessions/)
+Rendering plugins
+- [HandlebarsRenderer](https://www.nuget.org/packages/Red.HandlebarsRenderer/)
+- [CommonMarkRenderer](https://www.nuget.org/packages/Red.CommonMarkRenderer/)
+- [EcsRenderer](https://www.nuget.org/packages/Red.EcsRenderer/)
 
 ### Cool projects used 
 - [Json.NET](https://github.com/JamesNK/Newtonsoft.Json)
