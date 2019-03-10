@@ -11,7 +11,7 @@
 ### _Hello world_ example
 ```csharp
 var server = new RedHttpServer(5000, "public");
-server.Get("/", async (req, res) => await res.SendString("Hello world!));
+server.Get("/", async (req, res) => await res.SendString("Hello world!"));
 await server.RunAsync();
 ```
 
