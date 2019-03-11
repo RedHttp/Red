@@ -1,0 +1,63 @@
+﻿{
+  "version": "1.0.0",
+  "restore": {
+    "projectUniqueName": "C:\\Users\\Malte\\Documents\\GitHub\\Red\\src\\ExampleServer\\ExampleServer.csproj",
+    "projectName": "ExampleServer",
+    "projectPath": "C:\\Users\\Malte\\Documents\\GitHub\\Red\\src\\ExampleServer\\ExampleServer.csproj",
+    "outputPath": "C:\\Users\\Malte\\Documents\\GitHub\\Red\\src\\ExampleServer\\obj\\",
+    "projectStyle": "PackageReference",
+    "fallbackFolders": [
+      "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+    ],
+    "originalTargetFrameworks": [
+      "netcoreapp2.0"
+    ],
+    "frameworks": {
+      "netcoreapp2.0": {
+        "projectReferences": {}
+      }
+    },
+    "warningProperties": {
+      "warnAsError": [
+        "NU1605"
+      ]
+    }
+  },
+  "frameworks": {
+    "netcoreapp2.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "suppressParent": "All",
+          "target": "Package",
+          "version": "[2.0.0, )",
+          "autoReferenced": true
+        },
+        "RHttpServer": {
+          "target": "Package",
+          "version": "[3.5.2, )"
+        },
+        "Red.CommonMarkRenderer": {
+          "target": "Package",
+          "version": "[1.1.0, )"
+        },
+        "Red.CookieSessions": {
+          "target": "Package",
+          "version": "[3.0.1, )"
+        },
+        "Red.EcsRenderer": {
+          "target": "Package",
+          "version": "[1.2.0, )"
+        },
+        "Red.JwtSessions": {
+          "target": "Package",
+          "version": "[2.1.0, )"
+        }
+      },
+      "imports": [
+        "net461"
+      ],
+      "assetTargetFallback": true,
+      "warn": true
+    }
+  }
+}

@@ -1,0 +1,47 @@
+﻿{
+  "version": "1.0.0",
+  "restore": {
+    "projectUniqueName": "C:\\Users\\Malte\\Documents\\GitHub\\Red\\src\\Test\\Test.csproj",
+    "projectName": "Test",
+    "projectPath": "C:\\Users\\Malte\\Documents\\GitHub\\Red\\src\\Test\\Test.csproj",
+    "outputPath": "C:\\Users\\Malte\\Documents\\GitHub\\Red\\src\\Test\\obj\\",
+    "projectStyle": "PackageReference",
+    "fallbackFolders": [
+      "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+    ],
+    "originalTargetFrameworks": [
+      "netcoreapp2.0"
+    ],
+    "frameworks": {
+      "netcoreapp2.0": {
+        "projectReferences": {
+          "C:\\Users\\Malte\\Documents\\GitHub\\Red\\src\\RedHttpServer\\RedHttpServer.csproj": {
+            "projectPath": "C:\\Users\\Malte\\Documents\\GitHub\\Red\\src\\RedHttpServer\\RedHttpServer.csproj"
+          }
+        }
+      }
+    },
+    "warningProperties": {
+      "warnAsError": [
+        "NU1605"
+      ]
+    }
+  },
+  "frameworks": {
+    "netcoreapp2.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "suppressParent": "All",
+          "target": "Package",
+          "version": "[2.0.0, )",
+          "autoReferenced": true
+        }
+      },
+      "imports": [
+        "net461"
+      ],
+      "assetTargetFallback": true,
+      "warn": true
+    }
+  }
+}
