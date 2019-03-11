@@ -27,7 +27,7 @@ server.Get("/friends", Auth, async (req, res) =>
 }
 await server.RunAsync();
 ```
-##### _[More documentation here](https://rosenbjerg.dk/red/docs/)_
+##### _[More documentation here](https://rosenbjerg.github.io/Red/doxygen/)_
 
 ### Find it all at NuGet
 [RedHttpServer](https://www.nuget.org/packages/RHttpServer/)
