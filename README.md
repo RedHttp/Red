@@ -52,3 +52,5 @@ Rendering plugins
 
 ### MIT Licensed
 ##### _So use it for whatever you want to!_
+
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?">
