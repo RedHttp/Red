@@ -3,11 +3,11 @@
 
 A Http web server framework built on ASP.NET Core and Kestrel, but with an API inspired by the simplicity of express.js
 
-[Homepage](https://rosenbjerg.github.io/Red/)
-[Documentation](https://rosenbjerg.github.io/Red/doxygen/)
+- [Homepage](https://rosenbjerg.github.io/Red/)
+- [Documentation](https://rosenbjerg.github.io/Red/doxygen/)
 
 ### Installation
-RedHttpServer can be installed from [NuGet](https://www.nuget.org/packages/RHttpServer/): Install-Package RHttpServer
+RedHttpServer can be installed from [NuGet](https://www.nuget.org/packages/RHttpServer/): `Install-Package RHttpServer`
 
 ## Middleware and plugins
 RedHttpServer is created to be easy to build on top of. 
@@ -38,10 +38,11 @@ var server = new RedHttpServer(5000, "public");
 server.Use(new EcsRenderer());
 
 // We use Red.CookieSessions as authentication in this example
-server.Use(new CookieSessions<MySess>(new CookieSessionSettings(TimeSpan.FromDays(1))
+server.Use(new CookieSessions<MySess>(TimeSpan.FromDays(5))
 {
 	Secure = false // To be able to use cookies without https in development
-}));
+});
+
 // Middleware function that closes requests that does not have a valid session associated
 async Task Auth(Request req, Response res)
 {
