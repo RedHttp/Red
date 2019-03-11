@@ -3,7 +3,8 @@
 
 A Http web server framework built on ASP.NET Core and Kestrel, but with an API inspired by the simplicity of express.js
 
-[Documentation](https://rosenbjerg.dk/red/docs)
+[Homepage](https://rosenbjerg.github.io/Red/)
+[Documentation](https://rosenbjerg.github.io/Red/doxygen/)
 
 ### Installation
 RedHttpServer can be installed from [NuGet](https://www.nuget.org/packages/RHttpServer/): Install-Package RHttpServer
