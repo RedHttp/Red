@@ -32,14 +32,14 @@ namespace Red
         
         private List<WsHandlerWrapper> _wsHandlers = new List<WsHandlerWrapper>();
         
-        private void Build(string[] hostnames)
+        private void Build(IReadOnlyCollection<string> hostnames)
         {
             if (_host != default)
             {
                 throw new RedHttpServerException("The server is already running");
             }
             Initialize();
-            var urls = hostnames.Length != 0 
+            var urls = hostnames.Count != 0 
                 ? hostnames.Select(url => $"http://{url}:{Port}").ToArray()
                 : new []{ $"http://localhost:{Port}" };
             _host = new WebHostBuilder()
@@ -70,93 +70,102 @@ namespace Red
             }
         }
         
-        private void SetRoutes(IRouteBuilder rb)
+        private void SetRoutes(IRouteBuilder routeBuilder)
         {
-            var urlParam = new Regex(":[\\w-]+", RegexOptions.Compiled);
-            var generalParam = new Regex("\\*", RegexOptions.Compiled);
+            var urlParameterRegex = new Regex(":[\\w-]+", RegexOptions.Compiled);
 
-            foreach (var handlerWrapper in _handlers)
+            foreach (var handler in _handlers)
             {
-                var path = ConvertParameter(handlerWrapper.Path, urlParam, generalParam);
-                rb.MapVerb(handlerWrapper.Method, path, ctx => WrapHandler(ctx, handlerWrapper));
+                var path = ConvertParameter(handler.Path, urlParameterRegex);
+                routeBuilder.MapVerb(handler.Method, path, ctx => WrapHandler(ctx, handler));
             }
             _handlers = null;
 
             foreach (var handlerWrapper in _wsHandlers)
             {
-                var path = ConvertParameter(handlerWrapper.Path, urlParam, generalParam);
-                rb.MapGet(path, ctx => WrapWebsocketHandler(ctx, handlerWrapper));
+                var path = ConvertParameter(handlerWrapper.Path, urlParameterRegex);
+                routeBuilder.MapGet(path, ctx => WrapWebsocketHandler(ctx, handlerWrapper));
             }
             _wsHandlers = null;
         }
-        private async Task WrapHandler(HttpContext context, HandlerWrapper handlerWrapper)
+        private async Task<Response.Type> WrapHandler(HttpContext context, HandlerWrapper handlerWrapper)
         {
-            var req = new Request(context, Plugins);
-            var res = new Response(context, Plugins);
+            var request = new Request(context, Plugins);
+            var response = new Response(context, Plugins);
+            var status = Response.Type.Continue;
             try
             {
                 foreach (var middleware in _middlewareStack)
                 {
-                    if (res.Closed) return;
-                    await middleware.Process(req, res);
+                    status = await middleware.Invoke(request, response);
+                    if (status != Response.Type.Continue) return status;
                 }
-                await handlerWrapper.Invoke(req, res);
+                status = await handlerWrapper.Invoke(request, response);
+                return status;
             }
             catch (Exception e)
             { 
-                if (!res.Closed)
+                if (status == Response.Type.Continue)
                 {
                     if (RespondWithExceptionDetails)
                     {
-                        await res.SendString(e.ToString(), status: HttpStatusCode.InternalServerError);
+                        await response.SendString(e.ToString(), status: HttpStatusCode.InternalServerError);
                     }
                     else
                     {
-                        await res.SendStatus(HttpStatusCode.InternalServerError);
+                        await response.SendStatus(HttpStatusCode.InternalServerError);
                     }
                 }
+
+                return Response.Type.Error;
             }
         }
-        private async Task WrapWebsocketHandler(HttpContext context, WsHandlerWrapper handlerWrapper)
+        private async Task<Response.Type> WrapWebsocketHandler(HttpContext context, WsHandlerWrapper handlerWrapper)
         {
-            var req = new Request(context, Plugins);
-            var res = new Response(context, Plugins);
+            var request = new Request(context, Plugins);
+            var response = new Response(context, Plugins);
+            var status = Response.Type.Continue;
             try
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {
                     var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                    var wsd = new WebSocketDialog(context, webSocket, Plugins);
+                    var webSocketDialog = new WebSocketDialog(context, webSocket, Plugins);
                     foreach (var middleware in _wsMiddlewareStack)
                     {
-                        if (res.Closed) break;
-                        await middleware.Process(req, wsd, res);
+                        status = await middleware.Invoke(request, webSocketDialog, response);
+                        if (status != Response.Type.Continue) return status;
                     }
-                    await handlerWrapper.Invoke(req, wsd, res);
-                    await wsd.ReadFromWebSocket();
+                    status = await handlerWrapper.Invoke(request, webSocketDialog, response);
+                    await webSocketDialog.ReadFromWebSocket();
+                    return status;
                 }
                 else
                 {
-                    await res.SendStatus(HttpStatusCode.BadRequest);
+                    await response.SendStatus(HttpStatusCode.BadRequest);
+                    return Response.Type.Error;
                 }
             }
             catch (Exception e)
             {
-                if (!res.Closed)
+                if (status != Response.Type.Continue)
                 {
-                    if (!RespondWithExceptionDetails)
-                    {
-                        await res.SendStatus(HttpStatusCode.InternalServerError);
-                    }
-                    else
-                    {
-                        await res.SendString(e.ToString(), status: HttpStatusCode.InternalServerError);
-                    }
+                    return Response.Type.Error;
                 }
+                
+                if (RespondWithExceptionDetails)
+                {
+                    await response.SendString(e.ToString(), status: HttpStatusCode.InternalServerError);
+                }
+                else
+                {
+                    await response.SendStatus(HttpStatusCode.InternalServerError);
+                }
+                return Response.Type.Error;
             }
         }
 
-        private void AddHandlers(string route, string method, Func<Request, Response, Task>[] handlers)
+        private void AddHandlers(string route, string method, Func<Request, Response, Task<Response.Type>>[] handlers)
         {
             if (_handlers == null) // Handlers are set to null after they have been loaded
                 throw new RedHttpServerException("Cannot add route handlers after server is started");
@@ -166,11 +175,11 @@ namespace Red
             
             _handlers.Add(new HandlerWrapper(route, method, handlers));
         }
-        private static string ConvertParameter(string parameter, Regex urlParam, Regex generalParam)
+        private static string ConvertParameter(string parameter, Regex urlParam)
         {
-            parameter = parameter.Trim('/');
-            if (parameter.Contains("*"))
-                parameter = generalParam.Replace(parameter, "{*any}");
+            parameter = parameter
+                .Trim('/')
+                .Replace("*", "{*any}");
             if (parameter.Contains(":"))
                 parameter = urlParam.Replace(parameter, match => "{" + match.Value.TrimStart(':') + "}");
             return parameter;

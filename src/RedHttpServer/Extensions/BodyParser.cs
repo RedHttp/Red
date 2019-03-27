@@ -20,11 +20,11 @@ namespace Red.Extensions
         public async Task<T> Parse<T>(Request request)
         {
             var t = typeof(T);
-            using (var sr = new StreamReader(request.UnderlyingRequest.Body))
+            using (var sr = new StreamReader(request.BodyStream))
             {
                 if (t == StringType)
                     return (T) (object) await sr.ReadToEndAsync();
-                switch (request.UnderlyingRequest.ContentType)
+                switch (request.Context.Request.ContentType)
                 {
                     case "application/xml":
                     case "text/xml":
@@ -33,7 +33,7 @@ namespace Red.Extensions
                     case "text/json":
                         return request.ServerPlugins.Get<IJsonConverter>().Deserialize<T>(await sr.ReadToEndAsync());
                     default:
-                        return default(T);
+                        return default;
                 }
             }
         }

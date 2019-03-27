@@ -7,7 +7,7 @@ namespace Red
     /// <summary>
     /// Utilities
     /// </summary>
-    public static class Utils
+    public static partial class Utils
     {
         /// <summary>
         /// Parsing middleware.
@@ -19,17 +19,19 @@ namespace Red
         /// <param name="res">The response object</param>
         /// <typeparam name="T">The type to parse the body to</typeparam>
         /// <returns></returns>
-        public static async Task CanParse<T>(Request req, Response res)
+        public static async Task<Response.Type> CanParse<T>(Request req, Response res)
             where T : class
         {
             var obj = await req.ParseBodyAsync<T>();
             if (obj == default)
             {
                 await res.SendStatus(HttpStatusCode.BadRequest);
+                return Response.Type.Error;
             }
             else
             {
                 req.SetData(obj);
+                return Response.Type.Continue;
             }
         }
 

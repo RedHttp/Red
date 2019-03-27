@@ -15,8 +15,8 @@ namespace Red.Extensions
         /// <returns></returns>
         public static async Task<T> ParseBodyAsync<T>(this Request request)
         {
-            var bodyparser = request.ServerPlugins.Get<IBodyParser>();
-            return await bodyparser.Parse<T>(request);
+            var bodyParser = request.ServerPlugins.Get<IBodyParser>();
+            return await bodyParser.Parse<T>(request);
         }
     }
 }

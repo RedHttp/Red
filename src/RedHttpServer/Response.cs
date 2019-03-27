@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Red.Interfaces;
@@ -11,13 +10,30 @@ using Red.Interfaces;
 namespace Red
 {
     /// <summary>
-    ///     Class representing the reponse to a clients request
+    ///     Class representing the response to a clients request
     ///     All
     /// </summary>
     public sealed class Response
     {
-        private static readonly Task CompletedTask = Task.CompletedTask;
-
+        /// <summary>
+        ///     The type of handler for the response
+        /// </summary>
+        public enum Type
+        {
+            /// <summary>
+            ///     Skip invoking the rest of the handler-chain
+            /// </summary>
+            Final, 
+            /// <summary>
+            ///     Continue invoking the handler-chain
+            /// </summary>
+            Continue,
+            /// <summary>
+            ///     Error occured - stop handler-chain
+            /// </summary>
+            Error
+        }
+            
         private static readonly IDictionary<string, string> MimeTypes =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -108,7 +124,6 @@ namespace Red
         /// <param name="headerValue">The value of the header</param>
         public void AddHeader(string headerName, string headerValue)
         {
-            if (Closed) throw new RedHttpServerException("A response has already been sent.");
             UnderlyingResponse.Headers.Add(headerName, headerValue);
         }
 
@@ -124,30 +139,25 @@ namespace Red
         ///     <para />
         ///     The implementation of Request is leaky, to avoid limiting you
         /// </summary>
-        public HttpContext UnderlyingContext { get; set; }
+        public readonly HttpContext UnderlyingContext;
 
         /// <summary>
         ///     The available plugins registered to the server
         /// </summary>
-        public PluginCollection ServerPlugins { get; }
-
-        /// <summary>
-        ///     Bool indicating whether the response has been sent
-        /// </summary>
-        public bool Closed { get; set; }
+        public readonly PluginCollection ServerPlugins;
 
         /// <summary>
         ///     Redirects the client to a given path or url
         /// </summary>
         /// <param name="redirectPath">The path or url to redirect to</param>
         /// <param name="permanent">Whether to respond with a temporary or permanent redirect</param>
-        public Task Redirect(string redirectPath, bool permanent = false)
+        public Task<Type> Redirect(string redirectPath, bool permanent = false)
         {
             UnderlyingResponse.Redirect(redirectPath, permanent);
             return CompletedRedirectTask;
         }
         // Cached completed task for Redirect member function
-        private static readonly Task CompletedRedirectTask = Task.FromResult(true);
+        private static readonly Task<Type> CompletedRedirectTask = Task.FromResult(Type.Final);
 
         /// <summary>
         ///     Sends data as text
@@ -157,26 +167,29 @@ namespace Red
         /// <param name="fileName">If the data represents a file, the filename can be set through this</param>
         /// <param name="attachment">Whether the file should be sent as attachment or inline</param>
         /// <param name="status">The status code for the response</param>
-        public async Task SendString(string data, string contentType = "text/plain", string fileName = "",
+        public Task<Type> SendString(string data, string contentType = "text/plain", string fileName = "",
             bool attachment = false, HttpStatusCode status = HttpStatusCode.OK)
         {
-            await SendString(UnderlyingResponse, data, contentType, fileName, attachment, status);
-            Closed = true;
+            return SendString(UnderlyingResponse, data, contentType, fileName, attachment, status);
         }
 
         /// <summary>
         ///     Static helper for use in middleware
         /// </summary>
-        public static async Task SendString(HttpResponse response, string data, string contentType = "text/plain",
+        public static async Task<Type> SendString(HttpResponse response, string data, string contentType = "text/plain",
             string fileName = "",
             bool attachment = false, HttpStatusCode status = HttpStatusCode.OK)
         {
             response.StatusCode = (int) status;
             response.ContentType = contentType;
             if (!string.IsNullOrEmpty(fileName))
-                response.Headers.Add("Content-disposition",
-                    $"{(attachment ? "attachment" : "inline")}; filename=\"{fileName}\"");
+            {
+                var contentDisposition = $"{(attachment ? "attachment" : "inline")}; filename=\"{fileName}\"";
+                response.Headers.Add("Content-disposition", contentDisposition);
+                
+            }
             await response.WriteAsync(data);
+            return Type.Final;
         }
 
         /// <summary>
@@ -184,17 +197,17 @@ namespace Red
         /// </summary>
         /// <param name="response">The HttpResponse object</param>
         /// <param name="status">The status code for the response</param>
-        public static async Task SendStatus(HttpResponse response, HttpStatusCode status)
+        public static Task<Type> SendStatus(HttpResponse response, HttpStatusCode status)
         {
-            await SendString(response, status.ToString(), status: status);
+            return SendString(response, status.ToString(), status: status);
         }
         /// <summary>
         ///     Send a empty response with a status code
         /// </summary>
         /// <param name="status">The status code for the response</param>
-        public async Task SendStatus(HttpStatusCode status)
+        public Task<Type> SendStatus(HttpStatusCode status)
         {
-            await SendString(status.ToString(), status: status);
+            return SendString(status.ToString(), status: status);
         }
 
         /// <summary>
@@ -202,10 +215,10 @@ namespace Red
         /// </summary>
         /// <param name="data">The object to be serialized and send</param>
         /// <param name="status">The status code for the response</param>
-        public async Task SendJson(object data, HttpStatusCode status = HttpStatusCode.OK)
+        public Task<Type> SendJson(object data, HttpStatusCode status = HttpStatusCode.OK)
         {
             var json = ServerPlugins.Get<IJsonConverter>().Serialize(data);
-            await SendString(json, "application/json", status: status);
+            return SendString(json, "application/json", status: status);
         }
 
         /// <summary>
@@ -213,10 +226,10 @@ namespace Red
         /// </summary>
         /// <param name="data">The object to be serialized and send</param>
         /// <param name="status">The status code for the response</param>
-        public async Task SendXml(object data, HttpStatusCode status = HttpStatusCode.OK)
+        public Task<Type> SendXml(object data, HttpStatusCode status = HttpStatusCode.OK)
         {
             var xml = ServerPlugins.Get<IXmlConverter>().Serialize(data);
-            await SendString(xml, "application/xml", status: status);
+            return SendString(xml, "application/xml", status: status);
         }
 
         /// <summary>
@@ -228,17 +241,21 @@ namespace Red
         /// <param name="attachment">Whether the file should be sent as attachment or inline</param>
         /// <param name="dispose">Whether to call dispose on stream when done sending</param>
         /// <param name="status">The status code for the response</param>
-        public async Task SendStream(Stream dataStream, string contentType, string fileName = "",
+        public async Task<Type> SendStream(Stream dataStream, string contentType, string fileName = "",
             bool attachment = false, bool dispose = true, HttpStatusCode status = HttpStatusCode.OK)
         {
             UnderlyingResponse.StatusCode = (int) status;
             UnderlyingResponse.ContentType = contentType;
             if (!string.IsNullOrEmpty(fileName))
+            {
                 AddHeader("Content-disposition", $"{(attachment ? "attachment" : "inline")}; filename=\"{fileName}\"");
+            }
             await dataStream.CopyToAsync(UnderlyingResponse.Body);
             if (dispose)
+            {
                 dataStream.Dispose();
-            Closed = true;
+            }
+            return Type.Final;
         }
 
         /// <summary>
@@ -251,7 +268,7 @@ namespace Red
         /// </param>
         /// <param name="handleRanges">Whether to enable handling of range-requests for the file(s) served</param>
         /// <param name="status">The status code for the response</param>
-        public async Task SendFile(string filePath, string contentType = null, bool handleRanges = true,
+        public async Task<Type> SendFile(string filePath, string contentType = null, bool handleRanges = true,
             HttpStatusCode status = HttpStatusCode.OK)
         {
             if (handleRanges) AddHeader("Accept-Ranges", "bytes");
@@ -262,10 +279,10 @@ namespace Red
             if (range != null && range.Ranges.Any())
             {
                 var firstRange = range.Ranges.First();
-                if (range.Unit != "bytes" || (!firstRange.From.HasValue && !firstRange.To.HasValue))
+                if (range.Unit != "bytes" || !firstRange.From.HasValue && !firstRange.To.HasValue)
                 {
                     await SendStatus(HttpStatusCode.BadRequest);
-                    return;
+                    return Type.Error;
                 }
 
                 var offset = firstRange.From ?? fileSize - firstRange.To.Value;
@@ -289,7 +306,7 @@ namespace Red
                 await UnderlyingResponse.SendFileAsync(filePath);
             }
 
-            Closed = true;
+            return Type.Final;
         }
 
         /// <summary>
@@ -302,7 +319,7 @@ namespace Red
         ///     extension
         /// </param>
         /// <param name="status">The status code for the response</param>
-        public async Task Download(string filePath, string fileName = null, string contentType = "",
+        public async Task<Type> Download(string filePath, string fileName = null, string contentType = "",
             HttpStatusCode status = HttpStatusCode.OK)
         {
             UnderlyingResponse.StatusCode = (int) status;
@@ -310,16 +327,17 @@ namespace Red
             var name = string.IsNullOrEmpty(fileName) ? Path.GetFileName(filePath) : fileName;
             AddHeader("Content-disposition", $"attachment; filename=\"{name}\"");
             await UnderlyingResponse.SendFileAsync(filePath);
-            Closed = true;
+            return Type.Final;
         }
 
 
         private static string GetMime(string contentType, string filePath,
             string defaultContentType = "application/octet-stream")
         {
-            if (string.IsNullOrEmpty(contentType) &&
-                !MimeTypes.TryGetValue(Path.GetExtension(filePath), out contentType))
+            if (string.IsNullOrEmpty(contentType) && !MimeTypes.TryGetValue(Path.GetExtension(filePath), out contentType))
+            {
                 contentType = defaultContentType;
+            }
             return contentType;
         }
     }

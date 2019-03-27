@@ -8,7 +8,7 @@ using Red.CookieSessions;
 using Red.EcsRenderer;
 using Red.JwtSessions;
 
-namespace TestServer
+namespace ExampleServer
 {
     public class Program
     {
@@ -51,7 +51,7 @@ namespace TestServer
             server.Get("/login", async (req, res) =>
             {
                 // To make it easy to test the session system only using the browser and no credentials
-                req.OpenSession(new MySess {Username = "benny"});
+                await req.OpenSession(new MySess {Username = "benny"});
                 await res.SendStatus(HttpStatusCode.OK);
             });
             
@@ -62,13 +62,13 @@ namespace TestServer
             });
             server.Get("/logout", Auth, async (req, res) =>
             {
-                req.GetSession<MySess>().Close(req);
+                await req.GetSession<MySess>().Close(req);
                 await res.SendStatus(HttpStatusCode.OK);
             });
             server.Post("/login", async (req, res) =>
             {
                 // Here we could authenticate the user properly, with credentials sent in a form, or similar
-                req.OpenSession(new MySess {Username = "benny"});
+                await req.OpenSession(new MySess {Username = "benny"});
                 await res.SendStatus(HttpStatusCode.OK);
             });
 
@@ -119,7 +119,7 @@ namespace TestServer
             // WebSocket echo server
             server.WebSocket("/echo", async (req, wsd) =>
             {
-                await wsd.SendText("Welcome to the echo test server");
+                wsd.SendText("Welcome to the echo test server");
                 wsd.OnTextReceived += (sender, eventArgs) => { wsd.SendText("you sent: " + eventArgs.Text); };
             });
             await server.RunAsync();

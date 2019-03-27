@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Red.Extensions;
 using Red.Interfaces;
 
@@ -36,22 +33,22 @@ namespace Red
         /// <summary>
         /// The plugin collection containing all plugins registered to this server instance.
         /// </summary>
-        public PluginCollection Plugins { get; } = new PluginCollection();
+        public readonly PluginCollection Plugins = new PluginCollection();
 
         /// <summary>
         /// The version of the library
         /// </summary>
-        public static string Version { get; } = typeof(RedHttpServer).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+        public static readonly string Version = typeof(RedHttpServer).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
 
         /// <summary>
         /// Whether details about an exception should be sent together with the code 500 response. For debugging
         /// </summary>
-        public bool RespondWithExceptionDetails { get; set; } = false;
+        public bool RespondWithExceptionDetails = false;
 
         /// <summary>
         ///     The port that the server is listening on
         /// </summary>
-        public int Port { get; }
+        public readonly int Port;
 
         /// <summary>
         ///     Starts the server.
@@ -97,7 +94,7 @@ namespace Red
         /// </summary>
         public Action<IApplicationBuilder> ConfigureApplication { private get; set; }
 
-  /// <summary>
+        /// <summary>
         ///     Register extension modules and middleware
         /// </summary>
         /// <param name="extension"></param>
@@ -117,7 +114,7 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
-        public void Get(string route, params Func<Request, Response, Task>[] handlers)
+        public void Get(string route, params Func<Request, Response, Task<Response.Type>>[] handlers)
         {
             AddHandlers(route, GetMethod, handlers);
         }
@@ -127,7 +124,7 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
-        public void Post(string route, params Func<Request, Response, Task>[] handlers)
+        public void Post(string route, params Func<Request, Response, Task<Response.Type>>[] handlers)
         {
             AddHandlers(route, PostMethod, handlers);
         }
@@ -138,7 +135,7 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
-        public void Put(string route, params Func<Request, Response, Task>[] handlers)
+        public void Put(string route, params Func<Request, Response, Task<Response.Type>>[] handlers)
         {
             AddHandlers(route, PutMethod, handlers);
         }
@@ -149,7 +146,7 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
-        public void Delete(string route, params Func<Request, Response, Task>[] handlers)
+        public void Delete(string route, params Func<Request, Response, Task<Response.Type>>[] handlers)
         {
             AddHandlers(route, DeleteMethod, handlers);
         }
@@ -159,7 +156,7 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
-        public void WebSocket(string route, params Func<Request, Response, WebSocketDialog, Task>[] handlers)
+        public void WebSocket(string route, params Func<Request, Response, WebSocketDialog, Task<Response.Type>>[] handlers)
         {
             if (handlers.Length == 0)
                 throw new RedHttpServerException("A route requires at least one handler");
@@ -174,7 +171,7 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
-        public void WebSocket(string route, params Func<Request, WebSocketDialog, Task>[] handlers)
+        public void WebSocket(string route, params Func<Request, WebSocketDialog, Task<Response.Type>>[] handlers)
         {
             if (handlers.Length == 0)
                 throw new RedHttpServerException("A route requires at least one handler");

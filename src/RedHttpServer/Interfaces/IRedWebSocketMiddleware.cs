@@ -2,6 +2,7 @@
 
 namespace Red.Interfaces
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Interface for middleware that handle websocket middleware 
     /// </summary>
@@ -13,6 +14,6 @@ namespace Red.Interfaces
         /// <param name="req">The request object</param>
         /// <param name="wsd">The websocket dialog object</param>
         /// <param name="res">The response object</param>
-        Task Process(Request req, WebSocketDialog wsd, Response res);
+        Task<Response.Type> Invoke(Request req, WebSocketDialog wsd, Response res);
     }
 }

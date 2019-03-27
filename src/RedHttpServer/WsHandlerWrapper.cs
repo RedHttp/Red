@@ -3,15 +3,15 @@ using System.Threading.Tasks;
 
 namespace Red
 {
-    internal class WsHandlerWrapper
+    internal sealed class WsHandlerWrapper
     {
-        public WsHandlerWrapper(string path, Func<Request, Response, WebSocketDialog, Task>[] handlers)
+        internal WsHandlerWrapper(string path, Func<Request, Response, WebSocketDialog, Task<Response.Type>>[] handlers)
         {
             Path = path;
             _handlers = handlers;
         }
 
-        public WsHandlerWrapper(string path, Func<Request, WebSocketDialog, Task>[] handlers)
+        internal WsHandlerWrapper(string path, Func<Request, WebSocketDialog, Task<Response.Type>>[] handlers)
         {
             Path = path;
             _simple = true;
@@ -19,30 +19,33 @@ namespace Red
         }
 
 
-        public async Task Invoke(Request req, WebSocketDialog wsd, Response res)
+        internal async Task<Response.Type> Invoke(Request req, WebSocketDialog wsd, Response res)
         {
+            var status = Response.Type.Continue;
             if (_simple)
             {
                 foreach (var handler in _simpleHandlers)
                 {
-                    if (res.Closed) break;
-                    await handler(req, wsd);
+                    status = await handler(req, wsd);
+                    if (status != Response.Type.Continue) break;
                 }
             }
             else
             {
                 foreach (var handler in _handlers)
                 {
-                    if (res.Closed) break;
-                    await handler(req, res, wsd);
+                    status = await handler(req, res, wsd);
+                    if (status != Response.Type.Continue) break;
                 }
             }
+
+            return status;
         }
 
         private readonly bool _simple;
         
-        public readonly string Path;
-        private readonly Func<Request, Response, WebSocketDialog, Task>[] _handlers;
-        private readonly Func<Request, WebSocketDialog, Task>[] _simpleHandlers;
+        internal readonly string Path;
+        private readonly Func<Request, Response, WebSocketDialog, Task<Response.Type>>[] _handlers;
+        private readonly Func<Request, WebSocketDialog, Task<Response.Type>>[] _simpleHandlers;
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Red.Interfaces
 {
+    /// <inheritdoc />
     /// <summary>
-    /// 
     /// </summary>
     public interface IRedMiddleware : IRedExtension
     {
@@ -12,6 +12,6 @@ namespace Red.Interfaces
         /// </summary>
         /// <param name="req"></param>
         /// <param name="res"></param>
-        Task Process(Request req, Response res);
+        Task<Response.Type> Invoke(Request req, Response res);
     }
 }

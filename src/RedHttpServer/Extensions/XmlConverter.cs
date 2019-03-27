@@ -38,14 +38,14 @@ namespace Red.Extensions
             try
             {
                 var xmlSerializer = new XmlSerializer(typeof(T));
-                using (var stringreader = new StringReader(xmlData))
+                using (var stringReader = new StringReader(xmlData))
                 {
-                    return (T)xmlSerializer.Deserialize(stringreader);
+                    return (T)xmlSerializer.Deserialize(stringReader);
                 }
             }
             catch (Exception)
             { 
-                return default(T); 
+                return default; 
             }
         }
 

@@ -13,27 +13,28 @@ namespace Red
     /// </summary>
     public sealed class WebSocketDialog
     {
-        internal WebSocketDialog(HttpContext ctx, WebSocket underlyingWebSocket, PluginCollection plugins)
+        internal WebSocketDialog(HttpContext context, WebSocket webSocket, PluginCollection plugins)
         {
-            UnderlyingRequest = ctx.Request;
-            UnderlyingWebSocket = underlyingWebSocket;
+            Context = context;
+            WebSocket = webSocket;
             ServerPlugins = plugins;
         }
 
         /// <summary>
         ///     The underlying WebSocket
         /// </summary>
-        public readonly WebSocket UnderlyingWebSocket;
+        public readonly WebSocket WebSocket;
+        
+        /// <summary>
+        ///     The underlying Context
+        /// </summary>
+        public readonly HttpContext Context;
 
         /// <summary>
         ///     The available plugins registered to the server
         /// </summary>
         public readonly PluginCollection ServerPlugins;
 
-        /// <summary>
-        ///     The underlying HttpRequest
-        /// </summary>
-        public readonly HttpRequest UnderlyingRequest;
 
         /// <summary>
         ///     Raised when binary WebSocket messages are received
@@ -57,7 +58,7 @@ namespace Red
         /// <param name="endOfMessage"></param>
         public async Task SendText(string text, bool endOfMessage = true)
         {
-            await UnderlyingWebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(text)),
+            await WebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(text)),
                 WebSocketMessageType.Text, endOfMessage, CancellationToken.None);
         }
 
@@ -68,7 +69,7 @@ namespace Red
         /// <param name="endOfMessage"></param>
         public async Task SendBytes(ArraySegment<byte> data, bool endOfMessage = true)
         {
-            await UnderlyingWebSocket.SendAsync(data, WebSocketMessageType.Binary, endOfMessage,
+            await WebSocket.SendAsync(data, WebSocketMessageType.Binary, endOfMessage,
                 CancellationToken.None);
         }
 
@@ -81,7 +82,7 @@ namespace Red
         public async Task Close(WebSocketCloseStatus status = WebSocketCloseStatus.NormalClosure,
             string description = "")
         {
-            await UnderlyingWebSocket.CloseAsync(status, description, CancellationToken.None);
+            await WebSocket.CloseAsync(status, description, CancellationToken.None);
         }
 
         internal async Task ReadFromWebSocket()
@@ -90,7 +91,7 @@ namespace Red
             try
             {
                 var received =
-                    await UnderlyingWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                    await WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                 while (!received.CloseStatus.HasValue)
                 {
                     switch (received.MessageType)
@@ -106,12 +107,12 @@ namespace Red
                                     received.EndOfMessage));
                             break;
                         case WebSocketMessageType.Close:
-                            await UnderlyingWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "",
+                            await WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "",
                                 CancellationToken.None);
                             break;
                     }
 
-                    received = await UnderlyingWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer),
+                    received = await WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer),
                         CancellationToken.None);
                 }
             }
@@ -121,40 +122,42 @@ namespace Red
             finally
             {
                 OnClosed?.Invoke(this, EventArgs.Empty);
-                await UnderlyingWebSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "",
+                await WebSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "",
                     CancellationToken.None);
-                UnderlyingWebSocket.Dispose();
+                WebSocket.Dispose();
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Represents a binary message received from websocket
         /// </summary>
-        public class BinaryMessageEventArgs : EventArgs
+        public sealed class BinaryMessageEventArgs : EventArgs
         {
             internal BinaryMessageEventArgs(ArraySegment<byte> data, bool endOfMessage)
             {
-                _as = data;
+                _arraySegment = data;
                 EndOfMessage = endOfMessage;
             }
 
-            private ArraySegment<byte> _as;
+            private readonly ArraySegment<byte> _arraySegment;
 
             /// <summary>
             ///     The binary content of the message
             /// </summary>
-            public byte[] Data => _as.Array;
+            public byte[] Data => _arraySegment.Array;
 
             /// <summary>
             ///     Whether this is a complete message or the end of one, or there is more to come.
             /// </summary>
-            public bool EndOfMessage { get; }
+            public readonly bool EndOfMessage;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Represents a UTF-8 encoded text message received from websocket
         /// </summary>
-        public class TextMessageEventArgs : EventArgs
+        public sealed class TextMessageEventArgs : EventArgs
         {
             internal TextMessageEventArgs(string text, bool endOfMessage)
             {
@@ -165,12 +168,29 @@ namespace Red
             /// <summary>
             ///     The text content of the message
             /// </summary>
-            public string Text { get; }
+            public readonly string Text;
 
             /// <summary>
             ///     Whether this is a complete message or the end of one, or there is more to come.
             /// </summary>
-            public bool EndOfMessage { get; }
+            public readonly bool EndOfMessage;
+        }
+
+        /// <summary>
+        ///     Convenience method for ending a dialog handler
+        /// </summary>
+        /// <returns></returns>
+        public Response.Type Final()
+        {
+            return Response.Type.Final;
+        }
+        /// <summary>
+        ///     Convenience method for ending a dialog handler
+        /// </summary>
+        /// <returns></returns>
+        public Response.Type Continue()
+        {
+            return Response.Type.Continue;
         }
     }
 }

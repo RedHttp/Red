@@ -7,7 +7,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <Description>Red is a http and websocket server framework built on asp.net core and kestrel. The API provided is inspired by express.js and designed to be simple and easy to use</Description>
-    <Copyright>Copyright © Rosenbjerg 2018</Copyright>
+    <Copyright>Copyright © Rosenbjerg 2019</Copyright>
     <AssemblyTitle>RedHttpServer</AssemblyTitle>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -25,16 +25,18 @@
     <PackageTags>red redhttpserver redhttp rhttpserver rhs http server web api expressjs http websocket middleware</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageProjectUrl>https://github.com/rosenbjerg/Red</PackageProjectUrl>
+    <PackageProjectUrl>https://rosenbjerg.github.io/Red/</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/rosenbjerg/Red/blob/master/LICENSE.md</PackageLicenseUrl>
     <PackageIconUrl>https://rosenbjerg.dk/red/logo.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/rosenbjerg/Red</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <Authors>Malte Rosenbjerg</Authors>
-    <PackageReleaseNotes>Changed to NET Standard from NET Core</PackageReleaseNotes>
+    <PackageReleaseNotes>Changed the API</PackageReleaseNotes>
     <AssemblyVersion>3.5.2.0</AssemblyVersion>
     <FileVersion>3.5.2.0</FileVersion>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.3</LangVersion>
+    <PackageVersion>4.0.0</PackageVersion>
+    <Title>Red</Title>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.1.1" />

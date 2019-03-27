@@ -20,19 +20,8 @@ namespace Red
         /// </summary>s
         /// <typeparam name="TKey">The type-key to register the plugin to</typeparam>
         /// <param name="plugin">The plugin to register</param>
-        public void Register<TKey>(TKey plugin)
-        {
-            Register(plugin, false);
-        }
-
-        /// <summary>
-        ///     Register a plugin to the collection.
-        ///     Preferably before starting the server
-        /// </summary>s
-        /// <typeparam name="TKey">The type-key to register the plugin to</typeparam>
-        /// <param name="plugin">The plugin to register</param>
-        /// <param name="overwrite">whether to overwrite the current plugin, if any</param>
-        public void Register<TKey>(TKey plugin, bool overwrite)
+        /// <param name="overwrite">Whether to overwrite the current plugin, if any</param>
+        public void Register<TKey>(TKey plugin, bool overwrite = false)
         {
             var type = typeof(TKey);
             if (!overwrite && _plugins.ContainsKey(type))

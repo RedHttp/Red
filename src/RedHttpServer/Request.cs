@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 
 namespace Red
 {
@@ -13,95 +12,107 @@ namespace Red
     /// </summary>
     public sealed class Request
     {
-        private readonly Dictionary<Type, object> _data = new Dictionary<Type, object>();
+        private readonly Lazy<Dictionary<Type, object>> _data = new Lazy<Dictionary<Type, object>>();
+        private readonly Lazy<Dictionary<string, string>> _strings = new Lazy<Dictionary<string, string>>();
         private IFormCollection _form;
 
         internal Request(HttpContext context, PluginCollection plugins)
         {
-            UnderlyingContext = context;
+            Context = context;
             Parameters = new RequestParameters(context);
             ServerPlugins = plugins;
         }
 
-        /// <summary>
-        ///     The underlying HttpRequest
-        ///     <para />
-        ///     The implementation of Request is leaky, to avoid limiting you
-        /// </summary>
-        public HttpRequest UnderlyingRequest => UnderlyingContext.Request;
-        
+
         /// <summary>
         ///     The underlying HttpContext
         ///     <para />
         ///     The implementation of Request is leaky, to avoid limiting you
         /// </summary>
-        public HttpContext UnderlyingContext { get; }
+        public readonly HttpContext Context;
 
         /// <summary>
         /// The available plugins
         /// </summary>
-        public PluginCollection ServerPlugins { get; }
+        public readonly PluginCollection ServerPlugins;
 
 
         /// <summary>
         ///     The url parameters of the request
         /// </summary>
-        public RequestParameters Parameters { get; }
+        public readonly RequestParameters Parameters;
 
         /// <summary>
         ///     The query elements of the request
         /// </summary>
-        public IQueryCollection Queries => UnderlyingRequest.Query;
+        public IQueryCollection Queries => Context.Request.Query;
 
         /// <summary>
         ///     The headers contained in the request
         /// </summary>
-        public IHeaderDictionary Headers => UnderlyingRequest.Headers;
+        public IHeaderDictionary Headers => Context.Request.Headers;
 
         /// <summary>
         ///     The cookies contained in the request
         /// </summary>
-        public IRequestCookieCollection Cookies => UnderlyingRequest.Cookies;
+        public IRequestCookieCollection Cookies => Context.Request.Cookies;
 
         /// <summary>
         ///     Returns the body stream of the request
         /// </summary>
-        public Stream BodyStream => UnderlyingRequest.Body;
+        public Stream BodyStream => Context.Request.Body;
 
         /// <summary>
         ///     Returns form-data from request, if any, null otherwise. 
         /// </summary>
         public async Task<IFormCollection> GetFormDataAsync()
         {
-            if (!UnderlyingRequest.HasFormContentType)
+            if (!Context.Request.HasFormContentType)
                 return null;
 
             if (_form != null)
                 return _form;
 
-            _form =  await UnderlyingRequest.ReadFormAsync();
+            _form =  await Context.Request.ReadFormAsync();
             return _form;
         }
         
         /// <summary>
         ///     Get data attached to request by middleware. The middleware should specify the type to lookup
         /// </summary>
-        /// <typeparam name="TData"></typeparam>
+        /// <param name="key">the data key</param>
+        public string GetData(string key)
+        {
+            return _strings.Value.TryGetValue(key, out var data) ? data : default;
+        }
+        /// <summary>
+        ///     Get data attached to request by middleware. The middleware should specify the type to lookup
+        /// </summary>
+        /// <typeparam name="TData">the type key</typeparam>
         /// <returns>Object of specified type, registered to request. Otherwise default</returns>
         public TData GetData<TData>()
         {
-            if (_data.TryGetValue(typeof(TData), out var data))
+            if (_data.Value.TryGetValue(typeof(TData), out var data))
                 return (TData) data;
-            return default(TData);
+            return default;
         }
         /// <summary>
         ///     Function that middleware can use to attach data to the request, so the next handlers has access to the data
         /// </summary>
-        /// <typeparam name="TData"></typeparam>
-        /// <param name="data"></param>
+        /// <typeparam name="TData">the type of the data object (implicitly)</typeparam>
+        /// <param name="data">the data object</param>
         public void SetData<TData>(TData data)
         {
-            _data[typeof(TData)] = data;
+            _data.Value[typeof(TData)] = data;
+        }
+        /// <summary>
+        ///     Function that middleware can use to attach string values to the request, so the next handlers has access to the data
+        /// </summary>
+        /// <param name="key">the data key</param>
+        /// <param name="value">the data value</param>
+        public void SetData(string key, string value)
+        {
+            _strings.Value[key] = value;
         }
         
         /// <summary>
@@ -110,30 +121,33 @@ namespace Red
         /// <param name="saveDir">The directory to place the file(s) in</param>
         /// <param name="fileRenamer">Function to rename the file(s)</param>
         /// <param name="maxSizeKb">The max total filesize allowed</param>
-        /// <returns>Whether the file(s) was saved succesfully</returns>
+        /// <returns>Whether the file(s) was saved successfully</returns>
         public async Task<bool> SaveFiles(string saveDir, Func<string, string> fileRenamer = null,
-            long maxSizeKb = 4096)
+            long maxSizeKb = 50000)
         {
-            if (UnderlyingRequest.HasFormContentType)
-            {
-                var form = await UnderlyingRequest.ReadFormAsync();
-                if (form.Files.Sum(file => file.Length) > (maxSizeKb << 10))
-                    return false;
-                
-                foreach (var formFile in form.Files)
-                {
-                    var filename = fileRenamer == null ? formFile.FileName : fileRenamer(formFile.FileName);
-                    var filepath = Path.Combine(saveDir, filename);
-                    using (var filestream = File.Create(filepath))
-                    {
-                        await formFile.CopyToAsync(filestream);
-                    }
-                }
+            if (!Context.Request.HasFormContentType) return false;
+            var form = await Context.Request.ReadFormAsync();
+            if (form.Files.Sum(file => file.Length) > maxSizeKb << 10)
+                return false;
 
-                return true;
+            var fullSaveDir = Path.GetFullPath(saveDir);
+            foreach (var formFile in form.Files)
+            {
+                var filename = fileRenamer == null ? formFile.FileName : fileRenamer(formFile.FileName);
+                filename = Path.GetFileName(filename);
+                if (string.IsNullOrWhiteSpace(filename))
+                {
+                    continue;
+                }
+                var filepath = Path.Combine(fullSaveDir, filename);
+                using (var fileStream = File.Create(filepath))
+                {
+                    await formFile.CopyToAsync(fileStream);
+                }
             }
 
-            return false;
+            return true;
+
         }
     }
 }

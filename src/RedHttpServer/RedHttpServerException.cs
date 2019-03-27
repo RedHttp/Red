@@ -2,6 +2,7 @@ using System;
 
 namespace Red
 {
+    /// <inheritdoc />
     /// <summary>
     /// Exception for errors in RedHttpServer
     /// </summary>
