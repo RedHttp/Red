@@ -46,6 +46,11 @@ namespace Red
         public bool RespondWithExceptionDetails = false;
 
         /// <summary>
+        ///    Event that is raised when an exception is thrown from a handler
+        /// </summary>
+        public event EventHandler<HandlerExceptionEventArgs> OnHandlerException; 
+
+        /// <summary>
         ///     The port that the server is listening on
         /// </summary>
         public readonly int Port;
@@ -59,7 +64,7 @@ namespace Red
         {
             Build(hostnames);
             _host.Start();
-            Console.WriteLine($"RedHttpServer/{Version} running on port " + Port);
+            Console.WriteLine($"Red/{Version} running on port " + Port);
         }
         
         /// <summary>
@@ -79,9 +84,8 @@ namespace Red
         public Task RunAsync(params string[] hostnames)
         {
             Build(hostnames);
-            Console.WriteLine($"Starting RedHttpServer/{Version} on port " + Port);
-            var runTask = _host.RunAsync();
-            return runTask;
+            Console.WriteLine($"Starting Red/{Version} on port " + Port);
+            return _host.RunAsync();
         }
         
         /// <summary>
@@ -114,7 +118,7 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
-        public void Get(string route, params Func<Request, Response, Task<Response.Type>>[] handlers)
+        public void Get(string route, params Func<Request, Response, Task<HandlerType>>[] handlers)
         {
             AddHandlers(route, GetMethod, handlers);
         }
@@ -124,7 +128,7 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
-        public void Post(string route, params Func<Request, Response, Task<Response.Type>>[] handlers)
+        public void Post(string route, params Func<Request, Response, Task<HandlerType>>[] handlers)
         {
             AddHandlers(route, PostMethod, handlers);
         }
@@ -135,7 +139,7 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
-        public void Put(string route, params Func<Request, Response, Task<Response.Type>>[] handlers)
+        public void Put(string route, params Func<Request, Response, Task<HandlerType>>[] handlers)
         {
             AddHandlers(route, PutMethod, handlers);
         }
@@ -146,7 +150,7 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
-        public void Delete(string route, params Func<Request, Response, Task<Response.Type>>[] handlers)
+        public void Delete(string route, params Func<Request, Response, Task<HandlerType>>[] handlers)
         {
             AddHandlers(route, DeleteMethod, handlers);
         }
@@ -156,7 +160,7 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
-        public void WebSocket(string route, params Func<Request, Response, WebSocketDialog, Task<Response.Type>>[] handlers)
+        public void WebSocket(string route, params Func<Request, Response, WebSocketDialog, Task<HandlerType>>[] handlers)
         {
             if (handlers.Length == 0)
                 throw new RedHttpServerException("A route requires at least one handler");
@@ -171,7 +175,7 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
-        public void WebSocket(string route, params Func<Request, WebSocketDialog, Task<Response.Type>>[] handlers)
+        public void WebSocket(string route, params Func<Request, WebSocketDialog, Task<HandlerType>>[] handlers)
         {
             if (handlers.Length == 0)
                 throw new RedHttpServerException("A route requires at least one handler");

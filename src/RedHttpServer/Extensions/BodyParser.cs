@@ -10,11 +10,11 @@ namespace Red.Extensions
     /// </summary>
     internal sealed class BodyParser : IBodyParser, IRedExtension
     {
-        private static readonly Type StringType = typeof(string);
+        private static readonly Type StringResponseType = typeof(string);
         
         public void Initialize(RedHttpServer server)
         {
-            server.Plugins.Register<IBodyParser>(this);
+            server.Plugins.Register<IBodyParser, BodyParser>(this);
         }
 
         public async Task<T> Parse<T>(Request request)
@@ -22,16 +22,16 @@ namespace Red.Extensions
             var t = typeof(T);
             using (var sr = new StreamReader(request.BodyStream))
             {
-                if (t == StringType)
+                if (t == StringResponseType)
                     return (T) (object) await sr.ReadToEndAsync();
-                switch (request.Context.Request.ContentType)
+                switch (request.AspNetRequest.ContentType)
                 {
                     case "application/xml":
                     case "text/xml":
-                        return request.ServerPlugins.Get<IXmlConverter>().Deserialize<T>(await sr.ReadToEndAsync());
+                        return request.Context.Plugins.Get<IXmlConverter>().Deserialize<T>(await sr.ReadToEndAsync());
                     case "application/json":
                     case "text/json":
-                        return request.ServerPlugins.Get<IJsonConverter>().Deserialize<T>(await sr.ReadToEndAsync());
+                        return request.Context.Plugins.Get<IJsonConverter>().Deserialize<T>(await sr.ReadToEndAsync());
                     default:
                         return default;
                 }

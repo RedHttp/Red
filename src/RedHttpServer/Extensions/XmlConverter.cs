@@ -51,7 +51,7 @@ namespace Red.Extensions
 
         public void Initialize(RedHttpServer server)
         {
-            server.Plugins.Register<IXmlConverter>(this);
+            server.Plugins.Register<IXmlConverter, XmlConverter>(this);
         }
     }
 }

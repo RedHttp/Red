@@ -7,7 +7,7 @@
     {
         /// <summary>
         /// Called on all registered plugins/middleware when the server is started.
-        /// The module is handed a reference to the server, so it can do any needed registration, i.e. into the plugins
+        /// The module is handed a reference to the server, so it can do any needed registration
         /// </summary>
         /// <param name="server">A reference to the instance of the RedHttpServer</param>
         void Initialize(RedHttpServer server);

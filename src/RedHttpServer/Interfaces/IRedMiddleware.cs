@@ -12,6 +12,6 @@ namespace Red.Interfaces
         /// </summary>
         /// <param name="req"></param>
         /// <param name="res"></param>
-        Task<Response.Type> Invoke(Request req, Response res);
+        Task<HandlerType> Invoke(Request req, Response res);
     }
 }

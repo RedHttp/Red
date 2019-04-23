@@ -15,106 +15,12 @@ namespace Red
     /// </summary>
     public sealed class Response
     {
-        /// <summary>
-        ///     The type of handler for the response
-        /// </summary>
-        public enum Type
+           
+
+        internal Response(Context context, HttpResponse aspNetResponse)
         {
-            /// <summary>
-            ///     Skip invoking the rest of the handler-chain
-            /// </summary>
-            Final, 
-            /// <summary>
-            ///     Continue invoking the handler-chain
-            /// </summary>
-            Continue,
-            /// <summary>
-            ///     Error occured - stop handler-chain
-            /// </summary>
-            Error
-        }
-            
-        private static readonly IDictionary<string, string> MimeTypes =
-            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-            {
-                #region extension to MIME type list
-
-                {".asf", "video/x-ms-asf"},
-                {".asx", "video/x-ms-asf"},
-                {".avi", "video/x-msvideo"},
-                {".bin", "application/octet-stream"},
-                {".cco", "application/x-cocoa"},
-                {".crt", "application/x-x509-ca-cert"},
-                {".css", "text/css"},
-                {".deb", "application/octet-stream"},
-                {".der", "application/x-x509-ca-cert"},
-                {".dll", "application/octet-stream"},
-                {".dmg", "application/octet-stream"},
-                {".ear", "application/java-archive"},
-                {".eot", "application/octet-stream"},
-                {".exe", "application/octet-stream"},
-                {".flv", "video/x-flv"},
-                {".gif", "image/gif"},
-                {".hqx", "application/mac-binhex40"},
-                {".htc", "text/x-component"},
-                {".htm", "text/html"},
-                {".html", "text/html"},
-                {".ico", "image/x-icon"},
-                {".img", "application/octet-stream"},
-                {".iso", "application/octet-stream"},
-                {".jar", "application/java-archive"},
-                {".jardiff", "application/x-java-archive-diff"},
-                {".jng", "image/x-jng"},
-                {".jnlp", "application/x-java-jnlp-file"},
-                {".jpeg", "image/jpeg"},
-                {".jpg", "image/jpeg"},
-                {".js", "application/x-javascript"},
-                {".json", "text/json"},
-                {".mml", "text/mathml"},
-                {".mng", "video/x-mng"},
-                {".mov", "video/quicktime"},
-                {".mp3", "audio/mpeg"},
-                {".mp4", "video/mp4"},
-                {".mpeg", "video/mpeg"},
-                {".mpg", "video/mpeg"},
-                {".msi", "application/octet-stream"},
-                {".msm", "application/octet-stream"},
-                {".msp", "application/octet-stream"},
-                {".pdb", "application/x-pilot"},
-                {".pdf", "application/pdf"},
-                {".pem", "application/x-x509-ca-cert"},
-                {".php", "text/x-php"},
-                {".pl", "application/x-perl"},
-                {".pm", "application/x-perl"},
-                {".png", "image/png"},
-                {".prc", "application/x-pilot"},
-                {".ra", "audio/x-realaudio"},
-                {".rar", "application/x-rar-compressed"},
-                {".rpm", "application/x-redhat-package-manager"},
-                {".rss", "text/xml"},
-                {".run", "application/x-makeself"},
-                {".sea", "application/x-sea"},
-                {".shtml", "text/html"},
-                {".sit", "application/x-stuffit"},
-                {".swf", "application/x-shockwave-flash"},
-                {".tcl", "application/x-tcl"},
-                {".tk", "application/x-tcl"},
-                {".txt", "text/plain"},
-                {".war", "application/java-archive"},
-                {".webm", "video/webm"},
-                {".wbmp", "image/vnd.wap.wbmp"},
-                {".wmv", "video/x-ms-wmv"},
-                {".xml", "text/xml"},
-                {".xpi", "application/x-xpinstall"},
-                {".zip", "application/zip"}
-
-                #endregion
-            };
-
-        internal Response(HttpContext context, PluginCollection plugins)
-        {
-            UnderlyingContext = context;
-            ServerPlugins = plugins;
+            Context = context;
+            AspNetResponse = aspNetResponse;
         }
 
         /// <summary>
@@ -124,40 +30,31 @@ namespace Red
         /// <param name="headerValue">The value of the header</param>
         public void AddHeader(string headerName, string headerValue)
         {
-            UnderlyingResponse.Headers.Add(headerName, headerValue);
+            AspNetResponse.Headers.Add(headerName, headerValue);
         }
 
         /// <summary>
-        ///     The underlying HttpResponse
-        ///     <para />
-        ///     The implementation of Request is leaky, to avoid limiting you
+        ///     The Red.Context the response is part of
         /// </summary>
-        public HttpResponse UnderlyingResponse => UnderlyingContext.Response;
+        public readonly Context Context;
 
         /// <summary>
-        ///     The underlying HttpContext
-        ///     <para />
-        ///     The implementation of Request is leaky, to avoid limiting you
+        ///     The ASP.NET HttpResponse that is wrapped
         /// </summary>
-        public readonly HttpContext UnderlyingContext;
-
-        /// <summary>
-        ///     The available plugins registered to the server
-        /// </summary>
-        public readonly PluginCollection ServerPlugins;
-
+        public readonly HttpResponse AspNetResponse;
+        
         /// <summary>
         ///     Redirects the client to a given path or url
         /// </summary>
         /// <param name="redirectPath">The path or url to redirect to</param>
         /// <param name="permanent">Whether to respond with a temporary or permanent redirect</param>
-        public Task<Type> Redirect(string redirectPath, bool permanent = false)
+        public Task<HandlerType> Redirect(string redirectPath, bool permanent = false)
         {
-            UnderlyingResponse.Redirect(redirectPath, permanent);
+            Context.Response.Redirect(redirectPath, permanent);
             return CompletedRedirectTask;
         }
         // Cached completed task for Redirect member function
-        private static readonly Task<Type> CompletedRedirectTask = Task.FromResult(Type.Final);
+        private static readonly Task<HandlerType> CompletedRedirectTask = Task.FromResult(HandlerType.Final);
 
         /// <summary>
         ///     Sends data as text
@@ -167,18 +64,17 @@ namespace Red
         /// <param name="fileName">If the data represents a file, the filename can be set through this</param>
         /// <param name="attachment">Whether the file should be sent as attachment or inline</param>
         /// <param name="status">The status code for the response</param>
-        public Task<Type> SendString(string data, string contentType = "text/plain", string fileName = "",
+        public Task<HandlerType> SendString(string data, string contentType = "text/plain", string fileName = "",
             bool attachment = false, HttpStatusCode status = HttpStatusCode.OK)
         {
-            return SendString(UnderlyingResponse, data, contentType, fileName, attachment, status);
+            return SendString(AspNetResponse, data, contentType, fileName, attachment, status);
         }
 
         /// <summary>
         ///     Static helper for use in middleware
         /// </summary>
-        public static async Task<Type> SendString(HttpResponse response, string data, string contentType = "text/plain",
-            string fileName = "",
-            bool attachment = false, HttpStatusCode status = HttpStatusCode.OK)
+        public static async Task<HandlerType> SendString(HttpResponse response, string data, string contentType,
+            string fileName, bool attachment, HttpStatusCode status)
         {
             response.StatusCode = (int) status;
             response.ContentType = contentType;
@@ -189,7 +85,7 @@ namespace Red
                 
             }
             await response.WriteAsync(data);
-            return Type.Final;
+            return HandlerType.Final;
         }
 
         /// <summary>
@@ -197,15 +93,15 @@ namespace Red
         /// </summary>
         /// <param name="response">The HttpResponse object</param>
         /// <param name="status">The status code for the response</param>
-        public static Task<Type> SendStatus(HttpResponse response, HttpStatusCode status)
+        public static Task<HandlerType> SendStatus(HttpResponse response, HttpStatusCode status)
         {
-            return SendString(response, status.ToString(), status: status);
+            return SendString(response, status.ToString(), "text/plain", "", false, status);
         }
         /// <summary>
         ///     Send a empty response with a status code
         /// </summary>
         /// <param name="status">The status code for the response</param>
-        public Task<Type> SendStatus(HttpStatusCode status)
+        public Task<HandlerType> SendStatus(HttpStatusCode status)
         {
             return SendString(status.ToString(), status: status);
         }
@@ -215,9 +111,9 @@ namespace Red
         /// </summary>
         /// <param name="data">The object to be serialized and send</param>
         /// <param name="status">The status code for the response</param>
-        public Task<Type> SendJson(object data, HttpStatusCode status = HttpStatusCode.OK)
+        public Task<HandlerType> SendJson(object data, HttpStatusCode status = HttpStatusCode.OK)
         {
-            var json = ServerPlugins.Get<IJsonConverter>().Serialize(data);
+            var json = Context.Plugins.Get<IJsonConverter>().Serialize(data);
             return SendString(json, "application/json", status: status);
         }
 
@@ -226,9 +122,9 @@ namespace Red
         /// </summary>
         /// <param name="data">The object to be serialized and send</param>
         /// <param name="status">The status code for the response</param>
-        public Task<Type> SendXml(object data, HttpStatusCode status = HttpStatusCode.OK)
+        public Task<HandlerType> SendXml(object data, HttpStatusCode status = HttpStatusCode.OK)
         {
-            var xml = ServerPlugins.Get<IXmlConverter>().Serialize(data);
+            var xml = Context.Plugins.Get<IXmlConverter>().Serialize(data);
             return SendString(xml, "application/xml", status: status);
         }
 
@@ -241,21 +137,21 @@ namespace Red
         /// <param name="attachment">Whether the file should be sent as attachment or inline</param>
         /// <param name="dispose">Whether to call dispose on stream when done sending</param>
         /// <param name="status">The status code for the response</param>
-        public async Task<Type> SendStream(Stream dataStream, string contentType, string fileName = "",
+        public async Task<HandlerType> SendStream(Stream dataStream, string contentType, string fileName = "",
             bool attachment = false, bool dispose = true, HttpStatusCode status = HttpStatusCode.OK)
         {
-            UnderlyingResponse.StatusCode = (int) status;
-            UnderlyingResponse.ContentType = contentType;
+            AspNetResponse.StatusCode = (int) status;
+            AspNetResponse.ContentType = contentType;
             if (!string.IsNullOrEmpty(fileName))
             {
                 AddHeader("Content-disposition", $"{(attachment ? "attachment" : "inline")}; filename=\"{fileName}\"");
             }
-            await dataStream.CopyToAsync(UnderlyingResponse.Body);
+            await dataStream.CopyToAsync(AspNetResponse.Body);
             if (dispose)
             {
                 dataStream.Dispose();
             }
-            return Type.Final;
+            return HandlerType.Final;
         }
 
         /// <summary>
@@ -268,13 +164,13 @@ namespace Red
         /// </param>
         /// <param name="handleRanges">Whether to enable handling of range-requests for the file(s) served</param>
         /// <param name="status">The status code for the response</param>
-        public async Task<Type> SendFile(string filePath, string contentType = null, bool handleRanges = true,
+        public async Task<HandlerType> SendFile(string filePath, string contentType = null, bool handleRanges = true,
             HttpStatusCode status = HttpStatusCode.OK)
         {
             if (handleRanges) AddHeader("Accept-Ranges", "bytes");
 
             var fileSize = new FileInfo(filePath).Length;
-            var range = UnderlyingContext.Request.GetTypedHeaders().Range;
+            var range = Context.Request.TypedHeaders.Range;
 
             if (range != null && range.Ranges.Any())
             {
@@ -282,7 +178,7 @@ namespace Red
                 if (range.Unit != "bytes" || !firstRange.From.HasValue && !firstRange.To.HasValue)
                 {
                     await SendStatus(HttpStatusCode.BadRequest);
-                    return Type.Error;
+                    return HandlerType.Error;
                 }
 
                 var offset = firstRange.From ?? fileSize - firstRange.To.Value;
@@ -290,23 +186,23 @@ namespace Red
                     ? fileSize - offset - (fileSize - firstRange.To.Value)
                     : fileSize - offset;
 
-                UnderlyingResponse.StatusCode = (int) HttpStatusCode.PartialContent;
-                UnderlyingResponse.ContentType = GetMime(contentType, filePath);
-                UnderlyingResponse.ContentLength = length;
+                AspNetResponse.StatusCode = (int) HttpStatusCode.PartialContent;
+                AspNetResponse.ContentType = Utils.GetMimeType(contentType, filePath);
+                AspNetResponse.ContentLength = length;
                 AddHeader("Content-Disposition", $"inline; filename=\"{Path.GetFileName(filePath)}\"");
                 AddHeader("Content-Range", $"bytes {offset}-{offset + length - 1}/{fileSize}");
-                await UnderlyingResponse.SendFileAsync(filePath, offset, length);
+                await AspNetResponse.SendFileAsync(filePath, offset, length);
             }
             else
             {
-                UnderlyingResponse.StatusCode = (int) status;
-                UnderlyingResponse.ContentType = GetMime(contentType, filePath);
-                UnderlyingResponse.ContentLength = fileSize;
+                AspNetResponse.StatusCode = (int) status;
+                AspNetResponse.ContentType = Utils.GetMimeType(contentType, filePath);
+                AspNetResponse.ContentLength = fileSize;
                 AddHeader("Content-Disposition", $"inline; filename=\"{Path.GetFileName(filePath)}\"");
-                await UnderlyingResponse.SendFileAsync(filePath);
+                await AspNetResponse.SendFileAsync(filePath);
             }
 
-            return Type.Final;
+            return HandlerType.Final;
         }
 
         /// <summary>
@@ -319,26 +215,15 @@ namespace Red
         ///     extension
         /// </param>
         /// <param name="status">The status code for the response</param>
-        public async Task<Type> Download(string filePath, string fileName = null, string contentType = "",
+        public async Task<HandlerType> Download(string filePath, string fileName = null, string contentType = "",
             HttpStatusCode status = HttpStatusCode.OK)
         {
-            UnderlyingResponse.StatusCode = (int) status;
-            UnderlyingResponse.ContentType = GetMime(contentType, filePath);
+            AspNetResponse.StatusCode = (int) status;
+            AspNetResponse.ContentType = Utils.GetMimeType(contentType, filePath);
             var name = string.IsNullOrEmpty(fileName) ? Path.GetFileName(filePath) : fileName;
             AddHeader("Content-disposition", $"attachment; filename=\"{name}\"");
-            await UnderlyingResponse.SendFileAsync(filePath);
-            return Type.Final;
-        }
-
-
-        private static string GetMime(string contentType, string filePath,
-            string defaultContentType = "application/octet-stream")
-        {
-            if (string.IsNullOrEmpty(contentType) && !MimeTypes.TryGetValue(Path.GetExtension(filePath), out contentType))
-            {
-                contentType = defaultContentType;
-            }
-            return contentType;
+            await AspNetResponse.SendFileAsync(filePath);
+            return HandlerType.Final;
         }
     }
 }

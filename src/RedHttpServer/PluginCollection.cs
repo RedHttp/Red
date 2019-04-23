@@ -19,9 +19,11 @@ namespace Red
         ///     Preferably before starting the server
         /// </summary>s
         /// <typeparam name="TKey">The type-key to register the plugin to</typeparam>
+        /// <typeparam name="TValue"></typeparam>
         /// <param name="plugin">The plugin to register</param>
         /// <param name="overwrite">Whether to overwrite the current plugin, if any</param>
-        public void Register<TKey>(TKey plugin, bool overwrite = false)
+        public void Register<TKey, TValue>(TValue plugin, bool overwrite = false)
+            where TValue : class, TKey
         {
             var type = typeof(TKey);
             if (!overwrite && _plugins.ContainsKey(type))

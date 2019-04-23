@@ -6,7 +6,7 @@ namespace Red.Extensions
     /// <summary>
     ///     Extension to RedRequests, to parse body to object of specified type
     /// </summary>
-    public static class BodyParserExtensions
+    public static class BodyParserExtension
     {
         /// <summary>
         ///     Returns the body deserialized or parsed to specified type, if possible, default if not
@@ -15,7 +15,7 @@ namespace Red.Extensions
         /// <returns></returns>
         public static async Task<T> ParseBodyAsync<T>(this Request request)
         {
-            var bodyParser = request.ServerPlugins.Get<IBodyParser>();
+            var bodyParser = request.Context.Plugins.Get<IBodyParser>();
             return await bodyParser.Parse<T>(request);
         }
     }

@@ -13,11 +13,10 @@ namespace Red
     /// </summary>
     public sealed class WebSocketDialog
     {
-        internal WebSocketDialog(HttpContext context, WebSocket webSocket, PluginCollection plugins)
+        internal WebSocketDialog(Context context, WebSocket webSocket)
         {
             Context = context;
             WebSocket = webSocket;
-            ServerPlugins = plugins;
         }
 
         /// <summary>
@@ -26,14 +25,9 @@ namespace Red
         public readonly WebSocket WebSocket;
         
         /// <summary>
-        ///     The underlying Context
+        ///     The Red.Context the dialog is part of
         /// </summary>
-        public readonly HttpContext Context;
-
-        /// <summary>
-        ///     The available plugins registered to the server
-        /// </summary>
-        public readonly PluginCollection ServerPlugins;
+        public readonly Context Context;
 
 
         /// <summary>
@@ -180,17 +174,17 @@ namespace Red
         ///     Convenience method for ending a dialog handler
         /// </summary>
         /// <returns></returns>
-        public Response.Type Final()
+        public HandlerType Final()
         {
-            return Response.Type.Final;
+            return HandlerType.Final;
         }
         /// <summary>
         ///     Convenience method for ending a dialog handler
         /// </summary>
         /// <returns></returns>
-        public Response.Type Continue()
+        public HandlerType Continue()
         {
-            return Response.Type.Continue;
+            return HandlerType.Continue;
         }
     }
 }

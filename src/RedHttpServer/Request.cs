@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Headers;
 
 namespace Red
 {
@@ -14,43 +16,42 @@ namespace Red
     {
         private readonly Lazy<Dictionary<Type, object>> _data = new Lazy<Dictionary<Type, object>>();
         private readonly Lazy<Dictionary<string, string>> _strings = new Lazy<Dictionary<string, string>>();
+        private readonly Lazy<RequestHeaders> _typedHeaders;
         private IFormCollection _form;
 
-        internal Request(HttpContext context, PluginCollection plugins)
+        internal Request(Context context, HttpRequest aspNetRequest)
         {
             Context = context;
-            Parameters = new RequestParameters(context);
-            ServerPlugins = plugins;
+            AspNetRequest = aspNetRequest;
+            _typedHeaders = new Lazy<RequestHeaders>(AspNetRequest.GetTypedHeaders);
         }
 
 
         /// <summary>
-        ///     The underlying HttpContext
-        ///     <para />
-        ///     The implementation of Request is leaky, to avoid limiting you
+        ///     The Red.Context the request is part of
         /// </summary>
-        public readonly HttpContext Context;
+        public readonly Context Context;
 
         /// <summary>
-        /// The available plugins
+        ///     The ASP.NET HttpRequest that is wrapped
         /// </summary>
-        public readonly PluginCollection ServerPlugins;
-
-
-        /// <summary>
-        ///     The url parameters of the request
-        /// </summary>
-        public readonly RequestParameters Parameters;
+        public readonly HttpRequest AspNetRequest;
 
         /// <summary>
         ///     The query elements of the request
         /// </summary>
-        public IQueryCollection Queries => Context.Request.Query;
+        public IQueryCollection Queries => AspNetRequest.Query;
 
         /// <summary>
         ///     The headers contained in the request
         /// </summary>
         public IHeaderDictionary Headers => Context.Request.Headers;
+
+
+        /// <summary>
+        ///  Exposes the typed headers for the request
+        /// </summary>
+        public RequestHeaders TypedHeaders => _typedHeaders.Value; 
 
         /// <summary>
         ///     The cookies contained in the request
@@ -60,20 +61,20 @@ namespace Red
         /// <summary>
         ///     Returns the body stream of the request
         /// </summary>
-        public Stream BodyStream => Context.Request.Body;
+        public Stream BodyStream => AspNetRequest.Body;
 
         /// <summary>
         ///     Returns form-data from request, if any, null otherwise. 
         /// </summary>
         public async Task<IFormCollection> GetFormDataAsync()
         {
-            if (!Context.Request.HasFormContentType)
+            if (!AspNetRequest.HasFormContentType)
                 return null;
 
             if (_form != null)
                 return _form;
 
-            _form =  await Context.Request.ReadFormAsync();
+            _form =  await AspNetRequest.ReadFormAsync();
             return _form;
         }
         
@@ -125,8 +126,8 @@ namespace Red
         public async Task<bool> SaveFiles(string saveDir, Func<string, string> fileRenamer = null,
             long maxSizeKb = 50000)
         {
-            if (!Context.Request.HasFormContentType) return false;
-            var form = await Context.Request.ReadFormAsync();
+            if (!AspNetRequest.HasFormContentType) return false;
+            var form = await AspNetRequest.ReadFormAsync();
             if (form.Files.Sum(file => file.Length) > maxSizeKb << 10)
                 return false;
 

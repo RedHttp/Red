@@ -5,7 +5,7 @@ namespace Red
 {
     internal class HandlerWrapper
     {
-        internal HandlerWrapper(string path, string method, Func<Request, Response, Task<Response.Type>>[] handlers)
+        internal HandlerWrapper(string path, string method, Func<Request, Response, Task<HandlerType>>[] handlers)
         {
             Path = path;
             Method = method;
@@ -13,15 +13,15 @@ namespace Red
         }
         internal readonly string Path;
         internal readonly string Method;
-        private readonly Func<Request, Response, Task<Response.Type>>[] _handlers;
+        private readonly Func<Request, Response, Task<HandlerType>>[] _handlers;
         
-        internal async Task<Response.Type> Invoke(Request req, Response res)
+        internal async Task<HandlerType> Invoke(Request req, Response res)
         {
-            var status = Response.Type.Continue;
+            var status = HandlerType.Continue;
             foreach (var handler in _handlers)
             {
                 status = await handler(req, res);
-                if (status != Response.Type.Continue) break;
+                if (status != HandlerType.Continue) break;
             }
 
             return status;

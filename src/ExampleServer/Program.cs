@@ -112,7 +112,7 @@ namespace ExampleServer
                 await res.RenderPage("pages/statuspage.ecs", new RenderParams
                 {
                     {"uptime", (int) DateTime.UtcNow.Subtract(startTime).TotalSeconds},
-                    {"version", RedHttpServer.Version}
+                    {"version", Red.RedHttpServer.Version}
                 });
             });
 

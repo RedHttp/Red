@@ -20,7 +20,7 @@ namespace Red.Extensions
 
         public void Initialize(RedHttpServer server)
         {
-            server.Plugins.Register<IJsonConverter>(this);
+            server.Plugins.Register<IJsonConverter, NewtonsoftJsonConverter>(this);
         }
     }
 }

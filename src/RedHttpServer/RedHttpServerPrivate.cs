@@ -72,100 +72,102 @@ namespace Red
         
         private void SetRoutes(IRouteBuilder routeBuilder)
         {
-            var urlParameterRegex = new Regex(":[\\w-]+", RegexOptions.Compiled);
+            var namePathParameterRegex = new Regex(":[\\w-]+", RegexOptions.Compiled);
 
             foreach (var handler in _handlers)
             {
-                var path = ConvertParameter(handler.Path, urlParameterRegex);
+                var path = ConvertPathParameters(handler.Path, namePathParameterRegex);
                 routeBuilder.MapVerb(handler.Method, path, ctx => WrapHandler(ctx, handler));
             }
             _handlers = null;
 
             foreach (var handlerWrapper in _wsHandlers)
             {
-                var path = ConvertParameter(handlerWrapper.Path, urlParameterRegex);
+                var path = ConvertPathParameters(handlerWrapper.Path, namePathParameterRegex);
                 routeBuilder.MapGet(path, ctx => WrapWebsocketHandler(ctx, handlerWrapper));
             }
             _wsHandlers = null;
         }
-        private async Task<Response.Type> WrapHandler(HttpContext context, HandlerWrapper handlerWrapper)
+        private async Task<HandlerType> WrapHandler(HttpContext aspNetContext, HandlerWrapper handlerWrapper)
         {
-            var request = new Request(context, Plugins);
-            var response = new Response(context, Plugins);
-            var status = Response.Type.Continue;
+            var context = new Context(aspNetContext, Plugins);
+            var request = context.Request;
+            var response = context.Response;
+            
+            var status = HandlerType.Continue;
             try
             {
                 foreach (var middleware in _middlewareStack)
                 {
                     status = await middleware.Invoke(request, response);
-                    if (status != Response.Type.Continue) return status;
+                    if (status != HandlerType.Continue) return status;
                 }
-                status = await handlerWrapper.Invoke(request, response);
+                if (status == HandlerType.Continue) 
+                    status = await handlerWrapper.Invoke(request, response);
                 return status;
             }
             catch (Exception e)
             { 
-                if (status == Response.Type.Continue)
-                {
-                    if (RespondWithExceptionDetails)
-                    {
-                        await response.SendString(e.ToString(), status: HttpStatusCode.InternalServerError);
-                    }
-                    else
-                    {
-                        await response.SendStatus(HttpStatusCode.InternalServerError);
-                    }
-                }
-
-                return Response.Type.Error;
+                return await HandleException(context, status, e);
             }
         }
-        private async Task<Response.Type> WrapWebsocketHandler(HttpContext context, WsHandlerWrapper handlerWrapper)
+        private async Task<HandlerType> WrapWebsocketHandler(HttpContext aspNetContext, WsHandlerWrapper handlerWrapper)
         {
-            var request = new Request(context, Plugins);
-            var response = new Response(context, Plugins);
-            var status = Response.Type.Continue;
+            var context = new Context(aspNetContext, Plugins);
+            var request = context.Request;
+            var response = context.Response;
+            
+            var status = HandlerType.Continue;
             try
             {
-                if (context.WebSockets.IsWebSocketRequest)
+                if (aspNetContext.WebSockets.IsWebSocketRequest)
                 {
-                    var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                    var webSocketDialog = new WebSocketDialog(context, webSocket, Plugins);
+                    var webSocket = await aspNetContext.WebSockets.AcceptWebSocketAsync();
+                    var webSocketDialog = new WebSocketDialog(context, webSocket);
                     foreach (var middleware in _wsMiddlewareStack)
                     {
                         status = await middleware.Invoke(request, webSocketDialog, response);
-                        if (status != Response.Type.Continue) return status;
+                        if (status != HandlerType.Continue) return status;
                     }
-                    status = await handlerWrapper.Invoke(request, webSocketDialog, response);
+                    if (status == HandlerType.Continue) 
+                        status = await handlerWrapper.Invoke(request, webSocketDialog, response);
                     await webSocketDialog.ReadFromWebSocket();
                     return status;
                 }
                 else
                 {
                     await response.SendStatus(HttpStatusCode.BadRequest);
-                    return Response.Type.Error;
+                    return HandlerType.Error;
                 }
             }
             catch (Exception e)
             {
-                if (status != Response.Type.Continue)
-                {
-                    return Response.Type.Error;
-                }
-                
-                if (RespondWithExceptionDetails)
-                {
-                    await response.SendString(e.ToString(), status: HttpStatusCode.InternalServerError);
-                }
-                else
-                {
-                    await response.SendStatus(HttpStatusCode.InternalServerError);
-                }
-                return Response.Type.Error;
+                return await HandleException(context, status, e);
             }
         }
 
-        private void AddHandlers(string route, string method, Func<Request, Response, Task<Response.Type>>[] handlers)
+        private async Task<HandlerType> HandleException(Context context, HandlerType status, Exception e)
+        {
+            var path = context.Request.AspNetRequest.Path.ToString();
+            OnHandlerException?.Invoke(this, new HandlerExceptionEventArgs(path, e));
+            
+            if (status != HandlerType.Continue)
+            {
+                return HandlerType.Error;
+            }
+                
+            if (RespondWithExceptionDetails)
+            {
+                await context.Response.SendString(e.ToString(), status: HttpStatusCode.InternalServerError);
+            }
+            else
+            {
+                await context.Response.SendStatus(HttpStatusCode.InternalServerError);
+            }
+            return HandlerType.Error;
+        }
+
+        private void AddHandlers(string route, string method, Func<Request, Response, Task<HandlerType>>[] handlers)
         {
             if (_handlers == null) // Handlers are set to null after they have been loaded
                 throw new RedHttpServerException("Cannot add route handlers after server is started");
@@ -175,14 +177,12 @@ namespace Red
             
             _handlers.Add(new HandlerWrapper(route, method, handlers));
         }
-        private static string ConvertParameter(string parameter, Regex urlParam)
+        private static string ConvertPathParameters(string parameter, Regex urlParam)
         {
-            parameter = parameter
-                .Trim('/')
-                .Replace("*", "{*any}");
-            if (parameter.Contains(":"))
-                parameter = urlParam.Replace(parameter, match => "{" + match.Value.TrimStart(':') + "}");
-            return parameter;
+            return urlParam
+                .Replace(parameter, match => "{" + match.Value.TrimStart(':') + "}")
+                .Replace("*", "{*any}")
+                .Trim('/');
         }
 
     }
