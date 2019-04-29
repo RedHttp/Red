@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RedHttpServer: Red.RedHttpServer Class Reference</title>
+<title>Red: Red.RedHttpServer Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,10 +30,10 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="red.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">RedHttpServer
-   &#160;<span id="projectnumber">3.5.2</span>
+   <div id="projectname">Red
+   &#160;<span id="projectnumber">4.0.0</span>
    </div>
-   <div id="projectbrief">.NET Standard library</div>
+   <div id="projectbrief">.NET Standard web application framework built on ASP.NET Core w/ Kestrel and inspired by Express.js</div>
   </td>
  </tr>
  </tbody>
@@ -90,7 +90,10 @@ $(document).ready(function(){initNavTree('class_red_1_1_red_http_server.html',''
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#properties">Properties</a> &#124;
+<a href="#events">Events</a> &#124;
 <a href="class_red_1_1_red_http_server-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Red.RedHttpServer Class Reference</div>  </div>
@@ -99,6 +102,8 @@ $(document).ready(function(){initNavTree('class_red_1_1_red_http_server.html',''
 
 <p>An Http server based on ASP.NET Core with Kestrel, with use-patterns inspired by express.js  
  <a href="class_red_1_1_red_http_server.html#details">More...</a></p>
+
+<p>Inherits <a class="el" href="interface_red_1_1_interfaces_1_1_i_router.html">Red.Interfaces.IRouter</a>.</p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -115,46 +120,72 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a3d6ca9c18dda6512692ce96f33233dae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run the server using IWebHost.RunAsync and return the task so it can be awaited. If no hostnames are provided, localhost will be used.  <a href="#a3d6ca9c18dda6512692ce96f33233dae">More...</a><br /></td></tr>
 <tr class="separator:a3d6ca9c18dda6512692ce96f33233dae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0f7f7b3575f2d89b4fd0690735d014c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#ad0f7f7b3575f2d89b4fd0690735d014c">Use</a> (<a class="el" href="interface_red_1_1_interfaces_1_1_i_red_extension.html">IRedExtension</a> extension)</td></tr>
+<tr class="memdesc:ad0f7f7b3575f2d89b4fd0690735d014c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register extension modules and middleware  <a href="#ad0f7f7b3575f2d89b4fd0690735d014c">More...</a><br /></td></tr>
 <tr class="separator:ad0f7f7b3575f2d89b4fd0690735d014c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade1c6614a319b6c0dccefc8b49219fc5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#ade1c6614a319b6c0dccefc8b49219fc5">Get</a> (string route, params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, Task &gt;[] handlers)</td></tr>
-<tr class="memdesc:ade1c6614a319b6c0dccefc8b49219fc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add action to handle GET requests to a given route  <a href="#ade1c6614a319b6c0dccefc8b49219fc5">More...</a><br /></td></tr>
-<tr class="separator:ade1c6614a319b6c0dccefc8b49219fc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d0109d66c1bc40e8f4341e9764f1bd8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#a3d0109d66c1bc40e8f4341e9764f1bd8">Post</a> (string route, params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, Task &gt;[] handlers)</td></tr>
-<tr class="memdesc:a3d0109d66c1bc40e8f4341e9764f1bd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add action to handle POST requests to a given route  <a href="#a3d0109d66c1bc40e8f4341e9764f1bd8">More...</a><br /></td></tr>
-<tr class="separator:a3d0109d66c1bc40e8f4341e9764f1bd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e8b2487ec5d9f553198b7879022fb21"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#a5e8b2487ec5d9f553198b7879022fb21">Put</a> (string route, params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, Task &gt;[] handlers)</td></tr>
-<tr class="memdesc:a5e8b2487ec5d9f553198b7879022fb21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add action to handle PUT requests to a given route.  <a href="#a5e8b2487ec5d9f553198b7879022fb21">More...</a><br /></td></tr>
-<tr class="separator:a5e8b2487ec5d9f553198b7879022fb21"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3263d14a84480515f2435ea0e62c71a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#ae3263d14a84480515f2435ea0e62c71a">Delete</a> (string route, params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, Task &gt;[] handlers)</td></tr>
-<tr class="memdesc:ae3263d14a84480515f2435ea0e62c71a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add action to handle DELETE requests to a given route.  <a href="#ae3263d14a84480515f2435ea0e62c71a">More...</a><br /></td></tr>
-<tr class="separator:ae3263d14a84480515f2435ea0e62c71a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab010720eb9533def43da1cb1ccf2658a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#ab010720eb9533def43da1cb1ccf2658a">WebSocket</a> (string route, params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, <a class="el" href="class_red_1_1_web_socket_dialog.html">WebSocketDialog</a>, Task &gt;[] handlers)</td></tr>
-<tr class="memdesc:ab010720eb9533def43da1cb1ccf2658a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add action to handle WEBSOCKET requests to a given route.  <a href="#ab010720eb9533def43da1cb1ccf2658a">More...</a><br /></td></tr>
-<tr class="separator:ab010720eb9533def43da1cb1ccf2658a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7be18dd534ae1c1aed454266a8bda59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#af7be18dd534ae1c1aed454266a8bda59">WebSocket</a> (string route, params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_web_socket_dialog.html">WebSocketDialog</a>, Task &gt;[] handlers)</td></tr>
-<tr class="memdesc:af7be18dd534ae1c1aed454266a8bda59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add action to handle WEBSOCKET requests to a given route.  <a href="#af7be18dd534ae1c1aed454266a8bda59">More...</a><br /></td></tr>
-<tr class="separator:af7be18dd534ae1c1aed454266a8bda59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a093934fdbe0f678d14c59f4bb5dea0e5"><td class="memItemLeft" align="right" valign="top"><a id="a093934fdbe0f678d14c59f4bb5dea0e5"></a>
+<a class="el" href="interface_red_1_1_interfaces_1_1_i_router.html">IRouter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#a093934fdbe0f678d14c59f4bb5dea0e5">CreateRouter</a> (string baseRoute)</td></tr>
+<tr class="memdesc:a093934fdbe0f678d14c59f4bb5dea0e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a <br /></td></tr>
+<tr class="separator:a093934fdbe0f678d14c59f4bb5dea0e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfe60f33334e17d7eb50d1beafeb0001"><td class="memItemLeft" align="right" valign="top"><a id="acfe60f33334e17d7eb50d1beafeb0001"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#acfe60f33334e17d7eb50d1beafeb0001">Get</a> (string route, params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&gt;[] handlers)</td></tr>
+<tr class="memdesc:acfe60f33334e17d7eb50d1beafeb0001"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add action to handle GET requests to a given route <br /></td></tr>
+<tr class="separator:acfe60f33334e17d7eb50d1beafeb0001"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af20c54498aa5a00b913bfacf761f2742"><td class="memItemLeft" align="right" valign="top"><a id="af20c54498aa5a00b913bfacf761f2742"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#af20c54498aa5a00b913bfacf761f2742">Post</a> (string route, params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&gt;[] handlers)</td></tr>
+<tr class="memdesc:af20c54498aa5a00b913bfacf761f2742"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add action to handle POST requests to a given route <br /></td></tr>
+<tr class="separator:af20c54498aa5a00b913bfacf761f2742"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a399ab971b5865d16fe6b11dcb5358786"><td class="memItemLeft" align="right" valign="top"><a id="a399ab971b5865d16fe6b11dcb5358786"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#a399ab971b5865d16fe6b11dcb5358786">Put</a> (string route, params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&gt;[] handlers)</td></tr>
+<tr class="memdesc:a399ab971b5865d16fe6b11dcb5358786"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add action to handle PUT requests to a given route. <br /></td></tr>
+<tr class="separator:a399ab971b5865d16fe6b11dcb5358786"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3dfac7f0209f8dcff7d9fdbfa06adce"><td class="memItemLeft" align="right" valign="top"><a id="aa3dfac7f0209f8dcff7d9fdbfa06adce"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#aa3dfac7f0209f8dcff7d9fdbfa06adce">Delete</a> (string route, params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&gt;[] handlers)</td></tr>
+<tr class="memdesc:aa3dfac7f0209f8dcff7d9fdbfa06adce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add action to handle DELETE requests to a given route. <br /></td></tr>
+<tr class="separator:aa3dfac7f0209f8dcff7d9fdbfa06adce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9af8f68cd514768dfe1b947abfef840b"><td class="memItemLeft" align="right" valign="top"><a id="a9af8f68cd514768dfe1b947abfef840b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#a9af8f68cd514768dfe1b947abfef840b">WebSocket</a> (string route, params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, <a class="el" href="class_red_1_1_web_socket_dialog.html">WebSocketDialog</a>, Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&gt;[] handlers)</td></tr>
+<tr class="memdesc:a9af8f68cd514768dfe1b947abfef840b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add action to handle WEBSOCKET requests to a given route.  <br /></td></tr>
+<tr class="separator:a9af8f68cd514768dfe1b947abfef840b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4416055b5b0c94f82045325dfca4ac72"><td class="memItemLeft" align="right" valign="top"><a id="a4416055b5b0c94f82045325dfca4ac72"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#a4416055b5b0c94f82045325dfca4ac72">WebSocket</a> (string route, params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_web_socket_dialog.html">WebSocketDialog</a>, Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&gt;[] handlers)</td></tr>
+<tr class="memdesc:a4416055b5b0c94f82045325dfca4ac72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add action to handle WEBSOCKET requests to a given route.  <br /></td></tr>
+<tr class="separator:a4416055b5b0c94f82045325dfca4ac72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a92cec41d6d65c6d81c24bc53be442d7b"><td class="memItemLeft" align="right" valign="top">readonly <a class="el" href="class_red_1_1_plugin_collection.html">PluginCollection</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#a92cec41d6d65c6d81c24bc53be442d7b">Plugins</a> = new <a class="el" href="class_red_1_1_plugin_collection.html">PluginCollection</a>()</td></tr>
+<tr class="memdesc:a92cec41d6d65c6d81c24bc53be442d7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The plugin collection containing all plugins registered to this server instance.  <a href="#a92cec41d6d65c6d81c24bc53be442d7b">More...</a><br /></td></tr>
+<tr class="separator:a92cec41d6d65c6d81c24bc53be442d7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a9683984fc165297e543d7946fc4811"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#a5a9683984fc165297e543d7946fc4811">RespondWithExceptionDetails</a> = false</td></tr>
+<tr class="memdesc:a5a9683984fc165297e543d7946fc4811"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether details about an exception should be sent together with the code 500 response. For debugging  <a href="#a5a9683984fc165297e543d7946fc4811">More...</a><br /></td></tr>
+<tr class="separator:a5a9683984fc165297e543d7946fc4811"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6e26ee6c4d273c8505e100ed8622e93"><td class="memItemLeft" align="right" valign="top">readonly int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#ac6e26ee6c4d273c8505e100ed8622e93">Port</a></td></tr>
+<tr class="memdesc:ac6e26ee6c4d273c8505e100ed8622e93"><td class="mdescLeft">&#160;</td><td class="mdescRight">The port that the server is listening on  <a href="#ac6e26ee6c4d273c8505e100ed8622e93">More...</a><br /></td></tr>
+<tr class="separator:ac6e26ee6c4d273c8505e100ed8622e93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92233e8aace5dc908041a46f506ad14f"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#a92233e8aace5dc908041a46f506ad14f">Method</a></td></tr>
+<tr class="memdesc:a92233e8aace5dc908041a46f506ad14f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a list of the registered handlers' method and route Useful for getting an overview of the routes provided by the server  <a href="#a92233e8aace5dc908041a46f506ad14f">More...</a><br /></td></tr>
+<tr class="separator:a92233e8aace5dc908041a46f506ad14f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:ac60dede2254fbea06e3850322e0ad237"><td class="memItemLeft" align="right" valign="top">static readonly string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#ac60dede2254fbea06e3850322e0ad237">Version</a> = typeof(<a class="el" href="class_red_1_1_red_http_server.html">RedHttpServer</a>).GetTypeInfo().Assembly.GetCustomAttribute&lt;AssemblyFileVersionAttribute&gt;().Version</td></tr>
+<tr class="memdesc:ac60dede2254fbea06e3850322e0ad237"><td class="mdescLeft">&#160;</td><td class="mdescRight">The version of the library  <a href="#ac60dede2254fbea06e3850322e0ad237">More...</a><br /></td></tr>
+<tr class="separator:ac60dede2254fbea06e3850322e0ad237"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
 Properties</h2></td></tr>
-<tr class="memitem:a7cddc32a99cb2c9c6331a66badc989ab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_red_1_1_plugin_collection.html">PluginCollection</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#a7cddc32a99cb2c9c6331a66badc989ab">Plugins</a> = new <a class="el" href="class_red_1_1_plugin_collection.html">PluginCollection</a>()<code> [get]</code></td></tr>
-<tr class="memdesc:a7cddc32a99cb2c9c6331a66badc989ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">The plugin collection containing all plugins registered to this server instance.  <a href="#a7cddc32a99cb2c9c6331a66badc989ab">More...</a><br /></td></tr>
-<tr class="separator:a7cddc32a99cb2c9c6331a66badc989ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19c0d83250cf28befc2cf9b5ef2bb841"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#a19c0d83250cf28befc2cf9b5ef2bb841">Version</a> = typeof(<a class="el" href="class_red_1_1_red_http_server.html">RedHttpServer</a>).GetTypeInfo().Assembly.GetCustomAttribute&lt;AssemblyFileVersionAttribute&gt;().Version<code> [get]</code></td></tr>
-<tr class="memdesc:a19c0d83250cf28befc2cf9b5ef2bb841"><td class="mdescLeft">&#160;</td><td class="mdescRight">The version of the library  <a href="#a19c0d83250cf28befc2cf9b5ef2bb841">More...</a><br /></td></tr>
-<tr class="separator:a19c0d83250cf28befc2cf9b5ef2bb841"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a9683984fc165297e543d7946fc4811"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#a5a9683984fc165297e543d7946fc4811">RespondWithExceptionDetails</a> = false<code> [get, set]</code></td></tr>
-<tr class="memdesc:a5a9683984fc165297e543d7946fc4811"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether details about an exception should be sent together with the code 500 response. For debugging  <a href="#a5a9683984fc165297e543d7946fc4811">More...</a><br /></td></tr>
-<tr class="separator:a5a9683984fc165297e543d7946fc4811"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af95cdffd5d65ea2fc1fabcca1e25f052"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#af95cdffd5d65ea2fc1fabcca1e25f052">Port</a><code> [get]</code></td></tr>
-<tr class="memdesc:af95cdffd5d65ea2fc1fabcca1e25f052"><td class="mdescLeft">&#160;</td><td class="mdescRight">The port that the server is listening on  <a href="#af95cdffd5d65ea2fc1fabcca1e25f052">More...</a><br /></td></tr>
-<tr class="separator:af95cdffd5d65ea2fc1fabcca1e25f052"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7936c43e52c4766356cc84ddd97c96a8"><td class="memItemLeft" align="right" valign="top">Action&lt; IServiceCollection &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#a7936c43e52c4766356cc84ddd97c96a8">ConfigureServices</a><code> [set]</code></td></tr>
 <tr class="memdesc:a7936c43e52c4766356cc84ddd97c96a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Method to register additional ASP.NET Core Services  <a href="#a7936c43e52c4766356cc84ddd97c96a8">More...</a><br /></td></tr>
 <tr class="separator:a7936c43e52c4766356cc84ddd97c96a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb3b5ff34b7a4d14a93be6716fb23218"><td class="memItemLeft" align="right" valign="top">Action&lt; IApplicationBuilder &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#acb3b5ff34b7a4d14a93be6716fb23218">ConfigureApplication</a><code> [set]</code></td></tr>
 <tr class="memdesc:acb3b5ff34b7a4d14a93be6716fb23218"><td class="mdescLeft">&#160;</td><td class="mdescRight">Method to configure the ASP.NET Core application additionally  <a href="#acb3b5ff34b7a4d14a93be6716fb23218">More...</a><br /></td></tr>
 <tr class="separator:acb3b5ff34b7a4d14a93be6716fb23218"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="events"></a>
+Events</h2></td></tr>
+<tr class="memitem:a0678dbaba34cfb02c525766713a497b0"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; <a class="el" href="class_red_1_1_handler_exception_event_args.html">HandlerExceptionEventArgs</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_red_http_server.html#a0678dbaba34cfb02c525766713a497b0">OnHandlerException</a></td></tr>
+<tr class="memdesc:a0678dbaba34cfb02c525766713a497b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event that is raised when an exception is thrown from a handler  <a href="#a0678dbaba34cfb02c525766713a497b0">More...</a><br /></td></tr>
+<tr class="separator:a0678dbaba34cfb02c525766713a497b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An Http server based on ASP.NET Core with Kestrel, with use-patterns inspired by express.js </p>
@@ -197,154 +228,6 @@ Properties</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ae3263d14a84480515f2435ea0e62c71a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae3263d14a84480515f2435ea0e62c71a">&#9670;&nbsp;</a></span>Delete()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Red.RedHttpServer.Delete </td>
-          <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>route</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, Task &gt; []&#160;</td>
-          <td class="paramname"><em>handlers</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Add action to handle DELETE requests to a given route. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">route</td><td>The route to respond to</td></tr>
-    <tr><td class="paramname">handlers</td><td>The handlers that wil respond to the request</td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ade1c6614a319b6c0dccefc8b49219fc5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade1c6614a319b6c0dccefc8b49219fc5">&#9670;&nbsp;</a></span>Get()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Red.RedHttpServer.Get </td>
-          <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>route</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, Task &gt; []&#160;</td>
-          <td class="paramname"><em>handlers</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Add action to handle GET requests to a given route </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">route</td><td>The route to respond to</td></tr>
-    <tr><td class="paramname">handlers</td><td>The handlers that wil respond to the request</td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a3d0109d66c1bc40e8f4341e9764f1bd8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d0109d66c1bc40e8f4341e9764f1bd8">&#9670;&nbsp;</a></span>Post()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Red.RedHttpServer.Post </td>
-          <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>route</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, Task &gt; []&#160;</td>
-          <td class="paramname"><em>handlers</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Add action to handle POST requests to a given route </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">route</td><td>The route to respond to</td></tr>
-    <tr><td class="paramname">handlers</td><td>The handlers that wil respond to the request</td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a5e8b2487ec5d9f553198b7879022fb21"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5e8b2487ec5d9f553198b7879022fb21">&#9670;&nbsp;</a></span>Put()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Red.RedHttpServer.Put </td>
-          <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>route</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, Task &gt; []&#160;</td>
-          <td class="paramname"><em>handlers</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Add action to handle PUT requests to a given route. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">route</td><td>The route to respond to</td></tr>
-    <tr><td class="paramname">handlers</td><td>The handlers that wil respond to the request</td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a3d6ca9c18dda6512692ce96f33233dae"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3d6ca9c18dda6512692ce96f33233dae">&#9670;&nbsp;</a></span>RunAsync()</h2>
 
@@ -433,7 +316,6 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p></p>
 <p>Register extension modules and middleware </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -444,77 +326,93 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="ab010720eb9533def43da1cb1ccf2658a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab010720eb9533def43da1cb1ccf2658a">&#9670;&nbsp;</a></span>WebSocket() <span class="overload">[1/2]</span></h2>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a92233e8aace5dc908041a46f506ad14f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92233e8aace5dc908041a46f506ad14f">&#9670;&nbsp;</a></span>Method</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Red.RedHttpServer.WebSocket </td>
-          <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>route</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_response.html">Response</a>, <a class="el" href="class_red_1_1_web_socket_dialog.html">WebSocketDialog</a>, Task &gt; []&#160;</td>
-          <td class="paramname"><em>handlers</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
+          <td class="memname">string Red.RedHttpServer.Method</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Add action to handle WEBSOCKET requests to a given route. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">route</td><td>The route to respond to</td></tr>
-    <tr><td class="paramname">handlers</td><td>The handlers that wil respond to the request</td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Return a list of the registered handlers' method and route Useful for getting an overview of the routes provided by the server </p>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
-<a id="af7be18dd534ae1c1aed454266a8bda59"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7be18dd534ae1c1aed454266a8bda59">&#9670;&nbsp;</a></span>WebSocket() <span class="overload">[2/2]</span></h2>
+<a id="a92cec41d6d65c6d81c24bc53be442d7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92cec41d6d65c6d81c24bc53be442d7b">&#9670;&nbsp;</a></span>Plugins</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Red.RedHttpServer.WebSocket </td>
-          <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>route</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">params Func&lt; <a class="el" href="class_red_1_1_request.html">Request</a>, <a class="el" href="class_red_1_1_web_socket_dialog.html">WebSocketDialog</a>, Task &gt; []&#160;</td>
-          <td class="paramname"><em>handlers</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
+          <td class="memname">readonly <a class="el" href="class_red_1_1_plugin_collection.html">PluginCollection</a> Red.RedHttpServer.Plugins = new <a class="el" href="class_red_1_1_plugin_collection.html">PluginCollection</a>()</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Add action to handle WEBSOCKET requests to a given route. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">route</td><td>The route to respond to</td></tr>
-    <tr><td class="paramname">handlers</td><td>The handlers that wil respond to the request</td></tr>
-  </table>
-  </dd>
-</dl>
+<p>The plugin collection containing all plugins registered to this server instance. </p>
+
+</div>
+</div>
+<a id="ac6e26ee6c4d273c8505e100ed8622e93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6e26ee6c4d273c8505e100ed8622e93">&#9670;&nbsp;</a></span>Port</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">readonly int Red.RedHttpServer.Port</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The port that the server is listening on </p>
+
+</div>
+</div>
+<a id="a5a9683984fc165297e543d7946fc4811"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a9683984fc165297e543d7946fc4811">&#9670;&nbsp;</a></span>RespondWithExceptionDetails</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Red.RedHttpServer.RespondWithExceptionDetails = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Whether details about an exception should be sent together with the code 500 response. For debugging </p>
+
+</div>
+</div>
+<a id="ac60dede2254fbea06e3850322e0ad237"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac60dede2254fbea06e3850322e0ad237">&#9670;&nbsp;</a></span>Version</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">readonly string Red.RedHttpServer.Version = typeof(<a class="el" href="class_red_1_1_red_http_server.html">RedHttpServer</a>).GetTypeInfo().Assembly.GetCustomAttribute&lt;AssemblyFileVersionAttribute&gt;().Version</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The version of the library </p>
 
 </div>
 </div>
@@ -567,105 +465,26 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a7cddc32a99cb2c9c6331a66badc989ab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7cddc32a99cb2c9c6331a66badc989ab">&#9670;&nbsp;</a></span>Plugins</h2>
+<h2 class="groupheader">Event Documentation</h2>
+<a id="a0678dbaba34cfb02c525766713a497b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0678dbaba34cfb02c525766713a497b0">&#9670;&nbsp;</a></span>OnHandlerException</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_red_1_1_plugin_collection.html">PluginCollection</a> Red.RedHttpServer.Plugins = new <a class="el" href="class_red_1_1_plugin_collection.html">PluginCollection</a>()</td>
+          <td class="memname">EventHandler&lt;<a class="el" href="class_red_1_1_handler_exception_event_args.html">HandlerExceptionEventArgs</a>&gt; Red.RedHttpServer.OnHandlerException</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>The plugin collection containing all plugins registered to this server instance. </p>
-
-</div>
-</div>
-<a id="af95cdffd5d65ea2fc1fabcca1e25f052"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af95cdffd5d65ea2fc1fabcca1e25f052">&#9670;&nbsp;</a></span>Port</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int Red.RedHttpServer.Port</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The port that the server is listening on </p>
-
-</div>
-</div>
-<a id="a5a9683984fc165297e543d7946fc4811"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a9683984fc165297e543d7946fc4811">&#9670;&nbsp;</a></span>RespondWithExceptionDetails</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool Red.RedHttpServer.RespondWithExceptionDetails = false</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Whether details about an exception should be sent together with the code 500 response. For debugging </p>
-
-</div>
-</div>
-<a id="a19c0d83250cf28befc2cf9b5ef2bb841"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19c0d83250cf28befc2cf9b5ef2bb841">&#9670;&nbsp;</a></span>Version</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">string Red.RedHttpServer.Version = typeof(<a class="el" href="class_red_1_1_red_http_server.html">RedHttpServer</a>).GetTypeInfo().Assembly.GetCustomAttribute&lt;AssemblyFileVersionAttribute&gt;().Version</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">get</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The version of the library </p>
+<p>Event that is raised when an exception is thrown from a handler </p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>C:/Users/Malte/Documents/GitHub/Red/src/RedHttpServer/RedHttpServer.cs</li>
-<li>C:/Users/Malte/Documents/GitHub/Red/src/RedHttpServer/RedHttpServerPrivate.cs</li>
+<li>RedHttpServer.cs</li>
+<li>RedHttpServerPrivate.cs</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

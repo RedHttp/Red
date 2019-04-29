@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['underlyingrequest',['UnderlyingRequest',['../class_red_1_1_request.html#a967ce43a5abcec057e2e3e2ee086454b',1,'Red.Request.UnderlyingRequest()'],['../class_red_1_1_web_socket_dialog.html#a7ca9bb55e7577c8bc91b1084775a41d0',1,'Red.WebSocketDialog.UnderlyingRequest()']]],
-  ['underlyingresponse',['UnderlyingResponse',['../class_red_1_1_response.html#a56e266cd002834e4334b6a930ab68f00',1,'Red::Response']]],
-  ['underlyingwebsocket',['UnderlyingWebSocket',['../class_red_1_1_web_socket_dialog.html#a6c12598186e996c27589c836afa6feb4',1,'Red::WebSocketDialog']]]
+  ['path',['Path',['../class_red_1_1_handler_exception_event_args.html#aa06f4f27b3e71d39cbff715bd4e93724',1,'Red::HandlerExceptionEventArgs']]],
+  ['plugins',['Plugins',['../class_red_1_1_context.html#ae3633169b89a1f2da88dd33069b0d894',1,'Red.Context.Plugins()'],['../class_red_1_1_red_http_server.html#a92cec41d6d65c6d81c24bc53be442d7b',1,'Red.RedHttpServer.Plugins()']]],
+  ['port',['Port',['../class_red_1_1_red_http_server.html#ac6e26ee6c4d273c8505e100ed8622e93',1,'Red::RedHttpServer']]]
 ];

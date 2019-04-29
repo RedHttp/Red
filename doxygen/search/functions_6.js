@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['redhttpserver',['RedHttpServer',['../class_red_1_1_red_http_server.html#adf68c05851139076160669489ce71437',1,'Red::RedHttpServer']]],
-  ['redirect',['Redirect',['../class_red_1_1_response.html#a36bc69d15026baefdfc20084aa356cb0',1,'Red::Response']]],
-  ['register_3c_20tkey_20_3e',['Register&lt; TKey &gt;',['../class_red_1_1_plugin_collection.html#a32ee715e99c11574c2b1d0b951dcd141',1,'Red.PluginCollection.Register&lt; TKey &gt;(TKey plugin)'],['../class_red_1_1_plugin_collection.html#a10fd5d5bad6fb2e27d174d300c9ee391',1,'Red.PluginCollection.Register&lt; TKey &gt;(TKey plugin, bool overwrite)']]],
-  ['runasync',['RunAsync',['../class_red_1_1_red_http_server.html#a3d6ca9c18dda6512692ce96f33233dae',1,'Red::RedHttpServer']]]
+  ['initialize',['Initialize',['../class_red_1_1_extensions_1_1_body_parser.html#abf6c5bb17ef9afc69cee90670136838f',1,'Red.Extensions.BodyParser.Initialize()'],['../class_red_1_1_extensions_1_1_newtonsoft_json_converter.html#aaca564922c4fd2bc940aea87ab100998',1,'Red.Extensions.NewtonsoftJsonConverter.Initialize()'],['../class_red_1_1_extensions_1_1_xml_converter.html#ace101369d670cd1aa5026a028e6010d4',1,'Red.Extensions.XmlConverter.Initialize()'],['../interface_red_1_1_interfaces_1_1_i_red_extension.html#a32e2c8d458036c4899669752fae2007a',1,'Red.Interfaces.IRedExtension.Initialize()']]],
+  ['invoke',['Invoke',['../interface_red_1_1_interfaces_1_1_i_red_middleware.html#a2cf1fe3841ad389b2590f0fef982100c',1,'Red.Interfaces.IRedMiddleware.Invoke()'],['../interface_red_1_1_interfaces_1_1_i_red_web_socket_middleware.html#a5f2497c20789f9023c3047fc10a40d9d',1,'Red.Interfaces.IRedWebSocketMiddleware.Invoke()']]],
+  ['isregistered_3c_20tkey_20_3e',['IsRegistered&lt; TKey &gt;',['../class_red_1_1_plugin_collection.html#aa4b46c98e35d6d52365f754a25665616',1,'Red::PluginCollection']]]
 ];

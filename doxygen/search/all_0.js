@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['addheader',['AddHeader',['../class_red_1_1_response.html#a4870f6b4ebcc23bcc50db1e2d46afc45',1,'Red::Response']]]
+  ['addheader',['AddHeader',['../class_red_1_1_response.html#a4870f6b4ebcc23bcc50db1e2d46afc45',1,'Red::Response']]],
+  ['aspnetcontext',['AspNetContext',['../class_red_1_1_context.html#aac6c9e67158e1d8557a324317c79ab59',1,'Red::Context']]],
+  ['aspnetrequest',['AspNetRequest',['../class_red_1_1_request.html#a13ce69315cd0c00140ec84aa008d28c3',1,'Red::Request']]],
+  ['aspnetresponse',['AspNetResponse',['../class_red_1_1_response.html#a90d856e16d8e20c8997c463e24c9cfaa',1,'Red::Response']]]
 ];

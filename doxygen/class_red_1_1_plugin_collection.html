@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RedHttpServer: Red.PluginCollection Class Reference</title>
+<title>Red: Red.PluginCollection Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,10 +30,10 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="red.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">RedHttpServer
-   &#160;<span id="projectnumber">3.5.2</span>
+   <div id="projectname">Red
+   &#160;<span id="projectnumber">4.0.0</span>
    </div>
-   <div id="projectbrief">.NET Standard library</div>
+   <div id="projectbrief">.NET Standard web application framework built on ASP.NET Core w/ Kestrel and inspired by Express.js</div>
   </td>
  </tr>
  </tbody>
@@ -101,12 +101,9 @@ $(document).ready(function(){initNavTree('class_red_1_1_plugin_collection.html',
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a32ee715e99c11574c2b1d0b951dcd141"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_plugin_collection.html#a32ee715e99c11574c2b1d0b951dcd141">Register&lt; TKey &gt;</a> (TKey plugin)</td></tr>
-<tr class="memdesc:a32ee715e99c11574c2b1d0b951dcd141"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a plugin to the collection. Preferably before starting the server  <a href="#a32ee715e99c11574c2b1d0b951dcd141">More...</a><br /></td></tr>
-<tr class="separator:a32ee715e99c11574c2b1d0b951dcd141"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10fd5d5bad6fb2e27d174d300c9ee391"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_plugin_collection.html#a10fd5d5bad6fb2e27d174d300c9ee391">Register&lt; TKey &gt;</a> (TKey plugin, bool overwrite)</td></tr>
-<tr class="memdesc:a10fd5d5bad6fb2e27d174d300c9ee391"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a plugin to the collection. Preferably before starting the server  <a href="#a10fd5d5bad6fb2e27d174d300c9ee391">More...</a><br /></td></tr>
-<tr class="separator:a10fd5d5bad6fb2e27d174d300c9ee391"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa415f5aed81540f060b791a64d4cff9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_plugin_collection.html#aaa415f5aed81540f060b791a64d4cff9">Register&lt; TKey, TValue &gt;</a> (TValue plugin, bool overwrite=false)</td></tr>
+<tr class="memdesc:aaa415f5aed81540f060b791a64d4cff9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a plugin to the collection. Preferably before starting the server  <a href="#aaa415f5aed81540f060b791a64d4cff9">More...</a><br /></td></tr>
+<tr class="separator:aaa415f5aed81540f060b791a64d4cff9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4b46c98e35d6d52365f754a25665616"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_plugin_collection.html#aa4b46c98e35d6d52365f754a25665616">IsRegistered&lt; TKey &gt;</a> ()</td></tr>
 <tr class="memdesc:aa4b46c98e35d6d52365f754a25665616"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a plugin is registered to the given type-key  <a href="#aa4b46c98e35d6d52365f754a25665616">More...</a><br /></td></tr>
 <tr class="separator:aa4b46c98e35d6d52365f754a25665616"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -174,55 +171,23 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a32ee715e99c11574c2b1d0b951dcd141"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a32ee715e99c11574c2b1d0b951dcd141">&#9670;&nbsp;</a></span>Register&lt; TKey &gt;() <span class="overload">[1/2]</span></h2>
+<a id="aaa415f5aed81540f060b791a64d4cff9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa415f5aed81540f060b791a64d4cff9">&#9670;&nbsp;</a></span>Register&lt; TKey, TValue &gt;()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Red.PluginCollection.Register&lt; TKey &gt; </td>
+          <td class="memname">void Red.PluginCollection.Register&lt; TKey, TValue &gt; </td>
           <td>(</td>
-          <td class="paramtype">TKey&#160;</td>
-          <td class="paramname"><em>plugin</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Register a plugin to the collection. Preferably before starting the server </p>
-<p>s </p><dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">TKey</td><td>The type-key to register the plugin to</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">plugin</td><td>The plugin to register</td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a10fd5d5bad6fb2e27d174d300c9ee391"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a10fd5d5bad6fb2e27d174d300c9ee391">&#9670;&nbsp;</a></span>Register&lt; TKey &gt;() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Red.PluginCollection.Register&lt; TKey &gt; </td>
-          <td>(</td>
-          <td class="paramtype">TKey&#160;</td>
+          <td class="paramtype">TValue&#160;</td>
           <td class="paramname"><em>plugin</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>overwrite</em>&#160;</td>
+          <td class="paramname"><em>overwrite</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -236,21 +201,31 @@ Public Member Functions</h2></td></tr>
 <p>s </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">TKey</td><td>The type-key to register the plugin to</td></tr>
+    <tr><td class="paramname">TValue</td><td></td></tr>
   </table>
   </dd>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">plugin</td><td>The plugin to register</td></tr>
-    <tr><td class="paramname">overwrite</td><td>whether to overwrite the current plugin, if any</td></tr>
+    <tr><td class="paramname">overwrite</td><td>Whether to overwrite the current plugin, if any</td></tr>
   </table>
   </dd>
 </dl>
+<div class="typeconstraint">
+<dl><dt><b>Type Constraints</b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>TValue</em></td><td>&#160;:</td><td valign="top"><em>class</em></td><td>&#160;</td></tr>
+<tr><td valign="top"><em>TValue</em></td><td>&#160;:</td><td valign="top"><em>TKey</em></td><td>&#160;</td></tr>
+</table>
+</dd>
+</dl>
+</div>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>C:/Users/Malte/Documents/GitHub/Red/src/RedHttpServer/PluginCollection.cs</li>
+<li>PluginCollection.cs</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

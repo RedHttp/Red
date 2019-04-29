@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['serverplugins',['ServerPlugins',['../class_red_1_1_web_socket_dialog.html#a0d9113093db2b416e78d50da62045ecd',1,'Red::WebSocketDialog']]]
+  ['headers',['Headers',['../class_red_1_1_request.html#a71ff914cb638a76aee587c7776b1ed18',1,'Red::Request']]]
 ];

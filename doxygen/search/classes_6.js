@@ -1,4 +1,8 @@
 var searchData=
 [
-  ['textmessageeventargs',['TextMessageEventArgs',['../class_red_1_1_web_socket_dialog_1_1_text_message_event_args.html',1,'Red::WebSocketDialog']]]
+  ['redhttpserver',['RedHttpServer',['../class_red_1_1_red_http_server.html',1,'Red']]],
+  ['redhttpserverexception',['RedHttpServerException',['../class_red_1_1_red_http_server_exception.html',1,'Red']]],
+  ['request',['Request',['../class_red_1_1_request.html',1,'Red']]],
+  ['response',['Response',['../class_red_1_1_response.html',1,'Red']]],
+  ['router',['Router',['../class_red_1_1_router.html',1,'Red']]]
 ];

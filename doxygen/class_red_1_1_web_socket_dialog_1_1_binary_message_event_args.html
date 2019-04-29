@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RedHttpServer: Red.WebSocketDialog.BinaryMessageEventArgs Class Reference</title>
+<title>Red: Red.WebSocketDialog.BinaryMessageEventArgs Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,10 +30,10 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="red.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">RedHttpServer
-   &#160;<span id="projectnumber">3.5.2</span>
+   <div id="projectname">Red
+   &#160;<span id="projectnumber">4.0.0</span>
    </div>
-   <div id="projectbrief">.NET Standard library</div>
+   <div id="projectbrief">.NET Standard web application framework built on ASP.NET Core w/ Kestrel and inspired by Express.js</div>
   </td>
  </tr>
  </tbody>
@@ -90,7 +90,6 @@ $(document).ready(function(){initNavTree('class_red_1_1_web_socket_dialog_1_1_bi
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="#properties">Properties</a> &#124;
 <a href="class_red_1_1_web_socket_dialog_1_1_binary_message_event_args-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Red.WebSocketDialog.BinaryMessageEventArgs Class Reference</div>  </div>
@@ -104,15 +103,12 @@ $(document).ready(function(){initNavTree('class_red_1_1_web_socket_dialog_1_1_bi
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a5fe549a9ec8a518ee9052192c4ca2777"><td class="memItemLeft" align="right" valign="top">byte []&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_web_socket_dialog_1_1_binary_message_event_args.html#a5fe549a9ec8a518ee9052192c4ca2777">Data</a> =&gt; _as.Array</td></tr>
+<tr class="memitem:a5fe549a9ec8a518ee9052192c4ca2777"><td class="memItemLeft" align="right" valign="top">byte []&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_web_socket_dialog_1_1_binary_message_event_args.html#a5fe549a9ec8a518ee9052192c4ca2777">Data</a> =&gt; _arraySegment.Array</td></tr>
 <tr class="memdesc:a5fe549a9ec8a518ee9052192c4ca2777"><td class="mdescLeft">&#160;</td><td class="mdescRight">The binary content of the message  <a href="#a5fe549a9ec8a518ee9052192c4ca2777">More...</a><br /></td></tr>
 <tr class="separator:a5fe549a9ec8a518ee9052192c4ca2777"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
-Properties</h2></td></tr>
-<tr class="memitem:a33dca19520d6630d310ccf7be2f06e92"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_web_socket_dialog_1_1_binary_message_event_args.html#a33dca19520d6630d310ccf7be2f06e92">EndOfMessage</a><code> [get]</code></td></tr>
-<tr class="memdesc:a33dca19520d6630d310ccf7be2f06e92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether this is a complete message or the end of one, or there is more to come.  <a href="#a33dca19520d6630d310ccf7be2f06e92">More...</a><br /></td></tr>
-<tr class="separator:a33dca19520d6630d310ccf7be2f06e92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06c34d4513d6d3ca404f5956817d62cf"><td class="memItemLeft" align="right" valign="top">readonly bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_web_socket_dialog_1_1_binary_message_event_args.html#a06c34d4513d6d3ca404f5956817d62cf">EndOfMessage</a></td></tr>
+<tr class="memdesc:a06c34d4513d6d3ca404f5956817d62cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether this is a complete message or the end of one, or there is more to come.  <a href="#a06c34d4513d6d3ca404f5956817d62cf">More...</a><br /></td></tr>
+<tr class="separator:a06c34d4513d6d3ca404f5956817d62cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents a binary message received from websocket </p>
@@ -124,7 +120,7 @@ Properties</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">byte [] Red.WebSocketDialog.BinaryMessageEventArgs.Data =&gt; _as.Array</td>
+          <td class="memname">byte [] Red.WebSocketDialog.BinaryMessageEventArgs.Data =&gt; _arraySegment.Array</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -133,25 +129,16 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Property Documentation</h2>
-<a id="a33dca19520d6630d310ccf7be2f06e92"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33dca19520d6630d310ccf7be2f06e92">&#9670;&nbsp;</a></span>EndOfMessage</h2>
+<a id="a06c34d4513d6d3ca404f5956817d62cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06c34d4513d6d3ca404f5956817d62cf">&#9670;&nbsp;</a></span>EndOfMessage</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool Red.WebSocketDialog.BinaryMessageEventArgs.EndOfMessage</td>
+          <td class="memname">readonly bool Red.WebSocketDialog.BinaryMessageEventArgs.EndOfMessage</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Whether this is a complete message or the end of one, or there is more to come. </p>
@@ -159,7 +146,7 @@ Properties</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>C:/Users/Malte/Documents/GitHub/Red/src/RedHttpServer/WebSocketDialog.cs</li>
+<li>WebSocketDialog.cs</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

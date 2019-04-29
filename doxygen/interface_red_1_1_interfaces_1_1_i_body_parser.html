@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RedHttpServer: Red.Interfaces.IBodyParser Interface Reference</title>
+<title>Red: Red.Interfaces.IBodyParser Interface Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,10 +30,10 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="red.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">RedHttpServer
-   &#160;<span id="projectnumber">3.5.2</span>
+   <div id="projectname">Red
+   &#160;<span id="projectnumber">4.0.0</span>
    </div>
-   <div id="projectbrief">.NET Standard library</div>
+   <div id="projectbrief">.NET Standard web application framework built on ASP.NET Core w/ Kestrel and inspired by Express.js</div>
   </td>
  </tr>
  </tbody>
@@ -103,20 +103,24 @@ $(document).ready(function(){initNavTree('interface_red_1_1_interfaces_1_1_i_bod
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a734f0bbe7e953b6dce4798135afd7201"><td class="memItemLeft" align="right" valign="top">Task&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_red_1_1_interfaces_1_1_i_body_parser.html#a734f0bbe7e953b6dce4798135afd7201">Parse&lt; T &gt;</a> (<a class="el" href="class_red_1_1_request.html">Request</a> request)</td></tr>
-<tr class="separator:a734f0bbe7e953b6dce4798135afd7201"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5731be1b416a44b4f5e2ac4edb1ee063"><td class="memItemLeft" align="right" valign="top">Task&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_red_1_1_interfaces_1_1_i_body_parser.html#a5731be1b416a44b4f5e2ac4edb1ee063">Parse</a> (<a class="el" href="class_red_1_1_request.html">Request</a> request)</td></tr>
+<tr class="memdesc:a5731be1b416a44b4f5e2ac4edb1ee063"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse the request body stream into a string  <a href="#a5731be1b416a44b4f5e2ac4edb1ee063">More...</a><br /></td></tr>
+<tr class="separator:a5731be1b416a44b4f5e2ac4edb1ee063"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26a745f2d24f9b37f694b699905d73c3"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_red_1_1_interfaces_1_1_i_body_parser.html#a26a745f2d24f9b37f694b699905d73c3">Parse&lt; T &gt;</a> (<a class="el" href="class_red_1_1_request.html">Request</a> request)</td></tr>
+<tr class="memdesc:a26a745f2d24f9b37f694b699905d73c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse the request body stream into an object of a given type  <a href="#a26a745f2d24f9b37f694b699905d73c3">More...</a><br /></td></tr>
+<tr class="separator:a26a745f2d24f9b37f694b699905d73c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Interface for classes used for parsing and deserializing body </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a734f0bbe7e953b6dce4798135afd7201"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a734f0bbe7e953b6dce4798135afd7201">&#9670;&nbsp;</a></span>Parse&lt; T &gt;()</h2>
+<a id="a5731be1b416a44b4f5e2ac4edb1ee063"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5731be1b416a44b4f5e2ac4edb1ee063">&#9670;&nbsp;</a></span>Parse()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Task&lt;T&gt; Red.Interfaces.IBodyParser.Parse&lt; T &gt; </td>
+          <td class="memname">Task&lt;string&gt; Red.Interfaces.IBodyParser.Parse </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_red_1_1_request.html">Request</a>&#160;</td>
           <td class="paramname"><em>request</em></td><td>)</td>
@@ -125,7 +129,36 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p></p>
+<p>Parse the request body stream into a string </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Implemented in <a class="el" href="class_red_1_1_extensions_1_1_body_parser.html#ac5ced784b43a38938c8eb30bc6b786f2">Red.Extensions.BodyParser</a>.</p>
+
+</div>
+</div>
+<a id="a26a745f2d24f9b37f694b699905d73c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26a745f2d24f9b37f694b699905d73c3">&#9670;&nbsp;</a></span>Parse&lt; T &gt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">T <a class="el" href="interface_red_1_1_interfaces_1_1_i_body_parser.html#a5731be1b416a44b4f5e2ac4edb1ee063">Red.Interfaces.IBodyParser.Parse</a>&lt; T &gt; </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_red_1_1_request.html">Request</a>&#160;</td>
+          <td class="paramname"><em>request</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Parse the request body stream into an object of a given type </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">request</td><td></td></tr>
@@ -140,12 +173,12 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p>Implemented in <a class="el" href="class_red_1_1_extensions_1_1_body_parser.html#ab630ee9980fbac85d62db9329c74b808">Red.Extensions.BodyParser</a>.</p>
+<p>Implemented in <a class="el" href="class_red_1_1_extensions_1_1_body_parser.html#a005436eee6d6cb80fadeb3b6efe7b09f">Red.Extensions.BodyParser</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this interface was generated from the following file:<ul>
-<li>C:/Users/Malte/Documents/GitHub/Red/src/RedHttpServer/Interfaces/IBodyParser.cs</li>
+<li>IBodyParser.cs</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

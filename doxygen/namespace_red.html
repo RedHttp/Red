@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RedHttpServer: Red Namespace Reference</title>
+<title>Red: Red Namespace Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,10 +30,10 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="red.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">RedHttpServer
-   &#160;<span id="projectnumber">3.5.2</span>
+   <div id="projectname">Red
+   &#160;<span id="projectnumber">4.0.0</span>
    </div>
-   <div id="projectbrief">.NET Standard library</div>
+   <div id="projectbrief">.NET Standard web application framework built on ASP.NET Core w/ Kestrel and inspired by Express.js</div>
   </td>
  </tr>
  </tbody>
@@ -90,7 +90,8 @@ $(document).ready(function(){initNavTree('namespace_red.html','');});
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#nested-classes">Classes</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle">
 <div class="title">Red Namespace Reference</div>  </div>
 </div><!--header-->
@@ -98,6 +99,11 @@ $(document).ready(function(){initNavTree('namespace_red.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_context.html">Context</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class that encapsulates data relevant to both Requests and Responses, and the HttpContext  <a href="class_red_1_1_context.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_handler_exception_event_args.html">HandlerExceptionEventArgs</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_handler_wrapper.html">HandlerWrapper</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_plugin_collection.html">PluginCollection</a></td></tr>
@@ -112,11 +118,11 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html">Request</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class representing a request from a client  <a href="class_red_1_1_request.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request_parameters.html">RequestParameters</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object containing the parameters for a request  <a href="class_red_1_1_request_parameters.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html">Response</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class representing the reponse to a clients request All  <a href="class_red_1_1_response.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class representing the response to a clients request All  <a href="class_red_1_1_response.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_router.html">Router</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A <a class="el" href="class_red_1_1_router.html" title="A Router class that can be used to separate the handlers of the server in a more teamwork (git) frien...">Router</a> class that can be used to separate the handlers of the server in a more teamwork (git) friendly way  <a href="class_red_1_1_router.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><b>Utils</b></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Utilities <br /></td></tr>
@@ -126,7 +132,49 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_ws_handler_wrapper.html">WsHandlerWrapper</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a2df7787fb9c7ac228857dfe977c8ef43"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> { <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43abeae421a14a34f831c113f61323d1ab3">HandlerType.Final</a>, 
+<a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43aa0bfb8e59e6c13fc8d990781f77694fe">HandlerType.Continue</a>, 
+<a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43a902b0d55fddef6f8d651fe1035b7d4bd">HandlerType.Error</a>
+ }</td></tr>
+<tr class="memdesc:a2df7787fb9c7ac228857dfe977c8ef43"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of handling that has been performed.  <a href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">More...</a><br /></td></tr>
+<tr class="separator:a2df7787fb9c7ac228857dfe977c8ef43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a2df7787fb9c7ac228857dfe977c8ef43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2df7787fb9c7ac228857dfe977c8ef43">&#9670;&nbsp;</a></span>HandlerType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">Red.HandlerType</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The type of handling that has been performed. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2df7787fb9c7ac228857dfe977c8ef43abeae421a14a34f831c113f61323d1ab3"></a>Final&#160;</td><td class="fielddoc"><p>This handler has sent a final response. Do not invoke the rest of the handler-chain </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2df7787fb9c7ac228857dfe977c8ef43aa0bfb8e59e6c13fc8d990781f77694fe"></a>Continue&#160;</td><td class="fielddoc"><p>This handler processed data. Continue invoking the handler-chain </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2df7787fb9c7ac228857dfe977c8ef43a902b0d55fddef6f8d651fe1035b7d4bd"></a>Error&#160;</td><td class="fielddoc"><p>An error occured when handling the request. Stop invoking the rest of the handler chain </p>
+</td></tr>
+</table>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

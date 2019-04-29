@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RedHttpServer: Red.Request Class Reference</title>
+<title>Red: Red.Request Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,10 +30,10 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="red.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">RedHttpServer
-   &#160;<span id="projectnumber">3.5.2</span>
+   <div id="projectname">Red
+   &#160;<span id="projectnumber">4.0.0</span>
    </div>
-   <div id="projectbrief">.NET Standard library</div>
+   <div id="projectbrief">.NET Standard web application framework built on ASP.NET Core w/ Kestrel and inspired by Express.js</div>
   </td>
  </tr>
  </tbody>
@@ -91,7 +91,6 @@ $(document).ready(function(){initNavTree('class_red_1_1_request.html','');});
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="#properties">Properties</a> &#124;
 <a href="class_red_1_1_request-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Red.Request Class Reference</div>  </div>
@@ -106,49 +105,75 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a128512d8b084b23f7b31278b8a810691"><td class="memItemLeft" align="right" valign="top">async Task&lt; IFormCollection &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a128512d8b084b23f7b31278b8a810691">GetFormDataAsync</a> ()</td></tr>
 <tr class="memdesc:a128512d8b084b23f7b31278b8a810691"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns form-data from request, if any, null otherwise.  <a href="#a128512d8b084b23f7b31278b8a810691">More...</a><br /></td></tr>
 <tr class="separator:a128512d8b084b23f7b31278b8a810691"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83f8345653a365ead2d525036c888a92"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a83f8345653a365ead2d525036c888a92">GetData</a> (string key)</td></tr>
+<tr class="memdesc:a83f8345653a365ead2d525036c888a92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get data attached to request by middleware. The middleware should specify the type to lookup  <a href="#a83f8345653a365ead2d525036c888a92">More...</a><br /></td></tr>
+<tr class="separator:a83f8345653a365ead2d525036c888a92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12df2ef730d7eaa45615f331665e447c"><td class="memItemLeft" align="right" valign="top">TData&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a12df2ef730d7eaa45615f331665e447c">GetData&lt; TData &gt;</a> ()</td></tr>
 <tr class="memdesc:a12df2ef730d7eaa45615f331665e447c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get data attached to request by middleware. The middleware should specify the type to lookup  <a href="#a12df2ef730d7eaa45615f331665e447c">More...</a><br /></td></tr>
 <tr class="separator:a12df2ef730d7eaa45615f331665e447c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a366bb66e9a0b4dc46d16ff5f4d10abb3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a366bb66e9a0b4dc46d16ff5f4d10abb3">SetData&lt; TData &gt;</a> (TData data)</td></tr>
 <tr class="memdesc:a366bb66e9a0b4dc46d16ff5f4d10abb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function that middleware can use to attach data to the request, so the next handlers has access to the data  <a href="#a366bb66e9a0b4dc46d16ff5f4d10abb3">More...</a><br /></td></tr>
 <tr class="separator:a366bb66e9a0b4dc46d16ff5f4d10abb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a980ac977702c55fdfd69e57d7826d8d5"><td class="memItemLeft" align="right" valign="top">async Task&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a980ac977702c55fdfd69e57d7826d8d5">SaveFiles</a> (string saveDir, Func&lt; string, string &gt; fileRenamer=null, long maxSizeKb=4096)</td></tr>
-<tr class="memdesc:a980ac977702c55fdfd69e57d7826d8d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save all files in requests to specified directory.  <a href="#a980ac977702c55fdfd69e57d7826d8d5">More...</a><br /></td></tr>
-<tr class="separator:a980ac977702c55fdfd69e57d7826d8d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c1c401dcea609d2b0a1341726287062"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a9c1c401dcea609d2b0a1341726287062">SetData</a> (string key, string value)</td></tr>
+<tr class="memdesc:a9c1c401dcea609d2b0a1341726287062"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function that middleware can use to attach string values to the request, so the next handlers has access to the data  <a href="#a9c1c401dcea609d2b0a1341726287062">More...</a><br /></td></tr>
+<tr class="separator:a9c1c401dcea609d2b0a1341726287062"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ac065477499957844e6aa140a213ff0"><td class="memItemLeft" align="right" valign="top">async Task&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a9ac065477499957844e6aa140a213ff0">SaveFiles</a> (string saveDir, Func&lt; string, string &gt; fileRenamer=null, long maxSizeKb=50000)</td></tr>
+<tr class="memdesc:a9ac065477499957844e6aa140a213ff0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save all files in requests to specified directory.  <a href="#a9ac065477499957844e6aa140a213ff0">More...</a><br /></td></tr>
+<tr class="separator:a9ac065477499957844e6aa140a213ff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a967ce43a5abcec057e2e3e2ee086454b"><td class="memItemLeft" align="right" valign="top">HttpRequest&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a967ce43a5abcec057e2e3e2ee086454b">UnderlyingRequest</a> =&gt; UnderlyingContext.Request</td></tr>
-<tr class="memdesc:a967ce43a5abcec057e2e3e2ee086454b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The underlying HttpRequest  <a href="#a967ce43a5abcec057e2e3e2ee086454b">More...</a><br /></td></tr>
-<tr class="separator:a967ce43a5abcec057e2e3e2ee086454b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac52685edf47c5e4e32abf2482ddb61e2"><td class="memItemLeft" align="right" valign="top">IQueryCollection&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#ac52685edf47c5e4e32abf2482ddb61e2">Queries</a> =&gt; UnderlyingRequest.Query</td></tr>
+<tr class="memitem:a50d20054c933427e8d362547b29a566a"><td class="memItemLeft" align="right" valign="top">readonly <a class="el" href="class_red_1_1_context.html">Context</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a50d20054c933427e8d362547b29a566a">Context</a></td></tr>
+<tr class="memdesc:a50d20054c933427e8d362547b29a566a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="class_red_1_1_context.html" title="Class that encapsulates data relevant to both Requests and Responses, and the HttpContext">Red.Context</a> the request is part of  <a href="#a50d20054c933427e8d362547b29a566a">More...</a><br /></td></tr>
+<tr class="separator:a50d20054c933427e8d362547b29a566a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13ce69315cd0c00140ec84aa008d28c3"><td class="memItemLeft" align="right" valign="top">readonly HttpRequest&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a13ce69315cd0c00140ec84aa008d28c3">AspNetRequest</a></td></tr>
+<tr class="memdesc:a13ce69315cd0c00140ec84aa008d28c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">The ASP.NET HttpRequest that is wrapped  <a href="#a13ce69315cd0c00140ec84aa008d28c3">More...</a><br /></td></tr>
+<tr class="separator:a13ce69315cd0c00140ec84aa008d28c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac52685edf47c5e4e32abf2482ddb61e2"><td class="memItemLeft" align="right" valign="top">IQueryCollection&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#ac52685edf47c5e4e32abf2482ddb61e2">Queries</a> =&gt; AspNetRequest.Query</td></tr>
 <tr class="memdesc:ac52685edf47c5e4e32abf2482ddb61e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">The query elements of the request  <a href="#ac52685edf47c5e4e32abf2482ddb61e2">More...</a><br /></td></tr>
 <tr class="separator:ac52685edf47c5e4e32abf2482ddb61e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71ff914cb638a76aee587c7776b1ed18"><td class="memItemLeft" align="right" valign="top">IHeaderDictionary&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a71ff914cb638a76aee587c7776b1ed18">Headers</a> =&gt; UnderlyingRequest.Headers</td></tr>
+<tr class="memitem:a71ff914cb638a76aee587c7776b1ed18"><td class="memItemLeft" align="right" valign="top">IHeaderDictionary&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a71ff914cb638a76aee587c7776b1ed18">Headers</a> =&gt; Context.Request.Headers</td></tr>
 <tr class="memdesc:a71ff914cb638a76aee587c7776b1ed18"><td class="mdescLeft">&#160;</td><td class="mdescRight">The headers contained in the request  <a href="#a71ff914cb638a76aee587c7776b1ed18">More...</a><br /></td></tr>
 <tr class="separator:a71ff914cb638a76aee587c7776b1ed18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c17059f7b31d4682d76f602d0bd5704"><td class="memItemLeft" align="right" valign="top">IRequestCookieCollection&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a2c17059f7b31d4682d76f602d0bd5704">Cookies</a> =&gt; UnderlyingRequest.Cookies</td></tr>
+<tr class="memitem:a9adf58952d0386f98b24c6146cc56333"><td class="memItemLeft" align="right" valign="top">RequestHeaders&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a9adf58952d0386f98b24c6146cc56333">TypedHeaders</a> =&gt; _typedHeaders.Value</td></tr>
+<tr class="memdesc:a9adf58952d0386f98b24c6146cc56333"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exposes the typed headers for the request  <a href="#a9adf58952d0386f98b24c6146cc56333">More...</a><br /></td></tr>
+<tr class="separator:a9adf58952d0386f98b24c6146cc56333"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c17059f7b31d4682d76f602d0bd5704"><td class="memItemLeft" align="right" valign="top">IRequestCookieCollection&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a2c17059f7b31d4682d76f602d0bd5704">Cookies</a> =&gt; Context.Request.Cookies</td></tr>
 <tr class="memdesc:a2c17059f7b31d4682d76f602d0bd5704"><td class="mdescLeft">&#160;</td><td class="mdescRight">The cookies contained in the request  <a href="#a2c17059f7b31d4682d76f602d0bd5704">More...</a><br /></td></tr>
 <tr class="separator:a2c17059f7b31d4682d76f602d0bd5704"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad61613b2e19d0b3d238a1218c30354b0"><td class="memItemLeft" align="right" valign="top">Stream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#ad61613b2e19d0b3d238a1218c30354b0">BodyStream</a> =&gt; UnderlyingRequest.Body</td></tr>
+<tr class="memitem:ad61613b2e19d0b3d238a1218c30354b0"><td class="memItemLeft" align="right" valign="top">Stream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#ad61613b2e19d0b3d238a1218c30354b0">BodyStream</a> =&gt; AspNetRequest.Body</td></tr>
 <tr class="memdesc:ad61613b2e19d0b3d238a1218c30354b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the body stream of the request  <a href="#ad61613b2e19d0b3d238a1218c30354b0">More...</a><br /></td></tr>
 <tr class="separator:ad61613b2e19d0b3d238a1218c30354b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
-Properties</h2></td></tr>
-<tr class="memitem:a51df7dc059510a81d984b8829b19ab0e"><td class="memItemLeft" align="right" valign="top">HttpContext&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a51df7dc059510a81d984b8829b19ab0e">UnderlyingContext</a><code> [get]</code></td></tr>
-<tr class="memdesc:a51df7dc059510a81d984b8829b19ab0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The underlying HttpContext  <a href="#a51df7dc059510a81d984b8829b19ab0e">More...</a><br /></td></tr>
-<tr class="separator:a51df7dc059510a81d984b8829b19ab0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afbeb4856d13027801d90f886c7ce8cde"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_red_1_1_plugin_collection.html">PluginCollection</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#afbeb4856d13027801d90f886c7ce8cde">ServerPlugins</a><code> [get]</code></td></tr>
-<tr class="memdesc:afbeb4856d13027801d90f886c7ce8cde"><td class="mdescLeft">&#160;</td><td class="mdescRight">The available plugins  <a href="#afbeb4856d13027801d90f886c7ce8cde">More...</a><br /></td></tr>
-<tr class="separator:afbeb4856d13027801d90f886c7ce8cde"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25e828798820d2481ccbcf896c3ec565"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_red_1_1_request_parameters.html">RequestParameters</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_request.html#a25e828798820d2481ccbcf896c3ec565">Parameters</a><code> [get]</code></td></tr>
-<tr class="memdesc:a25e828798820d2481ccbcf896c3ec565"><td class="mdescLeft">&#160;</td><td class="mdescRight">The url parameters of the request  <a href="#a25e828798820d2481ccbcf896c3ec565">More...</a><br /></td></tr>
-<tr class="separator:a25e828798820d2481ccbcf896c3ec565"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class representing a request from a client </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a83f8345653a365ead2d525036c888a92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83f8345653a365ead2d525036c888a92">&#9670;&nbsp;</a></span>GetData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string Red.Request.GetData </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get data attached to request by middleware. The middleware should specify the type to lookup </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>the data key</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a12df2ef730d7eaa45615f331665e447c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a12df2ef730d7eaa45615f331665e447c">&#9670;&nbsp;</a></span>GetData&lt; TData &gt;()</h2>
 
@@ -156,7 +181,7 @@ Properties</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">TData Red.Request.GetData&lt; TData &gt; </td>
+          <td class="memname">TData <a class="el" href="class_red_1_1_request.html#a83f8345653a365ead2d525036c888a92">Red.Request.GetData</a>&lt; TData &gt; </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -167,7 +192,7 @@ Properties</h2></td></tr>
 <p>Get data attached to request by middleware. The middleware should specify the type to lookup </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">TData</td><td></td></tr>
+    <tr><td class="paramname">TData</td><td>the type key</td></tr>
   </table>
   </dd>
 </dl>
@@ -194,8 +219,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a980ac977702c55fdfd69e57d7826d8d5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a980ac977702c55fdfd69e57d7826d8d5">&#9670;&nbsp;</a></span>SaveFiles()</h2>
+<a id="a9ac065477499957844e6aa140a213ff0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ac065477499957844e6aa140a213ff0">&#9670;&nbsp;</a></span>SaveFiles()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -216,7 +241,7 @@ Properties</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">long&#160;</td>
-          <td class="paramname"><em>maxSizeKb</em> = <code>4096</code>&#160;</td>
+          <td class="paramname"><em>maxSizeKb</em> = <code>50000</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -235,7 +260,44 @@ Properties</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Whether the file(s) was saved succesfully</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether the file(s) was saved successfully</dd></dl>
+
+</div>
+</div>
+<a id="a9c1c401dcea609d2b0a1341726287062"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c1c401dcea609d2b0a1341726287062">&#9670;&nbsp;</a></span>SetData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Red.Request.SetData </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Function that middleware can use to attach string values to the request, so the next handlers has access to the data </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>the data key</td></tr>
+    <tr><td class="paramname">value</td><td>the data value</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -246,7 +308,7 @@ Properties</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Red.Request.SetData&lt; TData &gt; </td>
+          <td class="memname">void <a class="el" href="class_red_1_1_request.html#a9c1c401dcea609d2b0a1341726287062">Red.Request.SetData</a>&lt; TData &gt; </td>
           <td>(</td>
           <td class="paramtype">TData&#160;</td>
           <td class="paramname"><em>data</em></td><td>)</td>
@@ -258,13 +320,13 @@ Properties</h2></td></tr>
 <p>Function that middleware can use to attach data to the request, so the next handlers has access to the data </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">TData</td><td></td></tr>
+    <tr><td class="paramname">TData</td><td>the type of the data object (implicitly)</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">data</td><td></td></tr>
+    <tr><td class="paramname">data</td><td>the data object</td></tr>
   </table>
   </dd>
 </dl>
@@ -272,6 +334,22 @@ Properties</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a13ce69315cd0c00140ec84aa008d28c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13ce69315cd0c00140ec84aa008d28c3">&#9670;&nbsp;</a></span>AspNetRequest</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">readonly HttpRequest Red.Request.AspNetRequest</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The ASP.NET HttpRequest that is wrapped </p>
+
+</div>
+</div>
 <a id="ad61613b2e19d0b3d238a1218c30354b0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad61613b2e19d0b3d238a1218c30354b0">&#9670;&nbsp;</a></span>BodyStream</h2>
 
@@ -279,12 +357,28 @@ Properties</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Stream Red.Request.BodyStream =&gt; UnderlyingRequest.Body</td>
+          <td class="memname">Stream Red.Request.BodyStream =&gt; AspNetRequest.Body</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Returns the body stream of the request </p>
+
+</div>
+</div>
+<a id="a50d20054c933427e8d362547b29a566a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50d20054c933427e8d362547b29a566a">&#9670;&nbsp;</a></span>Context</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">readonly <a class="el" href="class_red_1_1_context.html">Context</a> Red.Request.Context</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The <a class="el" href="class_red_1_1_context.html" title="Class that encapsulates data relevant to both Requests and Responses, and the HttpContext">Red.Context</a> the request is part of </p>
 
 </div>
 </div>
@@ -295,7 +389,7 @@ Properties</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">IRequestCookieCollection Red.Request.Cookies =&gt; UnderlyingRequest.Cookies</td>
+          <td class="memname">IRequestCookieCollection Red.Request.Cookies =&gt; Context.Request.Cookies</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -311,7 +405,7 @@ Properties</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">IHeaderDictionary Red.Request.Headers =&gt; UnderlyingRequest.Headers</td>
+          <td class="memname">IHeaderDictionary Red.Request.Headers =&gt; Context.Request.Headers</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -327,7 +421,7 @@ Properties</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">IQueryCollection Red.Request.Queries =&gt; UnderlyingRequest.Query</td>
+          <td class="memname">IQueryCollection Red.Request.Queries =&gt; AspNetRequest.Query</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -336,99 +430,24 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a967ce43a5abcec057e2e3e2ee086454b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a967ce43a5abcec057e2e3e2ee086454b">&#9670;&nbsp;</a></span>UnderlyingRequest</h2>
+<a id="a9adf58952d0386f98b24c6146cc56333"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9adf58952d0386f98b24c6146cc56333">&#9670;&nbsp;</a></span>TypedHeaders</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">HttpRequest Red.Request.UnderlyingRequest =&gt; UnderlyingContext.Request</td>
+          <td class="memname">RequestHeaders Red.Request.TypedHeaders =&gt; _typedHeaders.Value</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>The underlying HttpRequest </p>
-<p>The implementation of <a class="el" href="class_red_1_1_request.html" title="Class representing a request from a client">Request</a> is leaky, to avoid limiting you </p>
-
-</div>
-</div>
-<h2 class="groupheader">Property Documentation</h2>
-<a id="a25e828798820d2481ccbcf896c3ec565"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25e828798820d2481ccbcf896c3ec565">&#9670;&nbsp;</a></span>Parameters</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_red_1_1_request_parameters.html">RequestParameters</a> Red.Request.Parameters</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The url parameters of the request </p>
-
-</div>
-</div>
-<a id="afbeb4856d13027801d90f886c7ce8cde"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afbeb4856d13027801d90f886c7ce8cde">&#9670;&nbsp;</a></span>ServerPlugins</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_red_1_1_plugin_collection.html">PluginCollection</a> Red.Request.ServerPlugins</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The available plugins </p>
-
-</div>
-</div>
-<a id="a51df7dc059510a81d984b8829b19ab0e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a51df7dc059510a81d984b8829b19ab0e">&#9670;&nbsp;</a></span>UnderlyingContext</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">HttpContext Red.Request.UnderlyingContext</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The underlying HttpContext </p>
-<p>The implementation of <a class="el" href="class_red_1_1_request.html" title="Class representing a request from a client">Request</a> is leaky, to avoid limiting you </p>
+<p>Exposes the typed headers for the request </p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>C:/Users/Malte/Documents/GitHub/Red/src/RedHttpServer/Request.cs</li>
+<li>Request.cs</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

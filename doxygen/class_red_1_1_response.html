@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RedHttpServer: Red.Response Class Reference</title>
+<title>Red: Red.Response Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,10 +30,10 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="red.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">RedHttpServer
-   &#160;<span id="projectnumber">3.5.2</span>
+   <div id="projectname">Red
+   &#160;<span id="projectnumber">4.0.0</span>
    </div>
-   <div id="projectbrief">.NET Standard library</div>
+   <div id="projectbrief">.NET Standard web application framework built on ASP.NET Core w/ Kestrel and inspired by Express.js</div>
   </td>
  </tr>
  </tbody>
@@ -92,14 +92,13 @@ $(document).ready(function(){initNavTree('class_red_1_1_response.html','');});
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="#properties">Properties</a> &#124;
 <a href="class_red_1_1_response-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Red.Response Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Class representing the reponse to a clients request All  
+<p>Class representing the response to a clients request All  
  <a href="class_red_1_1_response.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -107,60 +106,51 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4870f6b4ebcc23bcc50db1e2d46afc45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a4870f6b4ebcc23bcc50db1e2d46afc45">AddHeader</a> (string headerName, string headerValue)</td></tr>
 <tr class="memdesc:a4870f6b4ebcc23bcc50db1e2d46afc45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add header item to response  <a href="#a4870f6b4ebcc23bcc50db1e2d46afc45">More...</a><br /></td></tr>
 <tr class="separator:a4870f6b4ebcc23bcc50db1e2d46afc45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36bc69d15026baefdfc20084aa356cb0"><td class="memItemLeft" align="right" valign="top">Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a36bc69d15026baefdfc20084aa356cb0">Redirect</a> (string redirectPath, bool permanent=false)</td></tr>
-<tr class="memdesc:a36bc69d15026baefdfc20084aa356cb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Redirects the client to a given path or url  <a href="#a36bc69d15026baefdfc20084aa356cb0">More...</a><br /></td></tr>
-<tr class="separator:a36bc69d15026baefdfc20084aa356cb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adfaf619ae43baf59581c158f241db7df"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#adfaf619ae43baf59581c158f241db7df">SendString</a> (string data, string contentType=&quot;text/plain&quot;, string fileName=&quot;&quot;, bool attachment=false, HttpStatusCode status=HttpStatusCode.OK)</td></tr>
-<tr class="memdesc:adfaf619ae43baf59581c158f241db7df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends data as text  <a href="#adfaf619ae43baf59581c158f241db7df">More...</a><br /></td></tr>
-<tr class="separator:adfaf619ae43baf59581c158f241db7df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fb8328577991036edaac626ba3ca1ea"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a7fb8328577991036edaac626ba3ca1ea">SendStatus</a> (HttpStatusCode status)</td></tr>
-<tr class="memdesc:a7fb8328577991036edaac626ba3ca1ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a empty response with a status code  <a href="#a7fb8328577991036edaac626ba3ca1ea">More...</a><br /></td></tr>
-<tr class="separator:a7fb8328577991036edaac626ba3ca1ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f45df36e28017405abf6ef65152adae"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a6f45df36e28017405abf6ef65152adae">SendJson</a> (object data, HttpStatusCode status=HttpStatusCode.OK)</td></tr>
-<tr class="memdesc:a6f45df36e28017405abf6ef65152adae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends object serialized to text using the current IJsonConverter plugin  <a href="#a6f45df36e28017405abf6ef65152adae">More...</a><br /></td></tr>
-<tr class="separator:a6f45df36e28017405abf6ef65152adae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78cff5d1771bbe334b906fbe82e9bdb3"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a78cff5d1771bbe334b906fbe82e9bdb3">SendXml</a> (object data, HttpStatusCode status=HttpStatusCode.OK)</td></tr>
-<tr class="memdesc:a78cff5d1771bbe334b906fbe82e9bdb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends object serialized to text using the current IXmlConverter plugin  <a href="#a78cff5d1771bbe334b906fbe82e9bdb3">More...</a><br /></td></tr>
-<tr class="separator:a78cff5d1771bbe334b906fbe82e9bdb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a410a783c4385b351e2bd3c9e47e1342e"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a410a783c4385b351e2bd3c9e47e1342e">SendStream</a> (Stream dataStream, string contentType, string fileName=&quot;&quot;, bool attachment=false, bool dispose=true, HttpStatusCode status=HttpStatusCode.OK)</td></tr>
-<tr class="memdesc:a410a783c4385b351e2bd3c9e47e1342e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends all data in stream to response  <a href="#a410a783c4385b351e2bd3c9e47e1342e">More...</a><br /></td></tr>
-<tr class="separator:a410a783c4385b351e2bd3c9e47e1342e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84070c366456c6813e7bbac960824af1"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a84070c366456c6813e7bbac960824af1">SendFile</a> (string filePath, string contentType=null, bool handleRanges=true, HttpStatusCode status=HttpStatusCode.OK)</td></tr>
-<tr class="memdesc:a84070c366456c6813e7bbac960824af1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends file as response and requests the data to be displayed in-browser if possible  <a href="#a84070c366456c6813e7bbac960824af1">More...</a><br /></td></tr>
-<tr class="separator:a84070c366456c6813e7bbac960824af1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad10f937bcb4c14a76745e190ddb5b0cf"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#ad10f937bcb4c14a76745e190ddb5b0cf">Download</a> (string filePath, string fileName=null, string contentType=&quot;&quot;, HttpStatusCode status=HttpStatusCode.OK)</td></tr>
-<tr class="memdesc:ad10f937bcb4c14a76745e190ddb5b0cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends file as response and requests the data to be downloaded as an attachment  <a href="#ad10f937bcb4c14a76745e190ddb5b0cf">More...</a><br /></td></tr>
-<tr class="separator:ad10f937bcb4c14a76745e190ddb5b0cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a550662a9edac31f3240e7ab2505ffaed"><td class="memItemLeft" align="right" valign="top">Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a550662a9edac31f3240e7ab2505ffaed">Redirect</a> (string redirectPath, bool permanent=false)</td></tr>
+<tr class="memdesc:a550662a9edac31f3240e7ab2505ffaed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Redirects the client to a given path or url  <a href="#a550662a9edac31f3240e7ab2505ffaed">More...</a><br /></td></tr>
+<tr class="separator:a550662a9edac31f3240e7ab2505ffaed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfc1e391e26cf33d66b80679f2820463"><td class="memItemLeft" align="right" valign="top">Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#adfc1e391e26cf33d66b80679f2820463">SendString</a> (string data, string contentType=&quot;text/plain&quot;, string fileName=&quot;&quot;, bool attachment=false, HttpStatusCode status=HttpStatusCode.OK)</td></tr>
+<tr class="memdesc:adfc1e391e26cf33d66b80679f2820463"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends data as text  <a href="#adfc1e391e26cf33d66b80679f2820463">More...</a><br /></td></tr>
+<tr class="separator:adfc1e391e26cf33d66b80679f2820463"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af65bc1e4742d39a76fa88b3283ec94e9"><td class="memItemLeft" align="right" valign="top">Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#af65bc1e4742d39a76fa88b3283ec94e9">SendStatus</a> (HttpStatusCode status)</td></tr>
+<tr class="memdesc:af65bc1e4742d39a76fa88b3283ec94e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a empty response with a status code  <a href="#af65bc1e4742d39a76fa88b3283ec94e9">More...</a><br /></td></tr>
+<tr class="separator:af65bc1e4742d39a76fa88b3283ec94e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62adc29ea1a0ea3a32a23fe49a1255bf"><td class="memItemLeft" align="right" valign="top">Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a62adc29ea1a0ea3a32a23fe49a1255bf">SendJson</a> (object data, HttpStatusCode status=HttpStatusCode.OK)</td></tr>
+<tr class="memdesc:a62adc29ea1a0ea3a32a23fe49a1255bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends object serialized to text using the current IJsonConverter plugin  <a href="#a62adc29ea1a0ea3a32a23fe49a1255bf">More...</a><br /></td></tr>
+<tr class="separator:a62adc29ea1a0ea3a32a23fe49a1255bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26b4363da211ef38bf7ef4cf63b0fff0"><td class="memItemLeft" align="right" valign="top">Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a26b4363da211ef38bf7ef4cf63b0fff0">SendXml</a> (object data, HttpStatusCode status=HttpStatusCode.OK)</td></tr>
+<tr class="memdesc:a26b4363da211ef38bf7ef4cf63b0fff0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends object serialized to text using the current IXmlConverter plugin  <a href="#a26b4363da211ef38bf7ef4cf63b0fff0">More...</a><br /></td></tr>
+<tr class="separator:a26b4363da211ef38bf7ef4cf63b0fff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2529af5d3cb8598f8f7b492022e01a6"><td class="memItemLeft" align="right" valign="top">async Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#ab2529af5d3cb8598f8f7b492022e01a6">SendStream</a> (Stream dataStream, string contentType, string fileName=&quot;&quot;, bool attachment=false, bool dispose=true, HttpStatusCode status=HttpStatusCode.OK)</td></tr>
+<tr class="memdesc:ab2529af5d3cb8598f8f7b492022e01a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends all data in stream to response  <a href="#ab2529af5d3cb8598f8f7b492022e01a6">More...</a><br /></td></tr>
+<tr class="separator:ab2529af5d3cb8598f8f7b492022e01a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f983ab708bf67eb5d91b598c274b242"><td class="memItemLeft" align="right" valign="top">async Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a1f983ab708bf67eb5d91b598c274b242">SendFile</a> (string filePath, string contentType=null, bool handleRanges=true, HttpStatusCode status=HttpStatusCode.OK)</td></tr>
+<tr class="memdesc:a1f983ab708bf67eb5d91b598c274b242"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends file as response and requests the data to be displayed in-browser if possible  <a href="#a1f983ab708bf67eb5d91b598c274b242">More...</a><br /></td></tr>
+<tr class="separator:a1f983ab708bf67eb5d91b598c274b242"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb1daa7c53684a889214e3b1473cf2dc"><td class="memItemLeft" align="right" valign="top">async Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#acb1daa7c53684a889214e3b1473cf2dc">Download</a> (string filePath, string fileName=null, string contentType=&quot;&quot;, HttpStatusCode status=HttpStatusCode.OK)</td></tr>
+<tr class="memdesc:acb1daa7c53684a889214e3b1473cf2dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends file as response and requests the data to be downloaded as an attachment  <a href="#acb1daa7c53684a889214e3b1473cf2dc">More...</a><br /></td></tr>
+<tr class="separator:acb1daa7c53684a889214e3b1473cf2dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aaf6dd1610f78b952aa579feebf0eb8bb"><td class="memItemLeft" align="right" valign="top">static async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#aaf6dd1610f78b952aa579feebf0eb8bb">SendString</a> (HttpResponse response, string data, string contentType=&quot;text/plain&quot;, string fileName=&quot;&quot;, bool attachment=false, HttpStatusCode status=HttpStatusCode.OK)</td></tr>
-<tr class="memdesc:aaf6dd1610f78b952aa579feebf0eb8bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper for use in middleware  <a href="#aaf6dd1610f78b952aa579feebf0eb8bb">More...</a><br /></td></tr>
-<tr class="separator:aaf6dd1610f78b952aa579feebf0eb8bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa61b6d4c3e6b5b96e343bcd8a6d7eea5"><td class="memItemLeft" align="right" valign="top">static async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#aa61b6d4c3e6b5b96e343bcd8a6d7eea5">SendStatus</a> (HttpResponse response, HttpStatusCode status)</td></tr>
-<tr class="memdesc:aa61b6d4c3e6b5b96e343bcd8a6d7eea5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a empty response with a status code  <a href="#aa61b6d4c3e6b5b96e343bcd8a6d7eea5">More...</a><br /></td></tr>
-<tr class="separator:aa61b6d4c3e6b5b96e343bcd8a6d7eea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0453b7ddd30b8175aac15fa8db41e7f"><td class="memItemLeft" align="right" valign="top">static async Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#ae0453b7ddd30b8175aac15fa8db41e7f">SendString</a> (HttpResponse response, string data, string contentType, string fileName, bool attachment, HttpStatusCode status)</td></tr>
+<tr class="memdesc:ae0453b7ddd30b8175aac15fa8db41e7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper for use in middleware  <a href="#ae0453b7ddd30b8175aac15fa8db41e7f">More...</a><br /></td></tr>
+<tr class="separator:ae0453b7ddd30b8175aac15fa8db41e7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6364656a83d7db60bd5d91c55f8c943e"><td class="memItemLeft" align="right" valign="top">static Task&lt; <a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a6364656a83d7db60bd5d91c55f8c943e">SendStatus</a> (HttpResponse response, HttpStatusCode status)</td></tr>
+<tr class="memdesc:a6364656a83d7db60bd5d91c55f8c943e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a empty response with a status code  <a href="#a6364656a83d7db60bd5d91c55f8c943e">More...</a><br /></td></tr>
+<tr class="separator:a6364656a83d7db60bd5d91c55f8c943e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a56e266cd002834e4334b6a930ab68f00"><td class="memItemLeft" align="right" valign="top">HttpResponse&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a56e266cd002834e4334b6a930ab68f00">UnderlyingResponse</a> =&gt; UnderlyingContext.Response</td></tr>
-<tr class="memdesc:a56e266cd002834e4334b6a930ab68f00"><td class="mdescLeft">&#160;</td><td class="mdescRight">The underlying HttpResponse  <a href="#a56e266cd002834e4334b6a930ab68f00">More...</a><br /></td></tr>
-<tr class="separator:a56e266cd002834e4334b6a930ab68f00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
-Properties</h2></td></tr>
-<tr class="memitem:a02c8c3d3c69e71433fe0214391d70ed2"><td class="memItemLeft" align="right" valign="top">HttpContext&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a02c8c3d3c69e71433fe0214391d70ed2">UnderlyingContext</a><code> [get, set]</code></td></tr>
-<tr class="memdesc:a02c8c3d3c69e71433fe0214391d70ed2"><td class="mdescLeft">&#160;</td><td class="mdescRight">The underlying HttpContext  <a href="#a02c8c3d3c69e71433fe0214391d70ed2">More...</a><br /></td></tr>
-<tr class="separator:a02c8c3d3c69e71433fe0214391d70ed2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e70273a817dc2bac5e8567b1e541de7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_red_1_1_plugin_collection.html">PluginCollection</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a8e70273a817dc2bac5e8567b1e541de7">ServerPlugins</a><code> [get]</code></td></tr>
-<tr class="memdesc:a8e70273a817dc2bac5e8567b1e541de7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The available plugins registered to the server  <a href="#a8e70273a817dc2bac5e8567b1e541de7">More...</a><br /></td></tr>
-<tr class="separator:a8e70273a817dc2bac5e8567b1e541de7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1336f69788a6eafd09cd1bb11023287e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a1336f69788a6eafd09cd1bb11023287e">Closed</a><code> [get, set]</code></td></tr>
-<tr class="memdesc:a1336f69788a6eafd09cd1bb11023287e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bool indicating whether the response has been sent  <a href="#a1336f69788a6eafd09cd1bb11023287e">More...</a><br /></td></tr>
-<tr class="separator:a1336f69788a6eafd09cd1bb11023287e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58c60554320747eabb11ea97ccc9e115"><td class="memItemLeft" align="right" valign="top">readonly <a class="el" href="class_red_1_1_context.html">Context</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a58c60554320747eabb11ea97ccc9e115">Context</a></td></tr>
+<tr class="memdesc:a58c60554320747eabb11ea97ccc9e115"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="class_red_1_1_context.html" title="Class that encapsulates data relevant to both Requests and Responses, and the HttpContext">Red.Context</a> the response is part of  <a href="#a58c60554320747eabb11ea97ccc9e115">More...</a><br /></td></tr>
+<tr class="separator:a58c60554320747eabb11ea97ccc9e115"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90d856e16d8e20c8997c463e24c9cfaa"><td class="memItemLeft" align="right" valign="top">readonly HttpResponse&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_red_1_1_response.html#a90d856e16d8e20c8997c463e24c9cfaa">AspNetResponse</a></td></tr>
+<tr class="memdesc:a90d856e16d8e20c8997c463e24c9cfaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">The ASP.NET HttpResponse that is wrapped  <a href="#a90d856e16d8e20c8997c463e24c9cfaa">More...</a><br /></td></tr>
+<tr class="separator:a90d856e16d8e20c8997c463e24c9cfaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Class representing the reponse to a clients request All </p>
+<div class="textblock"><p>Class representing the response to a clients request All </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a4870f6b4ebcc23bcc50db1e2d46afc45"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4870f6b4ebcc23bcc50db1e2d46afc45">&#9670;&nbsp;</a></span>AddHeader()</h2>
@@ -199,14 +189,14 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="ad10f937bcb4c14a76745e190ddb5b0cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad10f937bcb4c14a76745e190ddb5b0cf">&#9670;&nbsp;</a></span>Download()</h2>
+<a id="acb1daa7c53684a889214e3b1473cf2dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb1daa7c53684a889214e3b1473cf2dc">&#9670;&nbsp;</a></span>Download()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">async Task Red.Response.Download </td>
+          <td class="memname">async Task&lt;<a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a>&gt; Red.Response.Download </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>filePath</em>, </td>
@@ -250,14 +240,14 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a36bc69d15026baefdfc20084aa356cb0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a36bc69d15026baefdfc20084aa356cb0">&#9670;&nbsp;</a></span>Redirect()</h2>
+<a id="a550662a9edac31f3240e7ab2505ffaed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a550662a9edac31f3240e7ab2505ffaed">&#9670;&nbsp;</a></span>Redirect()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Task Red.Response.Redirect </td>
+          <td class="memname">Task&lt;<a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a>&gt; Red.Response.Redirect </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>redirectPath</em>, </td>
@@ -287,14 +277,14 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a84070c366456c6813e7bbac960824af1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a84070c366456c6813e7bbac960824af1">&#9670;&nbsp;</a></span>SendFile()</h2>
+<a id="a1f983ab708bf67eb5d91b598c274b242"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f983ab708bf67eb5d91b598c274b242">&#9670;&nbsp;</a></span>SendFile()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">async Task Red.Response.SendFile </td>
+          <td class="memname">async Task&lt;<a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a>&gt; Red.Response.SendFile </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>filePath</em>, </td>
@@ -338,14 +328,14 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a6f45df36e28017405abf6ef65152adae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6f45df36e28017405abf6ef65152adae">&#9670;&nbsp;</a></span>SendJson()</h2>
+<a id="a62adc29ea1a0ea3a32a23fe49a1255bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62adc29ea1a0ea3a32a23fe49a1255bf">&#9670;&nbsp;</a></span>SendJson()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">async Task Red.Response.SendJson </td>
+          <td class="memname">Task&lt;<a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a>&gt; Red.Response.SendJson </td>
           <td>(</td>
           <td class="paramtype">object&#160;</td>
           <td class="paramname"><em>data</em>, </td>
@@ -375,8 +365,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="aa61b6d4c3e6b5b96e343bcd8a6d7eea5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa61b6d4c3e6b5b96e343bcd8a6d7eea5">&#9670;&nbsp;</a></span>SendStatus() <span class="overload">[1/2]</span></h2>
+<a id="a6364656a83d7db60bd5d91c55f8c943e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6364656a83d7db60bd5d91c55f8c943e">&#9670;&nbsp;</a></span>SendStatus() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -385,7 +375,7 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static async Task Red.Response.SendStatus </td>
+          <td class="memname">static Task&lt;<a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a>&gt; Red.Response.SendStatus </td>
           <td>(</td>
           <td class="paramtype">HttpResponse&#160;</td>
           <td class="paramname"><em>response</em>, </td>
@@ -420,14 +410,14 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a7fb8328577991036edaac626ba3ca1ea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7fb8328577991036edaac626ba3ca1ea">&#9670;&nbsp;</a></span>SendStatus() <span class="overload">[2/2]</span></h2>
+<a id="af65bc1e4742d39a76fa88b3283ec94e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af65bc1e4742d39a76fa88b3283ec94e9">&#9670;&nbsp;</a></span>SendStatus() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">async Task Red.Response.SendStatus </td>
+          <td class="memname">Task&lt;<a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a>&gt; Red.Response.SendStatus </td>
           <td>(</td>
           <td class="paramtype">HttpStatusCode&#160;</td>
           <td class="paramname"><em>status</em></td><td>)</td>
@@ -446,14 +436,14 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a410a783c4385b351e2bd3c9e47e1342e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a410a783c4385b351e2bd3c9e47e1342e">&#9670;&nbsp;</a></span>SendStream()</h2>
+<a id="ab2529af5d3cb8598f8f7b492022e01a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2529af5d3cb8598f8f7b492022e01a6">&#9670;&nbsp;</a></span>SendStream()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">async Task Red.Response.SendStream </td>
+          <td class="memname">async Task&lt;<a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a>&gt; Red.Response.SendStream </td>
           <td>(</td>
           <td class="paramtype">Stream&#160;</td>
           <td class="paramname"><em>dataStream</em>, </td>
@@ -511,14 +501,14 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="adfaf619ae43baf59581c158f241db7df"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adfaf619ae43baf59581c158f241db7df">&#9670;&nbsp;</a></span>SendString() <span class="overload">[1/2]</span></h2>
+<a id="adfc1e391e26cf33d66b80679f2820463"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfc1e391e26cf33d66b80679f2820463">&#9670;&nbsp;</a></span>SendString() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">async Task Red.Response.SendString </td>
+          <td class="memname">Task&lt;<a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a>&gt; Red.Response.SendString </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>data</em>, </td>
@@ -569,8 +559,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="aaf6dd1610f78b952aa579feebf0eb8bb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaf6dd1610f78b952aa579feebf0eb8bb">&#9670;&nbsp;</a></span>SendString() <span class="overload">[2/2]</span></h2>
+<a id="ae0453b7ddd30b8175aac15fa8db41e7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0453b7ddd30b8175aac15fa8db41e7f">&#9670;&nbsp;</a></span>SendString() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -579,7 +569,7 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static async Task Red.Response.SendString </td>
+          <td class="memname">static async Task&lt;<a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a>&gt; Red.Response.SendString </td>
           <td>(</td>
           <td class="paramtype">HttpResponse&#160;</td>
           <td class="paramname"><em>response</em>, </td>
@@ -594,25 +584,25 @@ Properties</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>contentType</em> = <code>&quot;text/plain&quot;</code>, </td>
+          <td class="paramname"><em>contentType</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>fileName</em> = <code>&quot;&quot;</code>, </td>
+          <td class="paramname"><em>fileName</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>attachment</em> = <code>false</code>, </td>
+          <td class="paramname"><em>attachment</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">HttpStatusCode&#160;</td>
-          <td class="paramname"><em>status</em> = <code>HttpStatusCode.OK</code>&#160;</td>
+          <td class="paramname"><em>status</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -631,14 +621,14 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a78cff5d1771bbe334b906fbe82e9bdb3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a78cff5d1771bbe334b906fbe82e9bdb3">&#9670;&nbsp;</a></span>SendXml()</h2>
+<a id="a26b4363da211ef38bf7ef4cf63b0fff0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26b4363da211ef38bf7ef4cf63b0fff0">&#9670;&nbsp;</a></span>SendXml()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">async Task Red.Response.SendXml </td>
+          <td class="memname">Task&lt;<a class="el" href="namespace_red.html#a2df7787fb9c7ac228857dfe977c8ef43">HandlerType</a>&gt; Red.Response.SendXml </td>
           <td>(</td>
           <td class="paramtype">object&#160;</td>
           <td class="paramname"><em>data</em>, </td>
@@ -669,99 +659,40 @@ Properties</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a56e266cd002834e4334b6a930ab68f00"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56e266cd002834e4334b6a930ab68f00">&#9670;&nbsp;</a></span>UnderlyingResponse</h2>
+<a id="a90d856e16d8e20c8997c463e24c9cfaa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90d856e16d8e20c8997c463e24c9cfaa">&#9670;&nbsp;</a></span>AspNetResponse</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">HttpResponse Red.Response.UnderlyingResponse =&gt; UnderlyingContext.Response</td>
+          <td class="memname">readonly HttpResponse Red.Response.AspNetResponse</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>The underlying HttpResponse </p>
-<p>The implementation of <a class="el" href="class_red_1_1_request.html" title="Class representing a request from a client">Request</a> is leaky, to avoid limiting you </p>
+<p>The ASP.NET HttpResponse that is wrapped </p>
 
 </div>
 </div>
-<h2 class="groupheader">Property Documentation</h2>
-<a id="a1336f69788a6eafd09cd1bb11023287e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1336f69788a6eafd09cd1bb11023287e">&#9670;&nbsp;</a></span>Closed</h2>
+<a id="a58c60554320747eabb11ea97ccc9e115"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a58c60554320747eabb11ea97ccc9e115">&#9670;&nbsp;</a></span>Context</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool Red.Response.Closed</td>
+          <td class="memname">readonly <a class="el" href="class_red_1_1_context.html">Context</a> Red.Response.Context</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Bool indicating whether the response has been sent </p>
-
-</div>
-</div>
-<a id="a8e70273a817dc2bac5e8567b1e541de7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e70273a817dc2bac5e8567b1e541de7">&#9670;&nbsp;</a></span>ServerPlugins</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_red_1_1_plugin_collection.html">PluginCollection</a> Red.Response.ServerPlugins</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The available plugins registered to the server </p>
-
-</div>
-</div>
-<a id="a02c8c3d3c69e71433fe0214391d70ed2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a02c8c3d3c69e71433fe0214391d70ed2">&#9670;&nbsp;</a></span>UnderlyingContext</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">HttpContext Red.Response.UnderlyingContext</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The underlying HttpContext </p>
-<p>The implementation of <a class="el" href="class_red_1_1_request.html" title="Class representing a request from a client">Request</a> is leaky, to avoid limiting you </p>
+<p>The <a class="el" href="class_red_1_1_context.html" title="Class that encapsulates data relevant to both Requests and Responses, and the HttpContext">Red.Context</a> the response is part of </p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>C:/Users/Malte/Documents/GitHub/Red/src/RedHttpServer/Response.cs</li>
+<li>Response.cs</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['websocketdialog',['WebSocketDialog',['../class_red_1_1_web_socket_dialog.html',1,'Red']]],
-  ['wshandlerwrapper',['WsHandlerWrapper',['../class_red_1_1_ws_handler_wrapper.html',1,'Red']]]
+  ['textmessageeventargs',['TextMessageEventArgs',['../class_red_1_1_web_socket_dialog_1_1_text_message_event_args.html',1,'Red::WebSocketDialog']]]
 ];

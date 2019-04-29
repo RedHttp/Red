@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['parse_3c_20t_20_3e',['Parse&lt; T &gt;',['../class_red_1_1_extensions_1_1_body_parser.html#ab630ee9980fbac85d62db9329c74b808',1,'Red.Extensions.BodyParser.Parse&lt; T &gt;()'],['../interface_red_1_1_interfaces_1_1_i_body_parser.html#a734f0bbe7e953b6dce4798135afd7201',1,'Red.Interfaces.IBodyParser.Parse&lt; T &gt;()']]],
-  ['post',['Post',['../class_red_1_1_red_http_server.html#a3d0109d66c1bc40e8f4341e9764f1bd8',1,'Red::RedHttpServer']]],
-  ['process',['Process',['../interface_red_1_1_interfaces_1_1_i_red_middleware.html#ae82640a7ca99fd898545d35591b7c5aa',1,'Red.Interfaces.IRedMiddleware.Process()'],['../interface_red_1_1_interfaces_1_1_i_red_web_socket_middleware.html#a28bff7727381ad6ed8c0ad017752e271',1,'Red.Interfaces.IRedWebSocketMiddleware.Process()']]],
-  ['put',['Put',['../class_red_1_1_red_http_server.html#a5e8b2487ec5d9f553198b7879022fb21',1,'Red::RedHttpServer']]]
+  ['get',['Get',['../interface_red_1_1_interfaces_1_1_i_router.html#a4d8c78799cffb7d4fbfdf7be9d499755',1,'Red.Interfaces.IRouter.Get()'],['../class_red_1_1_red_http_server.html#acfe60f33334e17d7eb50d1beafeb0001',1,'Red.RedHttpServer.Get()'],['../class_red_1_1_router.html#aa087bb17bb9e24256d4211b690014c75',1,'Red.Router.Get()']]],
+  ['get_3c_20tkey_20_3e',['Get&lt; TKey &gt;',['../class_red_1_1_plugin_collection.html#a7ea2e99cf51a0cbc8b029333dfbcf5eb',1,'Red::PluginCollection']]],
+  ['getdata',['GetData',['../class_red_1_1_request.html#a83f8345653a365ead2d525036c888a92',1,'Red::Request']]],
+  ['getdata_3c_20tdata_20_3e',['GetData&lt; TData &gt;',['../class_red_1_1_request.html#a12df2ef730d7eaa45615f331665e447c',1,'Red::Request']]],
+  ['getformdataasync',['GetFormDataAsync',['../class_red_1_1_request.html#a128512d8b084b23f7b31278b8a810691',1,'Red::Request']]]
 ];

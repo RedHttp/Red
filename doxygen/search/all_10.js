@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['version',['Version',['../class_red_1_1_red_http_server.html#a19c0d83250cf28befc2cf9b5ef2bb841',1,'Red::RedHttpServer']]]
+  ['text',['Text',['../class_red_1_1_web_socket_dialog_1_1_text_message_event_args.html#a8ac71c1f27cd03593aa652583e3cc75d',1,'Red::WebSocketDialog::TextMessageEventArgs']]],
+  ['textmessageeventargs',['TextMessageEventArgs',['../class_red_1_1_web_socket_dialog_1_1_text_message_event_args.html',1,'Red::WebSocketDialog']]],
+  ['typedheaders',['TypedHeaders',['../class_red_1_1_request.html#a9adf58952d0386f98b24c6146cc56333',1,'Red::Request']]]
 ];

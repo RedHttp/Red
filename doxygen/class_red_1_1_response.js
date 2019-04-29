@@ -1,16 +1,14 @@
 var class_red_1_1_response =
 [
     [ "AddHeader", "class_red_1_1_response.html#a4870f6b4ebcc23bcc50db1e2d46afc45", null ],
-    [ "Download", "class_red_1_1_response.html#ad10f937bcb4c14a76745e190ddb5b0cf", null ],
-    [ "Redirect", "class_red_1_1_response.html#a36bc69d15026baefdfc20084aa356cb0", null ],
-    [ "SendFile", "class_red_1_1_response.html#a84070c366456c6813e7bbac960824af1", null ],
-    [ "SendJson", "class_red_1_1_response.html#a6f45df36e28017405abf6ef65152adae", null ],
-    [ "SendStatus", "class_red_1_1_response.html#a7fb8328577991036edaac626ba3ca1ea", null ],
-    [ "SendStream", "class_red_1_1_response.html#a410a783c4385b351e2bd3c9e47e1342e", null ],
-    [ "SendString", "class_red_1_1_response.html#adfaf619ae43baf59581c158f241db7df", null ],
-    [ "SendXml", "class_red_1_1_response.html#a78cff5d1771bbe334b906fbe82e9bdb3", null ],
-    [ "UnderlyingResponse", "class_red_1_1_response.html#a56e266cd002834e4334b6a930ab68f00", null ],
-    [ "Closed", "class_red_1_1_response.html#a1336f69788a6eafd09cd1bb11023287e", null ],
-    [ "ServerPlugins", "class_red_1_1_response.html#a8e70273a817dc2bac5e8567b1e541de7", null ],
-    [ "UnderlyingContext", "class_red_1_1_response.html#a02c8c3d3c69e71433fe0214391d70ed2", null ]
+    [ "Download", "class_red_1_1_response.html#acb1daa7c53684a889214e3b1473cf2dc", null ],
+    [ "Redirect", "class_red_1_1_response.html#a550662a9edac31f3240e7ab2505ffaed", null ],
+    [ "SendFile", "class_red_1_1_response.html#a1f983ab708bf67eb5d91b598c274b242", null ],
+    [ "SendJson", "class_red_1_1_response.html#a62adc29ea1a0ea3a32a23fe49a1255bf", null ],
+    [ "SendStatus", "class_red_1_1_response.html#af65bc1e4742d39a76fa88b3283ec94e9", null ],
+    [ "SendStream", "class_red_1_1_response.html#ab2529af5d3cb8598f8f7b492022e01a6", null ],
+    [ "SendString", "class_red_1_1_response.html#adfc1e391e26cf33d66b80679f2820463", null ],
+    [ "SendXml", "class_red_1_1_response.html#a26b4363da211ef38bf7ef4cf63b0fff0", null ],
+    [ "AspNetResponse", "class_red_1_1_response.html#a90d856e16d8e20c8997c463e24c9cfaa", null ],
+    [ "Context", "class_red_1_1_response.html#a58c60554320747eabb11ea97ccc9e115", null ]
 ];
