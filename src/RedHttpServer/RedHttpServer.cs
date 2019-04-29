@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -12,7 +14,7 @@ namespace Red
     /// <summary>
     /// An Http server based on ASP.NET Core with Kestrel, with use-patterns inspired by express.js
     /// </summary>
-    public partial class RedHttpServer
+    public partial class RedHttpServer : IRouter
     {
         /// <summary>
         ///     Constructs a server instance with given port and using the given path as public folder.
@@ -111,10 +113,9 @@ namespace Red
             _plugins.Add(extension);
         }
 
-
-        
         /// <summary>
-        ///     Add action to handle GET requests to a given route
+        /// Return a list of the registered handlers' method and route
+        /// Useful for getting an overview of the routes provided by the server
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
@@ -122,44 +123,23 @@ namespace Red
         {
             AddHandlers(route, GetMethod, handlers);
         }
-
-        /// <summary>
-        ///     Add action to handle POST requests to a given route
-        /// </summary>
-        /// <param name="route">The route to respond to</param>
-        /// <param name="handlers">The handlers that wil respond to the request</param>
+        /// <inheritdoc />
         public void Post(string route, params Func<Request, Response, Task<HandlerType>>[] handlers)
         {
             AddHandlers(route, PostMethod, handlers);
         }
-
-
-        /// <summary>
-        ///     Add action to handle PUT requests to a given route.
-        /// </summary>
-        /// <param name="route">The route to respond to</param>
-        /// <param name="handlers">The handlers that wil respond to the request</param>
+        /// <inheritdoc />
         public void Put(string route, params Func<Request, Response, Task<HandlerType>>[] handlers)
         {
             AddHandlers(route, PutMethod, handlers);
         }
-
-
-        /// <summary>
-        ///     Add action to handle DELETE requests to a given route.
-        /// </summary>
-        /// <param name="route">The route to respond to</param>
-        /// <param name="handlers">The handlers that wil respond to the request</param>
+        /// <inheritdoc />
         public void Delete(string route, params Func<Request, Response, Task<HandlerType>>[] handlers)
         {
             AddHandlers(route, DeleteMethod, handlers);
         }
         
-        /// <summary>
-        ///     Add action to handle WEBSOCKET requests to a given route. <para/>
-        /// </summary>
-        /// <param name="route">The route to respond to</param>
-        /// <param name="handlers">The handlers that wil respond to the request</param>
+        /// <inheritdoc />
         public void WebSocket(string route, params Func<Request, Response, WebSocketDialog, Task<HandlerType>>[] handlers)
         {
             if (handlers.Length == 0)
@@ -170,11 +150,7 @@ namespace Red
             
             _wsHandlers.Add(new WsHandlerWrapper(route, handlers));
         }
-        /// <summary>
-        ///     Add action to handle WEBSOCKET requests to a given route. <para/>
-        /// </summary>
-        /// <param name="route">The route to respond to</param>
-        /// <param name="handlers">The handlers that wil respond to the request</param>
+        /// <inheritdoc />
         public void WebSocket(string route, params Func<Request, WebSocketDialog, Task<HandlerType>>[] handlers)
         {
             if (handlers.Length == 0)
