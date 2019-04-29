@@ -119,6 +119,13 @@ namespace Red
         /// </summary>
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
+        /// <inheritdoc />
+        public IRouter CreateRouter(string baseRoute)
+        {
+            return new Router(baseRoute, this);
+        }
+
+        /// <inheritdoc />
         public void Get(string route, params Func<Request, Response, Task<HandlerType>>[] handlers)
         {
             AddHandlers(route, GetMethod, handlers);
