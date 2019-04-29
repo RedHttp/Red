@@ -1,7 +1,7 @@
 # RedHttpServer
 ### Cross-platform http server framework with websocket support
 
-A Http web server framework built on ASP.NET Core and Kestrel, but with an API inspired by the simplicity of express.js
+A .NET Standard web application framework built on ASP.NET Core w/ Kestrel and inspired by the simplicity of Express.js
 
 - [Homepage](https://rosenbjerg.github.io/Red/)
 - [Documentation](https://rosenbjerg.github.io/Red/doxygen/)
