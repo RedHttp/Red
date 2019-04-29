@@ -117,8 +117,17 @@ namespace Red
         /// Return a list of the registered handlers' method and route
         /// Useful for getting an overview of the routes provided by the server
         /// </summary>
-        /// <param name="route">The route to respond to</param>
-        /// <param name="handlers">The handlers that wil respond to the request</param>
+        /// <returns></returns>
+        public (string Method, string Path)[] ListRegisteredRoutes()
+        {
+            var wsHandlers = _wsHandlers.Select(h => (Method: "WS", h.Path));
+            return _handlers
+                .Select(h => (h.Method, h.Path))
+                .Concat(wsHandlers)
+                .OrderBy(hp => hp.Path)
+                .ToArray();
+        }
+
         /// <inheritdoc />
         public IRouter CreateRouter(string baseRoute)
         {
