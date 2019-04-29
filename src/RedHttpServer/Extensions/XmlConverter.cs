@@ -12,19 +12,18 @@ namespace Red.Extensions
     /// </summary>
     internal sealed class XmlConverter : IXmlConverter, IRedExtension
     {
+        /// <inheritdoc />
         public string Serialize<T>(T obj)
         {
             try
             {
                 using (var stream = new MemoryStream())
+                using (var xml = new XmlTextWriter(stream, new UTF8Encoding(false)))
                 {
-                    using (var xml = new XmlTextWriter(stream, new UTF8Encoding(false)))
-                    {
-                        var xs = new XmlSerializer(typeof(T));
-                        xs.Serialize(xml, obj);
-                        var reader = new StreamReader(stream, Encoding.UTF8);
-                        return reader.ReadToEnd();
-                    }
+                    var xs = new XmlSerializer(typeof(T));
+                    xs.Serialize(xml, obj);
+                    var reader = new StreamReader(stream, Encoding.UTF8);
+                    return reader.ReadToEnd();
                 }
             }
             catch (Exception)
@@ -33,12 +32,30 @@ namespace Red.Extensions
             }
         }
         
+        /// <inheritdoc />
         public T Deserialize<T>(string xmlData)
         {
             try
             {
                 var xmlSerializer = new XmlSerializer(typeof(T));
                 using (var stringReader = new StringReader(xmlData))
+                {
+                    return (T)xmlSerializer.Deserialize(stringReader);
+                }
+            }
+            catch (Exception)
+            { 
+                return default; 
+            }
+        }
+        
+        /// <inheritdoc />
+        public T Deserialize<T>(Stream xmlStream)
+        {
+            try
+            {
+                var xmlSerializer = new XmlSerializer(typeof(T));
+                using (var stringReader = new StreamReader(xmlStream))
                 {
                     return (T)xmlSerializer.Deserialize(stringReader);
                 }
