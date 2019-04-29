@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace Red.Interfaces
 {
     /// <summary>
@@ -20,5 +22,13 @@ namespace Red.Interfaces
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         T Deserialize<T>(string jsonData);
+        
+        /// <summary>
+        ///     Method to deserialize JSON data to specified type
+        /// </summary>
+        /// <param name="jsonStream"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        T Deserialize<T>(Stream jsonStream);
     }
 }

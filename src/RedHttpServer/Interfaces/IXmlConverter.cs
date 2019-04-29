@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace Red.Interfaces
 {
     /// <summary>
@@ -6,7 +8,7 @@ namespace Red.Interfaces
     public interface IXmlConverter
     {
         /// <summary>
-        ///     Method to serialize data to XML
+        ///     Method to serialize data to a XML string
         /// </summary>
         /// <param name="obj"></param>
         /// <typeparam name="T"></typeparam>
@@ -14,11 +16,19 @@ namespace Red.Interfaces
         string Serialize<T>(T obj);
 
         /// <summary>
-        ///     Method to deserialize XML data to specified type
+        ///     Method to deserialize a XML-containing string to specified type
         /// </summary>
         /// <param name="xmlData"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         T Deserialize<T>(string xmlData);
+        
+        /// <summary>
+        ///     Method to deserialize a XML-containing stream to specified type
+        /// </summary>
+        /// <param name="xmlStream"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        T Deserialize<T>(Stream xmlStream);
     }
 }
