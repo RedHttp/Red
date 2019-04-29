@@ -13,12 +13,12 @@ namespace Red
         /// <summary>
         ///    The Red.Request for this context
         /// </summary>
-        public readonly Red.Request Request;
+        public readonly Request Request;
         
         /// <summary>
         ///    The Red.Response for this context
         /// </summary>
-        public readonly Red.Response Response;
+        public readonly Response Response;
         
         /// <summary>
         ///     The ASP.NET HttpContext that is wrapped
@@ -30,13 +30,6 @@ namespace Red
         /// </summary>
         public readonly PluginCollection Plugins;
         
-
-        /// <summary>
-        ///    The Red-wrapper for HttpContext.
-        ///     "Houses" the request and response-pairs
-        /// </summary>
-        /// <param name="aspNetContext"></param>
-        /// <param name="plugins"></param>
         internal Context(HttpContext aspNetContext, PluginCollection plugins)
         {
             Plugins = plugins;
