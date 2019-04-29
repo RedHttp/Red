@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -51,10 +49,8 @@ namespace Red
         public Task<HandlerType> Redirect(string redirectPath, bool permanent = false)
         {
             Context.Response.Redirect(redirectPath, permanent);
-            return CompletedRedirectTask;
+            return Utils.CachedFinalHandlerTask;
         }
-        // Cached completed task for Redirect member function
-        private static readonly Task<HandlerType> CompletedRedirectTask = Task.FromResult(HandlerType.Final);
 
         /// <summary>
         ///     Sends data as text

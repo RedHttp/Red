@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using Red.Interfaces;
@@ -10,32 +9,59 @@ namespace Red.Extensions
     /// </summary>
     internal sealed class BodyParser : IBodyParser, IRedExtension
     {
-        private static readonly Type StringResponseType = typeof(string);
-        
         public void Initialize(RedHttpServer server)
         {
             server.Plugins.Register<IBodyParser, BodyParser>(this);
         }
 
-        public async Task<T> Parse<T>(Request request)
+        /// <inheritdoc />
+        public Task<string> Parse(Request request)
         {
-            var t = typeof(T);
-            using (var sr = new StreamReader(request.BodyStream))
+            using (var streamReader = new StreamReader(request.BodyStream))
             {
-                if (t == StringResponseType)
-                    return (T) (object) await sr.ReadToEndAsync();
-                switch (request.AspNetRequest.ContentType)
-                {
-                    case "application/xml":
-                    case "text/xml":
-                        return request.Context.Plugins.Get<IXmlConverter>().Deserialize<T>(await sr.ReadToEndAsync());
-                    case "application/json":
-                    case "text/json":
-                        return request.Context.Plugins.Get<IJsonConverter>().Deserialize<T>(await sr.ReadToEndAsync());
-                    default:
-                        return default;
-                }
+                return streamReader.ReadToEndAsync();
             }
+        }
+        /// <inheritdoc />
+        public T Parse<T>(Request request)
+        {
+            switch (request.AspNetRequest.ContentType.ToLowerInvariant())
+            {
+                case "application/xml":
+                case "text/xml":
+                    return request.Context.Plugins.Get<IXmlConverter>().Deserialize<T>(request.BodyStream);
+                case "application/json":
+                case "text/json":
+                    return request.Context.Plugins.Get<IJsonConverter>().Deserialize<T>(request.BodyStream);
+                default:
+                    return default;
+            }
+        }
+    }
+    
+    /// <summary>
+    ///     Extension to RedRequests, to parse body to object of specified type
+    /// </summary>
+    public static class BodyParserExtension
+    {
+        /// <summary>
+        ///     Returns the body deserialized or parsed to specified type if possible, default if not
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T ParseBody<T>(this Request request)
+        {
+            var bodyParser = request.Context.Plugins.Get<IBodyParser>();
+            return bodyParser.Parse<T>(request);
+        }
+        /// <summary>
+        ///     Returns the body deserialized or parsed to specified type if possible, default if not
+        /// </summary>
+        /// <returns></returns>
+        public static Task<string> ReadBodyAsync(this Request request)
+        {
+            var bodyParser = request.Context.Plugins.Get<IBodyParser>();
+            return bodyParser.Parse(request);
         }
     }
 }

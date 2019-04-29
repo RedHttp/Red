@@ -10,8 +10,12 @@ namespace Red
     /// <summary>
     /// Utilities
     /// </summary>
-    public static partial class Utils
+    public static class Utils
     {
+        internal static readonly Task<HandlerType> CachedFinalHandlerTask = Task.FromResult(HandlerType.Final);
+        internal static readonly Task<HandlerType> CachedContinueHandlerTask = Task.FromResult(HandlerType.Continue);
+        internal static readonly Task<HandlerType> CachedErrorHandlerTask = Task.FromResult(HandlerType.Error);
+        
         /// <summary>
         /// Parsing middleware.
         /// Attempts to parse the body using ParseBodyAsync.
@@ -25,7 +29,7 @@ namespace Red
         public static async Task<HandlerType> CanParse<T>(Request req, Response res)
             where T : class
         {
-            var obj = await req.ParseBodyAsync<T>();
+            var obj = req.ParseBody<T>();
             if (obj == default)
             {
                 await res.SendStatus(HttpStatusCode.BadRequest);
@@ -54,7 +58,8 @@ namespace Red
 
 
         /// <summary>
-        /// Middleware for serving static files
+        /// Middleware for serving static files from a directory.
+        /// Requires one wildcard (*) in the path(s) it is used in
         /// </summary>
         /// <param name="basePath">The path of the base directory the files are served from</param>
         /// <param name="send404NotFound">Whether to respond with 404 when file not found, or to continue to next handler</param>
@@ -70,7 +75,7 @@ namespace Red
                 {
                     return send404NotFound 
                         ? res.SendStatus(HttpStatusCode.NotFound) 
-                        : Task.FromResult(HandlerType.Continue);
+                        : CachedContinueHandlerTask;
                 }
                 else
                 {
@@ -84,7 +89,7 @@ namespace Red
         internal static string GetMimeType(string contentType, string filePath,
             string defaultContentType = "application/octet-stream")
         {
-            if (string.IsNullOrEmpty(contentType) && !Utils.MimeTypes.TryGetValue(Path.GetExtension(filePath), out contentType))
+            if (string.IsNullOrEmpty(contentType) && !MimeTypes.TryGetValue(Path.GetExtension(filePath), out contentType))
             {
                 contentType = defaultContentType;
             }
