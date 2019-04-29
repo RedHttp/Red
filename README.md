@@ -10,7 +10,7 @@
 ### _Hello world_ example
 ```csharp
 var server = new RedHttpServer(5000);
-server.Get("/", async (req, res) => await res.SendString("Hello world!"));
+server.Get("/", (req, res) => res.SendString("Hello world!"));
 await server.RunAsync();
 ```
 
@@ -34,8 +34,10 @@ await server.RunAsync();
 [RedHttpServer](https://www.nuget.org/packages/RHttpServer/)
 
 Authentication middleware
-- [CookieSessions](https://www.nuget.org/packages/Red.CookieSessions/)
 - [JwtSessions](https://www.nuget.org/packages/Red.JwtSessions/)
+- [CookieSessions](https://www.nuget.org/packages/Red.CookieSessions/)
+  - [SQLiteStore](https://www.nuget.org/packages/Red.CookieSessions.SQLiteStore/)
+  - [LiteDBStore](https://www.nuget.org/packages/Red.CookieSessions.LiteDBStore/)
 
 Rendering plugins
 - [HandlebarsRenderer](https://www.nuget.org/packages/Red.HandlebarsRenderer/)
