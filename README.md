@@ -38,97 +38,104 @@ var server = new RedHttpServer(5000, "public");
 server.Use(new EcsRenderer());
 
 // We use Red.CookieSessions as authentication in this example
-server.Use(new CookieSessions<MySess>(TimeSpan.FromDays(5))
+server.Use(new CookieSessions<MySess>(TimeSpan.FromDays(1))
 {
-	Secure = false // To be able to use cookies without https in development
+    Secure = false // for development
 });
 
 // Middleware function that closes requests that does not have a valid session associated
-async Task Auth(Request req, Response res)
+async Task<HandlerType> Auth(Request req, Response res)
 {
-	if (req.GetSession<MySess>() == null)
-	{
-		await res.SendStatus(HttpStatusCode.Unauthorized);
-	}
+    if (req.GetSession<MySess>() != null)
+    {
+        return HandlerType.Continue;
+    }
+    await res.SendStatus(HttpStatusCode.Unauthorized);
+    return HandlerType.Final;
 }
 
 var startTime = DateTime.UtcNow;
 
-// We then register our endpoint handlers:
+// We register our endpoint handlers:
 
 // We can use url params, much like in express.js
-server.Get("/:param1/:paramtwo/:somethingthird", Auth, async (req, res) =>
+server.Get("/:param1/:paramtwo/:somethingthird", Auth, (req, res) =>
 {
-	await res.SendString($"URL: {req.Parameters["param1"]} / {req.Parameters["paramtwo"]} / {req.Parameters["somethingthird"]}");
+    var context = req.Context;
+    return res.SendString(
+        $"you entered:\n" +
+        context.ExtractUrlParameter("param1") + "\n" +
+        context.ExtractUrlParameter("paramtwo") + "\n" +
+        context.ExtractUrlParameter("somethingthird") + "\n");
 });
 
 // The clients can post to this endpoint to authenticate
 server.Post("/login", async (req, res) =>
 {
-	// You should authenticate the client properly, but here we just log the client in - no matter what..
-	req.OpenSession(new MySess {Username = "benny"});
-	await res.SendStatus(HttpStatusCode.OK);
+    // To make it easy to test the session system only using the browser and no credentials
+    await req.OpenSession(new MySess {Username = "benny"});
+    return await res.SendStatus(HttpStatusCode.OK);
 });
 
 // The client can post to this endpoint to close their current session
 // Note that we require the client the be authenticated using the Auth-function we created above
 server.Get("/logout", Auth, async (req, res) =>
 {
-	req.GetSession<MySess>().Close(req);
-	await res.SendStatus(HttpStatusCode.OK);
+    await req.GetSession<MySess>().Close(req);
+    return await res.SendStatus(HttpStatusCode.OK);
 });
 
+
 // We redirect authenticated clients to some other page
-server.Get("/redirect", Auth, async (req, res) => { await res.Redirect("/redirect/user/here"); });
+server.Get("/redirect", Auth, (req, res) => res.Redirect("/redirect/test/here"));
 
 // We save the files contained in the POST request from authenticated clients in a directory called 'uploads'
 Directory.CreateDirectory("uploads");
-server.Post("/upload", Auth, async (req, res) =>
+server.Post("/upload", async (req, res) =>
 {
-	if (await req.SaveFiles("uploads"))
-		await res.SendString("OK");
-	else
-		await res.SendString("Error", status: HttpStatusCode.NotAcceptable);
+    if (await req.SaveFiles("uploads"))
+        return await res.SendString("OK");
+    else
+        return await res.SendString("Error", status: HttpStatusCode.NotAcceptable);
 });
 
 // We can also serve files outside of the public directory, if we wish to
 // This can be handy when serving "dynamic files" - files which the client identify using an ID instead of the actual path on the server
-server.Get("/file", async (req, res) => { await res.SendFile("/notpublic/testimg.jpeg"); });
+server.Get("/file", (req, res) => res.SendFile("testimg.jpeg"));
 
 // We can easily handle POST requests containing FormData
 server.Post("/formdata", async (req, res) =>
 {
-	var form = await req.GetFormDataAsync();
-	await res.SendString("Hello " + form["firstname"]);
+    var form = await req.GetFormDataAsync();
+    return await res.SendString("Hello " + form["firstname"]);
 });
 
 // In a similar way, we can also handle url queries for a given request easily, in the example only for authenticated clients
 server.Get("/hello", Auth, async (req, res) =>
 {
-	var session = req.GetSession<MySess>();
-	var queries = req.Queries;
-	await res.SendString($"Hello {queries["firstname"]} {queries["lastname"]}, you are logged in as {session.Username} - have a nice day");
+    var session = req.GetData<MySess>();
+    var queries = req.Queries;
+    return await res.SendString(
+        $"Hello {queries["firstname"]} {queries["lastname"]}, you are logged in as {session.Username}");
 });
 
 // We can render MarkDown/CommonMark using the Red.CommonMarkRenderer plugin
-server.Get("/markdown", async (req, res) => { await res.RenderFile("markdown.md"); });
+server.Get("/markdown", (req, res) => res.RenderFile("markdown.md"));
 
 // We use the Red.EcsRenderer plugin to render a simple template
-server.Get("/serverstatus", async (req, res) =>
+server.Get("/serverstatus", async (req, res) => await res.RenderPage("pages/statuspage.ecs", new RenderParams
 {
-	await res.RenderPage("pages/statuspage.ecs", new RenderParams
-	{
-		{"uptime", (int) DateTime.UtcNow.Subtract(startTime).TotalSeconds},
-		{"version", RedHttpServer.Version}
-	});
-});
+    {"uptime", (int) DateTime.UtcNow.Subtract(startTime).TotalSeconds},
+    {"version", Red.RedHttpServer.Version}
+}));
 
 // We can also handle WebSocket requests, without any plugin needed
 // In this example we just have a simple WebSocket echo server
 server.WebSocket("/echo", async (req, wsd) =>
 {
-	wsd.SendText("Welcome to the echo test server");
-	wsd.OnTextReceived += (sender, eventArgs) => { wsd.SendText("you sent: " + eventArgs.Text); };
+    wsd.SendText("Welcome to the echo test server");
+    wsd.OnTextReceived += (sender, eventArgs) => { wsd.SendText("you sent: " + eventArgs.Text); };
+    return HandlerType.Final;
 });
 
 // Then we start the server as an awaitable task
