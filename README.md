@@ -1,5 +1,6 @@
 # RedHttpServer
 ### Cross-platform http server framework with websocket support
+[![NuGet](https://img.shields.io/nuget/v/RHttpServer.svg)](https://www.nuget.org/packages/RHttpServer/)
 
 A .NET Standard web application framework built on ASP.NET Core w/ Kestrel and inspired by the simplicity of Express.js
 
