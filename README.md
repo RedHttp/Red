@@ -4,8 +4,8 @@
 
 A .NET Standard web application framework built on ASP.NET Core w/ Kestrel and inspired by the simplicity of Express.js
 
-- [Homepage](https://rosenbjerg.github.io/Red/)
-- [Documentation](https://rosenbjerg.github.io/Red/doxygen/)
+- [Homepage](https://redhttp.github.io/Red/)
+- [Documentation](https://redhttp.github.io/Red/doxygen/)
 
 ### Installation
 RedHttpServer can be installed from [NuGet](https://www.nuget.org/packages/RHttpServer/): `Install-Package RHttpServer`
@@ -21,11 +21,11 @@ I have created a couple already; three are inbuilt, but can easily be replaced:
 * BodyParser - uses both the Json- and Xml converter to parse request body to an object, depending on content-type.
 
 And five more split out into separate projects:
-- [CookieSessions](https://github.com/rosenbjerg/Red.CookieSessions) simple session management middleware that uses cookies with authentication tokens.
-- [JwtSessions](https://github.com/rosenbjerg/Red.JwtSessions) simple session management middleware that uses JWT tokens - uses [Jwt.Net](https://github.com/jwt-dotnet/jwt)
-- [EcsRenderer](https://github.com/rosenbjerg/Red.EcsRenderer) simple template rendering extension. See more info about the format by clicking the link.
-- [CommonMarkRenderer](https://github.com/rosenbjerg/Red.CommonMarkRenderer) simple CommonMark/Markdown renderer extension - uses [CommonMark.NET](https://github.com/Knagis/CommonMark.NET)
-- [HandlebarsRenderer](https://github.com/rosenbjerg/Red.HandlebarsRenderer) simple Handlebars renderer extension - uses [Handlebars.Net](https://github.com/rexm/Handlebars.Net)
+- [CookieSessions](https://github.com/RedHttp/Red.CookieSessions) simple session management middleware that uses cookies with authentication tokens.
+- [JwtSessions](https://github.com/RedHttp/Red.JwtSessions) simple session management middleware that uses JWT tokens - uses [Jwt.Net](https://github.com/jwt-dotnet/jwt)
+- [EcsRenderer](https://github.com/RedHttp/Red.EcsRenderer) simple template rendering extension. See more info about the format by clicking the link.
+- [CommonMarkRenderer](https://github.com/RedHttp/Red.CommonMarkRenderer) simple CommonMark/Markdown renderer extension - uses [CommonMark.NET](https://github.com/Knagis/CommonMark.NET)
+- [HandlebarsRenderer](https://github.com/RedHttp/Red.HandlebarsRenderer) simple Handlebars renderer extension - uses [Handlebars.Net](https://github.com/rexm/Handlebars.Net)
 
 
 ### Example
