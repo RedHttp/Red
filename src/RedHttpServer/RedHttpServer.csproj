@@ -22,20 +22,20 @@
     <OutputTypeEx>library</OutputTypeEx>
     <StartupObject />
     <Version>4.0.0</Version>
-    <PackageTags>redr redhttp redhttpserve rhttpserver rhs http server web api expressjs http websocket middleware</PackageTags>
+    <PackageTags>red redhttp redhttpserver rhttpserver rhs http server web api expressjs http websocket middleware</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageProjectUrl>https://rosenbjerg.github.io/Red/</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/rosenbjerg/Red/blob/master/LICENSE.md</PackageLicenseUrl>
-    <PackageIconUrl>https://rosenbjerg.dk/red/logo.png</PackageIconUrl>
-    <RepositoryUrl>https://github.com/rosenbjerg/Red</RepositoryUrl>
+    <PackageProjectUrl>https://RedHttp.github.io/Red/</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/RedHttp/Red/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageIconUrl>https://redhttp.github.io/Red/assets/red-large.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/RedHttp/Red</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <Authors>Malte Rosenbjerg</Authors>
-    <PackageReleaseNotes>V. 4.0.0 - API Changes</PackageReleaseNotes>
+    <PackageReleaseNotes>Fix SendFile by using url encoding filename</PackageReleaseNotes>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <FileVersion>4.0.0.0</FileVersion>
     <LangVersion>latest</LangVersion>
-    <PackageVersion>4.0.0</PackageVersion>
+    <PackageVersion>4.0.1</PackageVersion>
     <Title>Red</Title>
   </PropertyGroup>
   <ItemGroup>

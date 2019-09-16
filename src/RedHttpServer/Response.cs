@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
 using Red.Interfaces;
 
 namespace Red
@@ -142,11 +143,13 @@ namespace Red
             {
                 AddHeader("Content-disposition", $"{(attachment ? "attachment" : "inline")}; filename=\"{fileName}\"");
             }
+            
             await dataStream.CopyToAsync(AspNetResponse.Body);
             if (dispose)
             {
                 dataStream.Dispose();
             }
+            
             return HandlerType.Final;
         }
 
@@ -159,15 +162,17 @@ namespace Red
         ///     extension
         /// </param>
         /// <param name="handleRanges">Whether to enable handling of range-requests for the file(s) served</param>
+        /// <param name="fileName">Filename to show in header, instead of actual filename</param>
         /// <param name="status">The status code for the response</param>
-        public async Task<HandlerType> SendFile(string filePath, string contentType = null, bool handleRanges = true,
-            HttpStatusCode status = HttpStatusCode.OK)
+        public async Task<HandlerType> SendFile(string filePath, string contentType = null, bool handleRanges = true, 
+            string fileName = null, HttpStatusCode status = HttpStatusCode.OK)
         {
             if (handleRanges) AddHeader("Accept-Ranges", "bytes");
 
             var fileSize = new FileInfo(filePath).Length;
             var range = Context.Request.TypedHeaders.Range;
-
+            var encodedFilename = WebUtility.UrlEncode(fileName ?? Path.GetFileName(filePath));
+            
             if (range != null && range.Ranges.Any())
             {
                 var firstRange = range.Ranges.First();
@@ -185,7 +190,7 @@ namespace Red
                 AspNetResponse.StatusCode = (int) HttpStatusCode.PartialContent;
                 AspNetResponse.ContentType = Utils.GetMimeType(contentType, filePath);
                 AspNetResponse.ContentLength = length;
-                AddHeader("Content-Disposition", $"inline; filename=\"{Path.GetFileName(filePath)}\"");
+                AddHeader("Content-Disposition", $"inline; filename=\"{encodedFilename}\"");
                 AddHeader("Content-Range", $"bytes {offset}-{offset + length - 1}/{fileSize}");
                 await AspNetResponse.SendFileAsync(filePath, offset, length);
             }
@@ -194,7 +199,7 @@ namespace Red
                 AspNetResponse.StatusCode = (int) status;
                 AspNetResponse.ContentType = Utils.GetMimeType(contentType, filePath);
                 AspNetResponse.ContentLength = fileSize;
-                AddHeader("Content-Disposition", $"inline; filename=\"{Path.GetFileName(filePath)}\"");
+                AddHeader("Content-Disposition", $"inline; filename=\"{encodedFilename}\"");
                 await AspNetResponse.SendFileAsync(filePath);
             }
 

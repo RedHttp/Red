@@ -20,7 +20,7 @@ namespace Red
         /// <param name="router">The router (or server) to add handlers to</param>
         public Router(string baseRoute, IRouter router)
         {
-            _baseRoute = baseRoute.TrimEnd('/');
+            _baseRoute = baseRoute.Trim('/');
             _router = router;
         }
 
