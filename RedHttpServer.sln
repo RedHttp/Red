@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "src\Test\Test.cspro
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpTest", "src\FSharpTest\FSharpTest.fsproj", "{76F39769-1626-4658-A96F-533BEF078909}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedHttpServer.Tests", "src\RedHttpServer.Tests\RedHttpServer.Tests.csproj", "{C3595961-7D8A-4E46-96FF-E6F470550988}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{76F39769-1626-4658-A96F-533BEF078909}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76F39769-1626-4658-A96F-533BEF078909}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76F39769-1626-4658-A96F-533BEF078909}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3595961-7D8A-4E46-96FF-E6F470550988}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3595961-7D8A-4E46-96FF-E6F470550988}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3595961-7D8A-4E46-96FF-E6F470550988}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3595961-7D8A-4E46-96FF-E6F470550988}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +50,7 @@ Global
 		{F63814F5-2D27-410B-95BD-01D0D286D6B3} = {D9A21FF4-1C0B-45B1-8442-D89F53C67E2B}
 		{C17662C3-07D5-46AD-8E18-209E713EE1E9} = {D9A21FF4-1C0B-45B1-8442-D89F53C67E2B}
 		{76F39769-1626-4658-A96F-533BEF078909} = {D9A21FF4-1C0B-45B1-8442-D89F53C67E2B}
+		{C3595961-7D8A-4E46-96FF-E6F470550988} = {D9A21FF4-1C0B-45B1-8442-D89F53C67E2B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE192755-FA6B-4D74-86F1-2BD817ABD3BD}
