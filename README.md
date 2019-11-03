@@ -1,6 +1,6 @@
 # RedHttpServer
 ### Cross-platform http server framework with websocket support
-![GitHub](https://img.shields.io/github/license/redhttp/red)
+[![GitHub](https://img.shields.io/github/license/redhttp/red)](https://github.com/RedHttp/Red/blob/master/LICENSE.md)
 [![Nuget](https://img.shields.io/nuget/v/rhttpserver)](https://www.nuget.org/packages/RHttpServer/)
 [![Nuget](https://img.shields.io/nuget/dt/rhttpserver)](https://www.nuget.org/packages/RHttpServer/)
 
