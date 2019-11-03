@@ -3,7 +3,7 @@
 [![GitHub](https://img.shields.io/github/license/redhttp/red)](https://github.com/RedHttp/Red/blob/master/LICENSE.md)
 [![Nuget](https://img.shields.io/nuget/v/rhttpserver)](https://www.nuget.org/packages/RHttpServer/)
 [![Nuget](https://img.shields.io/nuget/dt/rhttpserver)](https://www.nuget.org/packages/RHttpServer/)
-
+![Dependent repos (via libraries.io)](https://img.shields.io/librariesio/dependent-repos/nuget/rhttpserver)
 
 A .NET Standard web application framework built on ASP.NET Core w/ Kestrel and inspired by the simplicity of Express.js
 
