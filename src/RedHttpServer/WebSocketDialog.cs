@@ -32,17 +32,17 @@ namespace Red
         /// <summary>
         ///     Raised when binary WebSocket messages are received
         /// </summary>
-        public event EventHandler<BinaryMessageEventArgs> OnBinaryReceived;
+        public event EventHandler<BinaryMessageEventArgs>? OnBinaryReceived;
 
         /// <summary>
         ///     Raised when text WebSocket messages are received
         /// </summary>
-        public event EventHandler<TextMessageEventArgs> OnTextReceived;
+        public event EventHandler<TextMessageEventArgs>? OnTextReceived;
 
         /// <summary>
         ///     Raised when socket is closed
         /// </summary>
-        public event EventHandler OnClosed;
+        public event EventHandler? OnClosed;
 
         /// <summary>
         ///     Send text message using websocket

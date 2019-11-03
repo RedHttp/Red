@@ -12,30 +12,29 @@ namespace Red
     ///     Class representing the response to a clients request
     ///     All
     /// </summary>
-    public sealed class Response
+    public sealed class Response : InContext
     {
            
 
-        internal Response(Context context, HttpResponse aspNetResponse)
+        internal Response(Context context, HttpResponse aspNetResponse) : base(context)
         {
-            Context = context;
             AspNetResponse = aspNetResponse;
         }
 
         /// <summary>
-        ///     Add header item to response
+        ///     The headers for the response
+        /// </summary>
+        public IHeaderDictionary Headers => AspNetResponse.Headers;
+        
+        /// <summary>
+        ///     Deprecated. Please used Headers property instead
         /// </summary>
         /// <param name="headerName">The name of the header</param>
         /// <param name="headerValue">The value of the header</param>
         public void AddHeader(string headerName, string headerValue)
         {
-            AspNetResponse.Headers.Add(headerName, headerValue);
+            Headers[headerName] = headerValue;
         }
-
-        /// <summary>
-        ///     The Red.Context the response is part of
-        /// </summary>
-        public readonly Context Context;
 
         /// <summary>
         ///     The ASP.NET HttpResponse that is wrapped
@@ -108,10 +107,12 @@ namespace Red
         /// </summary>
         /// <param name="data">The object to be serialized and send</param>
         /// <param name="status">The status code for the response</param>
-        public Task<HandlerType> SendJson(object data, HttpStatusCode status = HttpStatusCode.OK)
+        public async Task<HandlerType> SendJson<T>(T data, HttpStatusCode status = HttpStatusCode.OK)
         {
-            var json = Context.Plugins.Get<IJsonConverter>().Serialize(data);
-            return SendString(json, "application/json", status: status);
+            AspNetResponse.StatusCode = (int) status;
+            AspNetResponse.ContentType = "application/json";
+            await Context.Plugins.Get<IJsonConverter>().SerializeAsync(data, AspNetResponse.Body);
+            return HandlerType.Final;
         }
 
         /// <summary>
@@ -119,10 +120,12 @@ namespace Red
         /// </summary>
         /// <param name="data">The object to be serialized and send</param>
         /// <param name="status">The status code for the response</param>
-        public Task<HandlerType> SendXml(object data, HttpStatusCode status = HttpStatusCode.OK)
+        public async Task<HandlerType> SendXml<T>(T data, HttpStatusCode status = HttpStatusCode.OK)
         {
-            var xml = Context.Plugins.Get<IXmlConverter>().Serialize(data);
-            return SendString(xml, "application/xml", status: status);
+            AspNetResponse.StatusCode = (int) status;
+            AspNetResponse.ContentType = "application/xml";
+            await Context.Plugins.Get<IXmlConverter>().SerializeAsync(data, AspNetResponse.Body);
+            return HandlerType.Final;
         }
 
         /// <summary>
@@ -141,7 +144,7 @@ namespace Red
             AspNetResponse.ContentType = contentType;
             if (!string.IsNullOrEmpty(fileName))
             {
-                AddHeader("Content-disposition", $"{(attachment ? "attachment" : "inline")}; filename=\"{fileName}\"");
+                Headers["Content-disposition"] = $"{(attachment ? "attachment" : "inline")}; filename=\"{fileName}\"";
             }
             
             await dataStream.CopyToAsync(AspNetResponse.Body);
@@ -164,14 +167,16 @@ namespace Red
         /// <param name="handleRanges">Whether to enable handling of range-requests for the file(s) served</param>
         /// <param name="fileName">Filename to show in header, instead of actual filename</param>
         /// <param name="status">The status code for the response</param>
-        public async Task<HandlerType> SendFile(string filePath, string contentType = null, bool handleRanges = true, 
-            string fileName = null, HttpStatusCode status = HttpStatusCode.OK)
+        public async Task<HandlerType> SendFile(string filePath, string? contentType = null, bool handleRanges = true, 
+            string? fileName = null, HttpStatusCode status = HttpStatusCode.OK)
         {
-            if (handleRanges) AddHeader("Accept-Ranges", "bytes");
+            if (handleRanges) Headers["Accept-Ranges"] = "bytes";
 
             var fileSize = new FileInfo(filePath).Length;
             var range = Context.Request.TypedHeaders.Range;
             var encodedFilename = WebUtility.UrlEncode(fileName ?? Path.GetFileName(filePath));
+            
+            Headers["Content-disposition"] = $"inline; filename=\"{encodedFilename}\"";
             
             if (range != null && range.Ranges.Any())
             {
@@ -182,7 +187,7 @@ namespace Red
                     return HandlerType.Error;
                 }
 
-                var offset = firstRange.From ?? fileSize - firstRange.To.Value;
+                var offset = firstRange.From ?? fileSize - firstRange.To ?? 0;
                 var length = firstRange.To.HasValue
                     ? fileSize - offset - (fileSize - firstRange.To.Value)
                     : fileSize - offset;
@@ -190,8 +195,7 @@ namespace Red
                 AspNetResponse.StatusCode = (int) HttpStatusCode.PartialContent;
                 AspNetResponse.ContentType = Utils.GetMimeType(contentType, filePath);
                 AspNetResponse.ContentLength = length;
-                AddHeader("Content-Disposition", $"inline; filename=\"{encodedFilename}\"");
-                AddHeader("Content-Range", $"bytes {offset}-{offset + length - 1}/{fileSize}");
+                Headers["Content-Range"] = $"bytes {offset}-{offset + length - 1}/{fileSize}";
                 await AspNetResponse.SendFileAsync(filePath, offset, length);
             }
             else
@@ -199,7 +203,6 @@ namespace Red
                 AspNetResponse.StatusCode = (int) status;
                 AspNetResponse.ContentType = Utils.GetMimeType(contentType, filePath);
                 AspNetResponse.ContentLength = fileSize;
-                AddHeader("Content-Disposition", $"inline; filename=\"{encodedFilename}\"");
                 await AspNetResponse.SendFileAsync(filePath);
             }
 
@@ -216,13 +219,13 @@ namespace Red
         ///     extension
         /// </param>
         /// <param name="status">The status code for the response</param>
-        public async Task<HandlerType> Download(string filePath, string fileName = null, string contentType = "",
+        public async Task<HandlerType> Download(string filePath, string? fileName = "", string? contentType = "",
             HttpStatusCode status = HttpStatusCode.OK)
         {
             AspNetResponse.StatusCode = (int) status;
             AspNetResponse.ContentType = Utils.GetMimeType(contentType, filePath);
             var name = string.IsNullOrEmpty(fileName) ? Path.GetFileName(filePath) : fileName;
-            AddHeader("Content-disposition", $"attachment; filename=\"{name}\"");
+            Headers["Content-disposition"] = $"attachment; filename=\"{name}\"";
             await AspNetResponse.SendFileAsync(filePath);
             return HandlerType.Final;
         }

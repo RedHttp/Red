@@ -56,11 +56,6 @@ namespace Red
         {
             _router.WebSocket(CombinePartialRoutes(_baseRoute, route), handlers);
         }
-        /// <inheritdoc />
-        public void WebSocket(string route, params Func<Request, WebSocketDialog, Task<HandlerType>>[] handlers)
-        {
-            _router.WebSocket(CombinePartialRoutes(_baseRoute, route), handlers);
-        }
 
         private static string CombinePartialRoutes(string baseRoute, string route)
         {

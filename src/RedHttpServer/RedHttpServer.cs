@@ -27,7 +27,7 @@ namespace Red
             Port = port;
             _publicRoot = publicDir;
             
-            Use(new NewtonsoftJsonConverter());
+            Use(new JsonConverter());
             Use(new XmlConverter());
             Use(new BodyParser());
         }
@@ -50,7 +50,7 @@ namespace Red
         /// <summary>
         ///    Event that is raised when an exception is thrown from a handler
         /// </summary>
-        public event EventHandler<HandlerExceptionEventArgs> OnHandlerException; 
+        public event EventHandler<HandlerExceptionEventArgs>? OnHandlerException; 
 
         /// <summary>
         ///     The port that the server is listening on
@@ -64,7 +64,7 @@ namespace Red
         /// <param name="hostnames">The host names the server is handling requests for. Protocol and port will be added automatically</param>
         public void Start(params string[] hostnames)
         {
-            Build(hostnames);
+            _host = Build(hostnames);
             _host.Start();
             Console.WriteLine($"Red/{Version} running on port " + Port);
         }
@@ -72,7 +72,7 @@ namespace Red
         /// <summary>
         ///     Attempts to stop the running server using IWebHost.StopAsync
         /// </summary>
-        public Task StopAsync()
+        public Task? StopAsync()
         {
             return _host?.StopAsync();
         }
@@ -85,7 +85,7 @@ namespace Red
         /// <returns></returns>
         public Task RunAsync(params string[] hostnames)
         {
-            Build(hostnames);
+            _host = Build(hostnames);
             Console.WriteLine($"Starting Red/{Version} on port " + Port);
             return _host.RunAsync();
         }
@@ -93,12 +93,12 @@ namespace Red
         /// <summary>
         ///     Method to register additional ASP.NET Core Services
         /// </summary>
-        public Action<IServiceCollection> ConfigureServices { private get; set; }
+        public Action<IServiceCollection>? ConfigureServices { private get; set; }
         
         /// <summary>
         ///     Method to configure the ASP.NET Core application additionally
         /// </summary>
-        public Action<IApplicationBuilder> ConfigureApplication { private get; set; }
+        public Action<IApplicationBuilder>? ConfigureApplication { private get; set; }
 
         /// <summary>
         ///     Register extension modules and middleware
@@ -164,18 +164,7 @@ namespace Red
             if (_wsHandlers == null)
                 throw new RedHttpServerException("Cannot add route handlers after server is started");
             
-            _wsHandlers.Add(new WsHandlerWrapper(route, handlers));
-        }
-        /// <inheritdoc />
-        public void WebSocket(string route, params Func<Request, WebSocketDialog, Task<HandlerType>>[] handlers)
-        {
-            if (handlers.Length == 0)
-                throw new RedHttpServerException("A route requires at least one handler");
-            
-            if (_wsHandlers == null)
-                throw new RedHttpServerException("Cannot add route handlers after server is started");
-            
-            _wsHandlers.Add(new WsHandlerWrapper(route, handlers));
+            _wsHandlers.Add(new WebsocketRequestHandler(route, handlers));
         }
     }
 }

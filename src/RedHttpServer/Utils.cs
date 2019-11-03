@@ -29,7 +29,7 @@ namespace Red
         public static async Task<HandlerType> CanParse<T>(Request req, Response res)
             where T : class
         {
-            var obj = req.ParseBody<T>();
+            var obj = req.ParseBodyAsync<T>();
             if (obj == default)
             {
                 await res.SendStatus(HttpStatusCode.BadRequest);
@@ -86,14 +86,15 @@ namespace Red
 
 
 
-        internal static string GetMimeType(string contentType, string filePath,
+        internal static string GetMimeType(string? contentType, string? filePath,
             string defaultContentType = "application/octet-stream")
         {
-            if (string.IsNullOrEmpty(contentType) && !MimeTypes.TryGetValue(Path.GetExtension(filePath), out contentType))
+            if (!string.IsNullOrEmpty(filePath) && !string.IsNullOrEmpty(contentType) && 
+                MimeTypes.TryGetValue(Path.GetExtension(filePath), out var mimeType))
             {
-                contentType = defaultContentType;
+                return mimeType;
             }
-            return contentType;
+            return defaultContentType;
         }
 
         private static readonly IDictionary<string, string> MimeTypes =
