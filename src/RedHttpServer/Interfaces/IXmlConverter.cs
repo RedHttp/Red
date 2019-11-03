@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Red.Interfaces
 {
@@ -13,7 +14,16 @@ namespace Red.Interfaces
         /// <param name="obj"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        string Serialize<T>(T obj);
+        string? Serialize<T>(T obj);
+
+        /// <summary>
+        ///     Method to serialize data to a XML string
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="outputStream"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        Task SerializeAsync<T>(T obj, Stream outputStream);
 
         /// <summary>
         ///     Method to deserialize a XML-containing string to specified type
@@ -21,7 +31,8 @@ namespace Red.Interfaces
         /// <param name="xmlData"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        T Deserialize<T>(string xmlData);
+        T? Deserialize<T>(string xmlData)
+            where T : class;
         
         /// <summary>
         ///     Method to deserialize a XML-containing stream to specified type
@@ -29,6 +40,7 @@ namespace Red.Interfaces
         /// <param name="xmlStream"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        T Deserialize<T>(Stream xmlStream);
+        Task<T?> DeserializeAsync<T>(Stream xmlStream)
+            where T : class;
     }
 }

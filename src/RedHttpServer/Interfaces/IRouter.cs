@@ -46,11 +46,5 @@ namespace Red.Interfaces
         /// <param name="route">The route to respond to</param>
         /// <param name="handlers">The handlers that wil respond to the request</param>
         void WebSocket(string route, params Func<Request, Response, WebSocketDialog, Task<HandlerType>>[] handlers);
-        /// <summary>
-        ///     Add action to handle WEBSOCKET requests to a given route. <para/>
-        /// </summary>
-        /// <param name="route">The route to respond to</param>
-        /// <param name="handlers">The handlers that wil respond to the request</param>
-        void WebSocket(string route, params Func<Request, WebSocketDialog, Task<HandlerType>>[] handlers);
     }
 }

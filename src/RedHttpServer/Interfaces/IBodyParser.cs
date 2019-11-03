@@ -12,7 +12,7 @@ namespace Red.Interfaces
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<string> Parse(Request request);
+        Task<string> ReadAsync(Request request);
         
         
         /// <summary>
@@ -21,6 +21,7 @@ namespace Red.Interfaces
         /// <param name="request"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        T Parse<T>(Request request);
+        Task<T?> ParseAsync<T>(Request request)
+            where T : class;
     }
 }

@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Red.Interfaces
 {
@@ -10,25 +11,23 @@ namespace Red.Interfaces
         /// <summary>
         ///     Method to serialize data to JSON
         /// </summary>
-        /// <param name="obj"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        string Serialize<T>(T obj);
+        string? Serialize<T>(T obj);
 
         /// <summary>
         ///     Method to deserialize JSON data to specified type
         /// </summary>
-        /// <param name="jsonData"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        T Deserialize<T>(string jsonData);
+        T? Deserialize<T>(string jsonData)
+            where T : class;
         
         /// <summary>
         ///     Method to deserialize JSON data to specified type
         /// </summary>
-        /// <param name="jsonStream"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        T Deserialize<T>(Stream jsonStream);
+        Task<T?> DeserializeAsync<T>(Stream jsonStream)
+            where T : class;
+
+        /// <summary>
+        ///     Method to serialize data to JSON, to a stream
+        /// </summary>
+        Task SerializeAsync<T>(T obj, Stream jsonStream);
     }
 }
