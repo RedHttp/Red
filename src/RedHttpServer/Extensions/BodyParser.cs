@@ -15,7 +15,7 @@ namespace Red.Extensions
         }
 
         /// <inheritdoc />
-        public Task<string> Parse(Request request)
+        public Task<string> ReadAsync(Request request)
         {
             using (var streamReader = new StreamReader(request.BodyStream))
             {
@@ -23,16 +23,17 @@ namespace Red.Extensions
             }
         }
         /// <inheritdoc />
-        public T Parse<T>(Request request)
+        public async Task<T?> ParseAsync<T>(Request request)
+            where T : class
         {
             switch (request.AspNetRequest.ContentType.ToLowerInvariant())
             {
                 case "application/xml":
                 case "text/xml":
-                    return request.Context.Plugins.Get<IXmlConverter>().Deserialize<T>(request.BodyStream);
+                    return await request.Context.Plugins.Get<IXmlConverter>().DeserializeAsync<T>(request.BodyStream);
                 case "application/json":
                 case "text/json":
-                    return request.Context.Plugins.Get<IJsonConverter>().Deserialize<T>(request.BodyStream);
+                    return await request.Context.Plugins.Get<IJsonConverter>().DeserializeAsync<T>(request.BodyStream);
                 default:
                     return default;
             }
@@ -47,21 +48,19 @@ namespace Red.Extensions
         /// <summary>
         ///     Returns the body deserialized or parsed to specified type if possible, default if not
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static T ParseBody<T>(this Request request)
+        public static Task<T?> ParseBodyAsync<T>(this Request request)
+            where T : class
         {
             var bodyParser = request.Context.Plugins.Get<IBodyParser>();
-            return bodyParser.Parse<T>(request);
+            return bodyParser.ParseAsync<T>(request);
         }
         /// <summary>
         ///     Returns the body deserialized or parsed to specified type if possible, default if not
         /// </summary>
-        /// <returns></returns>
         public static Task<string> ReadBodyAsync(this Request request)
         {
             var bodyParser = request.Context.Plugins.Get<IBodyParser>();
-            return bodyParser.Parse(request);
+            return bodyParser.ReadAsync(request);
         }
     }
 }
