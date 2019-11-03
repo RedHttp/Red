@@ -16,7 +16,7 @@ The server supports both middleware modules and extension modules, and offers a 
 
 I have created a couple already; three are inbuilt, but can easily be replaced:
 
-* NewtonsoftJsonConverter - uses [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+* JsonConverter - uses System.Text.Json
 * XmlConverter - uses System.Xml.Serialization
 * BodyParser - uses both the Json- and Xml converter to parse request body to an object, depending on content-type.
 
