@@ -15,7 +15,7 @@ RedHttpServer can be installed from [NuGet](https://www.nuget.org/packages/RHttp
 
 ## Middleware and plugins
 RedHttpServer is created to be easy to build on top of. 
-The server supports both middleware modules and extension modules, and offers a method to register these. 
+The server supports both middleware modules and extension modules
 
 * JsonConverter - uses System.Text.Json
 * XmlConverter - uses System.Xml.Serialization
