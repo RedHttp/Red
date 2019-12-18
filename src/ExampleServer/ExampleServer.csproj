@@ -9,6 +9,6 @@
     <PackageReference Include="Red.CookieSessions" Version="4.1.0" />
     <PackageReference Include="Red.EcsRenderer" Version="2.0.0" />
     <PackageReference Include="Red.JwtSessions" Version="3.0.0" />
-    <PackageReference Include="RHttpServer" Version="4.0.0" />
+    <PackageReference Include="RHttpServer" Version="4.0.2" />
   </ItemGroup>
 </Project>
