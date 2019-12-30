@@ -58,7 +58,6 @@ namespace Test
             
                 return wsd.Final();
             });
-            Console.WriteLine(string.Join("\n", server.ListRegisteredRoutes()));
             await server.RunAsync();
         }
     }

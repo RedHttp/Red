@@ -12,8 +12,8 @@ namespace Red
     /// </summary>
     public sealed class Context
     {
-        private readonly Lazy<HybridDictionary> _data = new Lazy<HybridDictionary>();
-        private readonly Lazy<StringDictionary> _strings = new Lazy<StringDictionary>();
+        private readonly Lazy<Dictionary<Type, object>> _data = new Lazy<Dictionary<Type, object>>();
+        private readonly Lazy<Dictionary<string, string>> _strings = new Lazy<Dictionary<string, string>>();
         /// <summary>
         ///    The Red.Request for this context
         /// </summary>
@@ -73,7 +73,7 @@ namespace Red
         /// <param name="key">the data key</param>
         public string? GetData(string key)
         {
-            return key != null && _strings.Value.ContainsKey(key) ? _strings.Value[key] : default;
+            return _strings.Value.TryGetValue(key, out var value) ? value : default;
         }
         /// <summary>
         ///     Get data attached to request by middleware. The middleware should specify the type to lookup
@@ -83,7 +83,7 @@ namespace Red
         public TData? GetData<TData>()
             where TData : class
         {
-            return (TData) _data.Value[typeof(TData)];
+            return _data.Value.TryGetValue(typeof(TData), out var value) ? (TData) value : default;
         }
         /// <summary>
         ///     Function that middleware can use to attach data to the request, so the next handlers has access to the data

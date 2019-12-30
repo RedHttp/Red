@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Red.Interfaces;
@@ -14,53 +16,39 @@ namespace Red.Extensions
             server.Plugins.Register<IBodyParser, BodyParser>(this);
         }
 
+        /// <summary>
+        /// Set body converter for content-type
+        /// </summary>
+        public static void SetContentTypeConverter<TBodyConverter>(string contentType)
+            where TBodyConverter : IBodyConverter
+        {
+            ConverterMappings[contentType] = typeof(TBodyConverter);
+        }
+        
+        private static readonly Dictionary<string, Type> ConverterMappings = new Dictionary<string, Type>
+        {
+            {"application/xml", typeof(IXmlConverter)},
+            {"text/xml", typeof(IXmlConverter)},
+            {"application/json", typeof(IJsonConverter)},
+            {"text/json", typeof(IJsonConverter)},
+        };
+
         /// <inheritdoc />
         public Task<string> ReadAsync(Request request)
         {
-            using (var streamReader = new StreamReader(request.BodyStream))
-            {
-                return streamReader.ReadToEndAsync();
-            }
+            using var streamReader = new StreamReader(request.BodyStream);
+            return streamReader.ReadToEndAsync();
         }
         /// <inheritdoc />
-        public async Task<T?> ParseAsync<T>(Request request)
+        public async Task<T?> DeserializeAsync<T>(Request request)
             where T : class
         {
-            switch (request.AspNetRequest.ContentType.ToLowerInvariant())
-            {
-                case "application/xml":
-                case "text/xml":
-                    return await request.Context.Plugins.Get<IXmlConverter>().DeserializeAsync<T>(request.BodyStream);
-                case "application/json":
-                case "text/json":
-                    return await request.Context.Plugins.Get<IJsonConverter>().DeserializeAsync<T>(request.BodyStream);
-                default:
-                    return default;
-            }
-        }
-    }
-    
-    /// <summary>
-    ///     Extension to RedRequests, to parse body to object of specified type
-    /// </summary>
-    public static class BodyParserExtension
-    {
-        /// <summary>
-        ///     Returns the body deserialized or parsed to specified type if possible, default if not
-        /// </summary>
-        public static Task<T?> ParseBodyAsync<T>(this Request request)
-            where T : class
-        {
-            var bodyParser = request.Context.Plugins.Get<IBodyParser>();
-            return bodyParser.ParseAsync<T>(request);
-        }
-        /// <summary>
-        ///     Returns the body deserialized or parsed to specified type if possible, default if not
-        /// </summary>
-        public static Task<string> ReadBodyAsync(this Request request)
-        {
-            var bodyParser = request.Context.Plugins.Get<IBodyParser>();
-            return bodyParser.ReadAsync(request);
+            string contentType = request.Headers["Content-Type"];
+            if (!ConverterMappings.TryGetValue(contentType, out var converterType))
+                return default;
+            
+            var converter = request.Context.Plugins.Get<IBodyConverter>(converterType);
+            return await converter.DeserializeAsync<T>(request.BodyStream);
         }
     }
 }

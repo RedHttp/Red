@@ -16,7 +16,7 @@ namespace RedHttpServer.Tests
         [SetUp]
         public void Setup()
         {
-            _server = new Red.RedHttpServer(7592);
+            _server = new Red.RedHttpServer(TestPort);
             _httpClient = new HttpClient();
         }
 
@@ -153,14 +153,5 @@ namespace RedHttpServer.Tests
             _server.StopAsync().Wait();
             _httpClient.Dispose();
         }
-    }
-
-    public static class TestUtils
-    {
-        public static async Task<(HttpStatusCode, string)> GetContent(this HttpClient client, string url)
-        {
-            var response = await client.GetAsync(url);
-            return (response.StatusCode, await response.Content.ReadAsStringAsync());
-        } 
     }
 }

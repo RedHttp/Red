@@ -73,11 +73,6 @@ namespace Red
         private void SetRoutes(IRouteBuilder routeBuilder)
         {
             var namePathParameterRegex = new Regex(":[\\w-]+", RegexOptions.Compiled);
-
-            if (_handlers == null || _wsHandlers == null)
-            {
-                throw new InvalidOperationException();
-            }
             
             foreach (var handler in _handlers)
             {

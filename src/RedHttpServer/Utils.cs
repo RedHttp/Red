@@ -50,10 +50,10 @@ namespace Red
         /// </summary>
         /// <param name="req">The request object</param>
         /// <param name="res">The response object</param>
-        /// <param name="wsd">The websocket dialog (not modified)</param>
+        /// <param name="_">The websocket dialog (not modified)</param>
         /// <typeparam name="T">The type to parse the body to</typeparam>
         /// <returns></returns>
-        public static Task CanParse<T>(Request req, Response res, WebSocketDialog wsd)
+        public static Task CanParse<T>(Request req, Response res, WebSocketDialog _)
             where T : class => CanParse<T>(req, res);
 
 

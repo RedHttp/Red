@@ -49,5 +49,16 @@ namespace Red
                 return (TKey) obj;
             throw new RedHttpServerException($"No plugin registered for '{typeof(TKey).Name}'");
         }
+        /// <summary>
+        ///     Returns the instance of the registered plugin
+        /// </summary>
+        /// <typeparam name="TKey">The type-key to look-up</typeparam>
+        /// <exception cref="RedHttpServerException">Throws exception when trying to use a plugin that is not registered</exception>
+        public TKey Get<TKey>(Type typeKey)
+        {
+            if (_plugins.TryGetValue(typeKey, out var obj))
+                return (TKey) obj;
+            throw new RedHttpServerException($"No plugin registered for '{typeKey.Name}'");
+        }
     }
 }

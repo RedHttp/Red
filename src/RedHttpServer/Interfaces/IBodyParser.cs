@@ -21,7 +21,7 @@ namespace Red.Interfaces
         /// <param name="request"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        Task<T?> ParseAsync<T>(Request request)
+        Task<T?> DeserializeAsync<T>(Request request)
             where T : class;
     }
 }
