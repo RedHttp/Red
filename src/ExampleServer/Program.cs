@@ -36,7 +36,7 @@ namespace ExampleServer
             // Middleware function that closes requests that does not have a valid session associated
             async Task<HandlerType> Auth(Request req, Response res)
             {
-                if (req.GetSession<MySess>() != null)
+                if (req.GetData<MySess>() != null)
                 {
                     return HandlerType.Continue;
                 }
@@ -63,7 +63,7 @@ namespace ExampleServer
             server.Post("/login", async (req, res) =>
             {
                 // To make it easy to test the session system only using the browser and no credentials
-                await req.OpenSession(new MySess {Username = "benny"});
+                await res.OpenSession(new MySess {Username = "benny"});
                 return await res.SendStatus(HttpStatusCode.OK);
             });
             
@@ -71,7 +71,7 @@ namespace ExampleServer
             // Note that we require the client the be authenticated using the Auth-function we created above
             server.Get("/logout", Auth, async (req, res) =>
             {
-                await req.GetSession<MySess>().Close(req);
+                await res.CloseSession(req.GetData<MySess>());
                 return await res.SendStatus(HttpStatusCode.OK);
             });
             
