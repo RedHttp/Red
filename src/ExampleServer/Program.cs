@@ -27,6 +27,7 @@ namespace ExampleServer
             // We use the Red.EscRenderer plugin in this example
             server.Use(new EcsRenderer());
             
+            
             // We use Red.CookieSessions as authentication in this example
             server.Use(new CookieSessions<MySess>(TimeSpan.FromDays(1))
             {
