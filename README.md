@@ -2,7 +2,7 @@
 - Extensible - support for middleware and plugins
 - WebSocket support - no plugins required
 - JSON & XML converters come as standard, but can be replaced
-- Parse JSON, XML and even [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData) request bodies without any plugins
+- Easy parsing of JSON, XML and [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData) request bodies
 - API inspired by the simplicity of [express.js](https://github.com/expressjs/express)
 - Powerful - based on [ASP.NET Core](https://github.com/aspnet/AspNetCore) and the [Kestrel](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel) engine
 
