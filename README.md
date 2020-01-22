@@ -22,8 +22,8 @@ server.Use(new CookieSessions<MySession>(TimeSpan.FromDays(5)));
 
 server.Get("/friends", Auth, async (req, res) => 
 {
-  var session = req.GetSession<MySession>();
-  var friends = await db.FindFriends(session.Username);
+  var session = req.GetData<MySession>();
+  var friends = await db.FindFriends(session.UserId);
   await res.SendJson(friends);
 }
 await server.RunAsync();
@@ -38,6 +38,8 @@ Authentication middleware
 - [CookieSessions](https://www.nuget.org/packages/Red.CookieSessions/)
   - [SQLiteStore](https://www.nuget.org/packages/Red.CookieSessions.SQLiteStore/)
   - [LiteDBStore](https://www.nuget.org/packages/Red.CookieSessions.LiteDBStore/)
+  - [EFCoreStore](https://www.nuget.org/packages/Red.CookieSessions.EFCore/)
+  - [RedisStore](https://www.nuget.org/packages/Red.CookieSessions.RedisStore/)
 
 Rendering plugins
 - [HandlebarsRenderer](https://www.nuget.org/packages/Red.HandlebarsRenderer/)
