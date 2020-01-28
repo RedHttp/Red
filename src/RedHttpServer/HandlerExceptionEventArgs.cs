@@ -22,10 +22,11 @@ namespace Red
         /// </summary>
         public readonly string Method;
 
-        internal HandlerExceptionEventArgs(string path, Exception exception)
+        internal HandlerExceptionEventArgs(string method, string path, Exception exception)
         {
-            Exception = exception;
+            Method = method;
             Path = path;
+            Exception = exception;
         }
     }
 }

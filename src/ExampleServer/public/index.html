@@ -4,24 +4,33 @@
 HEJ
 <script>
     
-    const jwt = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjQyMjQ4NDEsImRhdGEiOnsiVXNlcm5hbWUiOiJiZW5ueSJ9fQ.6cFIhBo8BahEjWI40fENeQ8dXXWhZvGLq6OPbPpCpVI";
+    // const jwt = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjQyMjQ4NDEsImRhdGEiOnsiVXNlcm5hbWUiOiJiZW5ueSJ9fQ.6cFIhBo8BahEjWI40fENeQ8dXXWhZvGLq6OPbPpCpVI";
+    //
+    // const xhr = new XMLHttpRequest();
+    // xhr.open("GET", "/hello?firstname=Mark&lastname=9000", true);
+    // xhr.setRequestHeader("Authorization", jwt);
+    // xhr.onload = function (e) {
+    //     if (xhr.readyState === 4) {
+    //         if (xhr.status === 200) {
+    //             console.log(xhr.responseText);
+    //         } else {
+    //             console.error(xhr.statusText);
+    //         }
+    //     }
+    // };
+    // xhr.onerror = function (e) {
+    //     console.error(xhr.statusText);
+    // };
+    // xhr.send(null);
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/hello?firstname=Mark&lastname=9000", true);
-    xhr.setRequestHeader("Authorization", jwt);
-    xhr.onload = function (e) {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                console.log(xhr.responseText);
-            } else {
-                console.error(xhr.statusText);
-            }
-        }
-    };
-    xhr.onerror = function (e) {
-        console.error(xhr.statusText);
-    };
-    xhr.send(null);
+    const webSocket = new WebSocket(`ws://localhost:5000/echo`);
+    webSocket.addEventListener('open', () => {
+        webSocket.send('hello');
+        console.log('open');
+        webSocket.send('world');
+    });
+    webSocket.addEventListener('close', () => console.log('close'));
+    webSocket.addEventListener('message', console.log);
 </script>
 </body>
 </html>

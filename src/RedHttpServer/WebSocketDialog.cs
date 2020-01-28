@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -12,9 +13,8 @@ namespace Red
     /// </summary>
     public sealed class WebSocketDialog
     {
-        internal WebSocketDialog(Context context, WebSocket webSocket)
+        internal WebSocketDialog(WebSocket webSocket)
         {
-            Context = context;
             WebSocket = webSocket;
         }
 
@@ -22,11 +22,6 @@ namespace Red
         ///     The underlying WebSocket
         /// </summary>
         public readonly WebSocket WebSocket;
-        
-        /// <summary>
-        ///     The Red.Context the dialog is part of
-        /// </summary>
-        public readonly Context Context;
 
 
         /// <summary>
@@ -49,9 +44,9 @@ namespace Red
         /// </summary>
         /// <param name="text"></param>
         /// <param name="endOfMessage"></param>
-        public async Task SendText(string text, bool endOfMessage = true)
+        public Task SendText(string text, bool endOfMessage = true)
         {
-            await WebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(text)),
+            return WebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(text)),
                 WebSocketMessageType.Text, endOfMessage, CancellationToken.None);
         }
 
@@ -60,9 +55,9 @@ namespace Red
         /// </summary>
         /// <param name="data"></param>
         /// <param name="endOfMessage"></param>
-        public async Task SendBytes(ArraySegment<byte> data, bool endOfMessage = true)
+        public Task SendBytes(ArraySegment<byte> data, bool endOfMessage = true)
         {
-            await WebSocket.SendAsync(data, WebSocketMessageType.Binary, endOfMessage,
+            return WebSocket.SendAsync(data, WebSocketMessageType.Binary, endOfMessage,
                 CancellationToken.None);
         }
 
@@ -72,15 +67,16 @@ namespace Red
         /// <param name="status"></param>
         /// <param name="description"></param>
         /// <returns></returns>
-        public async Task Close(WebSocketCloseStatus status = WebSocketCloseStatus.NormalClosure,
+        public Task Close(
+            WebSocketCloseStatus status = WebSocketCloseStatus.NormalClosure,
             string description = "")
         {
-            await WebSocket.CloseAsync(status, description, CancellationToken.None);
+            return WebSocket.CloseAsync(status, description, CancellationToken.None);
         }
 
         internal async Task ReadFromWebSocket()
         {
-            var buffer = new byte[0x1000];
+            var buffer = ArrayPool<byte>.Shared.Rent(0x1000);
             try
             {
                 var received =
@@ -177,6 +173,7 @@ namespace Red
         {
             return HandlerType.Final;
         }
+
         /// <summary>
         ///     Convenience method for ending a dialog handler
         /// </summary>

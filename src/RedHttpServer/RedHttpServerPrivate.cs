@@ -74,14 +74,14 @@ namespace Red
         {
             var namePathParameterRegex = new Regex(":[\\w-]+", RegexOptions.Compiled);
             
-            foreach (var handler in _handlers)
+            foreach (var handler in _handlers!)
             {
                 var path = ConvertPathParameters(handler.Path, namePathParameterRegex);
                 routeBuilder.MapVerb(handler.Method, path, ctx => ExecuteHandler(ctx, handler));
             }
             _handlers = default;
 
-            foreach (var handlerWrapper in _wsHandlers)
+            foreach (var handlerWrapper in _wsHandlers!)
             {
                 var path = ConvertPathParameters(handlerWrapper.Path, namePathParameterRegex);
                 routeBuilder.MapGet(path, ctx => ExecuteHandler(ctx, handlerWrapper));
@@ -119,7 +119,7 @@ namespace Red
                 if (aspNetContext.WebSockets.IsWebSocketRequest)
                 {
                     var webSocket = await aspNetContext.WebSockets.AcceptWebSocketAsync();
-                    var webSocketDialog = new WebSocketDialog(context, webSocket);
+                    var webSocketDialog = new WebSocketDialog(webSocket);
                     foreach (var middleware in _wsMiddlewareStack)
                     {
                         status = await middleware.Invoke(context.Request, webSocketDialog, context.Response);
@@ -145,7 +145,8 @@ namespace Red
         private async Task<HandlerType> HandleException(Context context, HandlerType status, Exception e)
         {
             var path = context.Request.AspNetRequest.Path.ToString();
-            OnHandlerException?.Invoke(this, new HandlerExceptionEventArgs(path, e));
+            var method = context.Request.AspNetRequest.Path.ToString();
+            OnHandlerException?.Invoke(this, new HandlerExceptionEventArgs(method, path, e));
             
             if (status != HandlerType.Continue)
             {

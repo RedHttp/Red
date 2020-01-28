@@ -7,9 +7,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <Description>.NET Standard web application framework built on ASP.NET Core w/ Kestrel and inspired by Express.js</Description>
-    <Copyright>Copyright © Rosenbjerg 2019</Copyright>
+    <Copyright>Copyright © Rosenbjerg 2020</Copyright>
     <AssemblyTitle>RedHttpServer</AssemblyTitle>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>RedHttpServer</AssemblyName>
     <PackageId>RHttpServer</PackageId>
@@ -30,7 +30,7 @@
     <RepositoryUrl>https://github.com/RedHttp/Red</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <Authors>Malte Rosenbjerg</Authors>
-    <PackageReleaseNotes>Refined API</PackageReleaseNotes>
+    <PackageReleaseNotes>Refined API and fixes</PackageReleaseNotes>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <FileVersion>4.0.0.0</FileVersion>
     <LangVersion>8</LangVersion>

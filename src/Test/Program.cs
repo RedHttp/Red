@@ -32,7 +32,7 @@ namespace Test
         
         static async Task Main(string[] args)
         {
-            var server = new RedHttpServer(5001);
+            var server = new RedHttpServer(5000);
             server.RespondWithExceptionDetails = true;
             server.Get("/exception", (req, res) => throw new Exception("oh no!"));
             server.Get("/index", Auth, (req, res) => res.SendFile("./index.html"));
@@ -51,12 +51,11 @@ namespace Test
                 Console.WriteLine(e);
             };
             
-            server.WebSocket("/echo", Auth, async (req, res, wsd) =>
+            server.WebSocket("/echo", async (req, res, wsd) =>
             {
                 await wsd.SendText("Welcome to the echo test server");
                 wsd.OnTextReceived += (sender, eventArgs) => { wsd.SendText("you sent: " + eventArgs.Text); };
-            
-                return wsd.Final();
+                return HandlerType.Final;
             });
             await server.RunAsync();
         }
