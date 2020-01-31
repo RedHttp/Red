@@ -40,7 +40,13 @@ namespace Red
             AspNetContext = aspNetContext;
             Request = new Request(this, aspNetContext.Request);
             Response = new Response(this, aspNetContext.Response);
+            Params = new UrlParameters(aspNetContext);
         }
+
+        /// <summary>
+        /// Represent the url parameters and theirs values, contained in the path of the current request.
+        /// </summary>
+        public readonly UrlParameters Params;
 
         /// <summary>
         /// 
@@ -51,21 +57,6 @@ namespace Red
         {
             return Request.TypedHeaders.AcceptLanguage.FirstOrDefault()?.Value.Value ?? defaultLanguage;
         }
-
-        /// <summary>
-        ///     Returns the value of a named URL parameter
-        /// </summary>
-        /// <param name="paramId"></param>
-        public string ExtractUrlParameter(string paramId)
-        {
-            return AspNetContext.GetRouteValue(paramId.TrimStart(':')).ToString();
-        }
-
-        /// <summary>
-        ///     Returns all the values embedded in the route using the names of the URL parameters as keys
-        /// </summary>
-        public Dictionary<string, string?> ExtractAllUrlParameters() => AspNetContext.GetRouteData().Values.ToDictionary(x => x.Key, x => x.Value?.ToString());   
-        
         
         /// <summary>
         ///     Get data attached to request by middleware. The middleware should specify the type to lookup

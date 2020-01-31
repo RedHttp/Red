@@ -87,7 +87,7 @@ namespace Red
         {
             _host = Build(hostnames);
             Console.WriteLine($"Starting Red/{Version} on port " + Port);
-            return _host.RunAsync();
+            return _host.StartAsync();
         }
         
         /// <summary>
@@ -107,12 +107,14 @@ namespace Red
         public void Use(IRedExtension extension)
         {
             if (extension is IRedWebSocketMiddleware wsMiddleware)
-                _wsMiddlewareStack.Add(wsMiddleware);
+                _wsMiddle.Add(wsMiddleware.Invoke);
             if (extension is IRedMiddleware middleware)
-                _middlewareStack.Add(middleware);
+                _middle.Add(middleware.Invoke);
             _plugins.Add(extension);
         }
 
+        private List<Func<Request, Response, WebSocketDialog, Task<HandlerType>>> _wsMiddle = new List<Func<Request, Response, WebSocketDialog, Task<HandlerType>>>();
+        private List<Func<Request, Response, Task<HandlerType>>> _middle = new List<Func<Request, Response, Task<HandlerType>>>();
         /// <inheritdoc />
         public IRouter CreateRouter(string baseRoute)
         {
@@ -143,13 +145,8 @@ namespace Red
         /// <inheritdoc />
         public void WebSocket(string route, params Func<Request, Response, WebSocketDialog, Task<HandlerType>>[] handlers)
         {
-            if (handlers.Length == 0)
-                throw new RedHttpServerException("A route requires at least one handler");
-            
-            if (_wsHandlers == null)
-                throw new RedHttpServerException("Cannot add route handlers after server is started");
-            
-            _wsHandlers.Add(new WebsocketRequestHandler(route, handlers));
+            _useWebSockets = true;
+            AddHandlers(route, handlers);
         }
     }
 }

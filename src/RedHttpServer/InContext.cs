@@ -13,11 +13,6 @@ namespace Red
             Context = context;
         }
         
-        /// <summary>
-        ///     Get data attached to request by middleware. The middleware should specify the type to lookup
-        /// </summary>
-        /// <param name="key">the data key</param>
-        public string? GetData(string key) => Context.GetData(key);
 
         /// <summary>
         ///     Get data attached to request by middleware. The middleware should specify the type to lookup
@@ -25,7 +20,6 @@ namespace Red
         /// <typeparam name="TData">the type key</typeparam>
         /// <returns>Object of specified type, registered to request. Otherwise default</returns>
         public TData? GetData<TData>() where TData : class => Context.GetData<TData>();
-
         /// <summary>
         ///     Function that middleware can use to attach data to the request, so the next handlers has access to the data
         /// </summary>
@@ -33,6 +27,11 @@ namespace Red
         /// <param name="data">the data object</param>
         public void SetData<TData>(TData data) where TData : class => Context.SetData(data);
 
+        /// <summary>
+        ///     Get data attached to request by middleware. The middleware should specify the type to lookup
+        /// </summary>
+        /// <param name="key">the data key</param>
+        public string? GetData(string key) => Context.GetData(key);
         /// <summary>
         ///     Function that middleware can use to attach data to the request, so the next handlers has access to the data
         /// </summary>

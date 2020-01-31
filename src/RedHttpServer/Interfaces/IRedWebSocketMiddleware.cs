@@ -14,6 +14,6 @@ namespace Red.Interfaces
         /// <param name="req">The request object</param>
         /// <param name="wsd">The websocket dialog object</param>
         /// <param name="res">The response object</param>
-        Task<HandlerType> Invoke(Request req, WebSocketDialog wsd, Response res);
+        Task<HandlerType> Invoke(Request req, Response res, WebSocketDialog wsd);
     }
 }

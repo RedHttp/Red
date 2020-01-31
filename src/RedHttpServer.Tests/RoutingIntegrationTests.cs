@@ -99,8 +99,8 @@ namespace RedHttpServer.Tests
         public async Task ParametersRoutingTest()
         {
             _server.Get("/test", (req, res) => res.SendString("test1"));
-            _server.Get("/:kind/test", (req, res) => res.SendString(req.Context.ExtractUrlParameter("kind") + "2"));
-            _server.Get("/:kind",  (req, res) => res.SendString(req.Context.ExtractUrlParameter("kind") + "3"));
+            _server.Get("/:kind/test", (req, res) => res.SendString(req.Context.Params["kind"] + "2"));
+            _server.Get("/:kind",  (req, res) => res.SendString(req.Context.Params["kind"] + "3"));
             _server.Start();
 
             var (status0, content0) = await _httpClient.GetContent(BaseUrl + "/test");
@@ -129,20 +129,24 @@ namespace RedHttpServer.Tests
         public async Task NotFoundRoutingTest()
         {
             _server.Get("/test", (req, res) => res.SendString("test1"));
-            _server.Get("/:kind/test", (req, res) => res.SendString(req.Context.ExtractUrlParameter("kind") + "2"));
+            _server.Get("/:kind/test", (req, res) => res.SendString(req.Context.Params["kind"] + "2"));
             _server.Start();
 
-            var (status0, content0) = await _httpClient.GetContent(BaseUrl + "/test/blah");
-            var (status1, content1) = await _httpClient.GetContent(BaseUrl + "/blah/blah");
-            var (status2, content2) = await _httpClient.GetContent(BaseUrl + "/");
-            var (status3, content3) = await _httpClient.GetContent(BaseUrl);
-            var (status4, content4) = await _httpClient.GetContent(BaseUrl + "/test1");
+            var (status0, _) = await _httpClient.GetContent(BaseUrl + "/test/blah");
+            var (status1, _) = await _httpClient.GetContent(BaseUrl + "/blah/blah");
+            var (status2, _) = await _httpClient.GetContent(BaseUrl + "/");
+            var (status3, _) = await _httpClient.GetContent(BaseUrl);
+            var (status4, _) = await _httpClient.GetContent(BaseUrl + "/test1");
+            var (status5, content5) = await _httpClient.GetContent(BaseUrl + "/test");
 
             Assert.AreEqual(status0, HttpStatusCode.NotFound);
             Assert.AreEqual(status1, HttpStatusCode.NotFound);
             Assert.AreEqual(status2, HttpStatusCode.NotFound);
             Assert.AreEqual(status3, HttpStatusCode.NotFound);
             Assert.AreEqual(status4, HttpStatusCode.NotFound);
+            
+            Assert.AreEqual(status5, HttpStatusCode.OK);
+            Assert.AreEqual(content5, "test1");
             
             await _server.StopAsync();
         }

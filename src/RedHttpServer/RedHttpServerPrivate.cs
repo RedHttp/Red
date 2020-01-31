@@ -22,15 +22,10 @@ namespace Red
         private const string PutMethod = "PUT";
         private const string DeleteMethod = "DELETE";
         
-        private readonly List<IRedMiddleware> _middlewareStack = new List<IRedMiddleware>();
-        private readonly List<IRedWebSocketMiddleware> _wsMiddlewareStack = new List<IRedWebSocketMiddleware>();
         private readonly List<IRedExtension> _plugins = new List<IRedExtension>();
 
         private IWebHost? _host;
         private readonly string? _publicRoot;
-        private List<RequestHandler>? _handlers = new List<RequestHandler>();
-        
-        private List<WebsocketRequestHandler>? _wsHandlers = new List<WebsocketRequestHandler>();
         
         private IWebHost Build(IReadOnlyCollection<string> hostnames)
         {
@@ -53,9 +48,14 @@ namespace Red
                 {
                     if (!string.IsNullOrWhiteSpace(_publicRoot) && Directory.Exists(_publicRoot))
                         app.UseFileServer(new FileServerOptions { FileProvider = new PhysicalFileProvider(Path.GetFullPath(_publicRoot)) });
-                    if (_wsHandlers.Any())
+                    if (_useWebSockets)
                         app.UseWebSockets();
-                    app.UseRouter(SetRoutes);
+                    app.UseRouter(routeBuilder =>
+                    {
+                        foreach (var route in _routes)
+                            route(routeBuilder);
+                        _routes.Clear();
+                    });
                     ConfigureApplication?.Invoke(app);
                 })
                 .UseUrls(urls)
@@ -70,38 +70,24 @@ namespace Red
             }
         }
         
-        private void SetRoutes(IRouteBuilder routeBuilder)
-        {
-            var namePathParameterRegex = new Regex(":[\\w-]+", RegexOptions.Compiled);
-            
-            foreach (var handler in _handlers!)
-            {
-                var path = ConvertPathParameters(handler.Path, namePathParameterRegex);
-                routeBuilder.MapVerb(handler.Method, path, ctx => ExecuteHandler(ctx, handler));
-            }
-            _handlers = default;
+        private readonly List<Action<IRouteBuilder>> _routes = new List<Action<IRouteBuilder>>();
+        private static readonly Regex NamePathParameterRegex = new Regex(":[\\w-]+", RegexOptions.Compiled);
+        private bool _useWebSockets = false;
 
-            foreach (var handlerWrapper in _wsHandlers!)
-            {
-                var path = ConvertPathParameters(handlerWrapper.Path, namePathParameterRegex);
-                routeBuilder.MapGet(path, ctx => ExecuteHandler(ctx, handlerWrapper));
-            }
-            _wsHandlers = default;
-        }
-        private async Task<HandlerType> ExecuteHandler(HttpContext aspNetContext, RequestHandler requestHandler)
+
+        private async Task<HandlerType> ExecuteHandler(HttpContext aspNetContext, IEnumerable<Func<Request, Response, Task<HandlerType>>> handlers)
         {
             var context = new Context(aspNetContext, Plugins);
             
             var status = HandlerType.Continue;
             try
             {
-                foreach (var middleware in _middlewareStack)
+                foreach (var middleware in _middle.Concat(handlers))
                 {
-                    status = await middleware.Invoke(context.Request, context.Response);
+                    status = await middleware(context.Request, context.Response);
                     if (status != HandlerType.Continue) return status;
                 }
-                if (status == HandlerType.Continue) 
-                    status = await requestHandler.Invoke(context.Request, context.Response);
+                
                 return status;
             }
             catch (Exception e)
@@ -109,7 +95,7 @@ namespace Red
                 return await HandleException(context, status, e);
             }
         }
-        private async Task<HandlerType> ExecuteHandler(HttpContext aspNetContext, WebsocketRequestHandler requestHandler)
+        private async Task<HandlerType> ExecuteHandler(HttpContext aspNetContext, IEnumerable<Func<Request, Response, WebSocketDialog, Task<HandlerType>>> handlers)
         {
             var context = new Context(aspNetContext, Plugins);
             
@@ -120,21 +106,19 @@ namespace Red
                 {
                     var webSocket = await aspNetContext.WebSockets.AcceptWebSocketAsync();
                     var webSocketDialog = new WebSocketDialog(webSocket);
-                    foreach (var middleware in _wsMiddlewareStack)
+                    
+                    foreach (var middleware in _wsMiddle.Concat(handlers))
                     {
-                        status = await middleware.Invoke(context.Request, webSocketDialog, context.Response);
+                        status = await middleware(context.Request, context.Response, webSocketDialog);
                         if (status != HandlerType.Continue) return status;
                     }
-                    if (status == HandlerType.Continue) 
-                        status = await requestHandler.Invoke(context.Request, webSocketDialog, context.Response);
+                    
                     await webSocketDialog.ReadFromWebSocket();
                     return status;
                 }
-                else
-                {
-                    await context.Response.SendStatus(HttpStatusCode.BadRequest);
-                    return HandlerType.Error;
-                }
+
+                await context.Response.SendStatus(HttpStatusCode.BadRequest);
+                return HandlerType.Error;
             }
             catch (Exception e)
             {
@@ -145,34 +129,35 @@ namespace Red
         private async Task<HandlerType> HandleException(Context context, HandlerType status, Exception e)
         {
             var path = context.Request.AspNetRequest.Path.ToString();
-            var method = context.Request.AspNetRequest.Path.ToString();
+            var method = context.Request.AspNetRequest.Method;
             OnHandlerException?.Invoke(this, new HandlerExceptionEventArgs(method, path, e));
             
             if (status != HandlerType.Continue)
-            {
                 return HandlerType.Error;
-            }
                 
             if (RespondWithExceptionDetails)
-            {
                 await context.Response.SendString(e.ToString(), status: HttpStatusCode.InternalServerError);
-            }
             else
-            {
                 await context.Response.SendStatus(HttpStatusCode.InternalServerError);
-            }
+            
             return HandlerType.Error;
         }
 
-        private void AddHandlers(string route, string method, Func<Request, Response, Task<HandlerType>>[] handlers)
+        private void AddHandlers(string route, string method, IReadOnlyCollection<Func<Request, Response, Task<HandlerType>>> handlers)
         {
-            if (_handlers == null) // Handlers are set to null after they have been loaded
-                throw new RedHttpServerException("Cannot add route handlers after server is started");
-            
-            if (handlers.Length == 0)
+            if (handlers.Count == 0)
                 throw new RedHttpServerException("A route requires at least one handler");
             
-            _handlers.Add(new RequestHandler(route, method, handlers));
+            var path = ConvertPathParameters(route, NamePathParameterRegex);
+            _routes.Add(routeBuilder => routeBuilder.MapVerb(method, path, ctx => ExecuteHandler(ctx, handlers)));
+        }
+        private void AddHandlers(string route, IReadOnlyCollection<Func<Request, Response, WebSocketDialog, Task<HandlerType>>> handlers)
+        {
+            if (handlers.Count == 0)
+                throw new RedHttpServerException("A route requires at least one handler");
+            
+            var path = ConvertPathParameters(route, NamePathParameterRegex);
+            _routes.Add(routeBuilder => routeBuilder.MapGet(path, ctx => ExecuteHandler(ctx, handlers)));
         }
         private static string ConvertPathParameters(string parameter, Regex urlParam)
         {

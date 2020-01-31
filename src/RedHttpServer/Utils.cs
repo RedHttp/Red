@@ -69,18 +69,15 @@ namespace Red
             var fullBasePath = Path.GetFullPath(basePath);
             return (req, res) =>
             {
-                var relativeFilepath = req.Context.ExtractUrlParameter("any");
-                var absoluteFilePath = Path.Combine(fullBasePath, relativeFilepath);
+                var absoluteFilePath = Path.Combine(fullBasePath, req.Context.Params["any"]);
                 if (!absoluteFilePath.StartsWith(fullBasePath) || !File.Exists(absoluteFilePath))
                 {
                     return send404NotFound 
                         ? res.SendStatus(HttpStatusCode.NotFound) 
                         : CachedContinueHandlerTask;
                 }
-                else
-                {
-                    return res.SendFile(absoluteFilePath);
-                }
+
+                return res.SendFile(absoluteFilePath);
             };
         }
 

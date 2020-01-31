@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -14,8 +15,6 @@ namespace Red
     /// </summary>
     public sealed class Response : InContext
     {
-           
-
         internal Response(Context context, HttpResponse aspNetResponse) : base(context)
         {
             AspNetResponse = aspNetResponse;
@@ -27,10 +26,12 @@ namespace Red
         public IHeaderDictionary Headers => AspNetResponse.Headers;
         
         /// <summary>
-        ///     Deprecated. Please used Headers property instead
+        ///     Obsolete. Please used Headers property instead.
+        ///     This method Will be removed in a later version
         /// </summary>
         /// <param name="headerName">The name of the header</param>
         /// <param name="headerValue">The value of the header</param>
+        [Obsolete]
         public void AddHeader(string headerName, string headerValue)
         {
             Headers[headerName] = headerValue;
