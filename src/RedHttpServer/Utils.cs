@@ -8,91 +8,13 @@ using Red.Extensions;
 namespace Red
 {
     /// <summary>
-    /// Utilities
+    ///     Utilities
     /// </summary>
     public static class Utils
     {
         internal static readonly Task<HandlerType> CachedFinalHandlerTask = Task.FromResult(HandlerType.Final);
         internal static readonly Task<HandlerType> CachedContinueHandlerTask = Task.FromResult(HandlerType.Continue);
         internal static readonly Task<HandlerType> CachedErrorHandlerTask = Task.FromResult(HandlerType.Error);
-        
-        /// <summary>
-        /// Parsing middleware.
-        /// Attempts to parse the body using ParseBodyAsync.
-        /// If unable to parse the body, responds with Bad Request status.
-        /// Otherwise saves the parsed object using SetData on the request, so it can be retrieved using GetData by a later handler.
-        /// </summary>
-        /// <param name="req">The request object</param>
-        /// <param name="res">The response object</param>
-        /// <typeparam name="T">The type to parse the body to</typeparam>
-        /// <returns></returns>
-        public static async Task<HandlerType> CanParse<T>(Request req, Response res)
-            where T : class
-        {
-            var obj = req.ParseBodyAsync<T>();
-            if (obj == default)
-            {
-                await res.SendStatus(HttpStatusCode.BadRequest);
-                return HandlerType.Error;
-            }
-            else
-            {
-                req.SetData(obj);
-                return HandlerType.Continue;
-            }
-        }
-
-        /// <summary>
-        /// Parsing middleware.
-        /// Attempts to parse the body using ParseBodyAsync.
-        /// If unable to parse the body, responds with Bad Request status.
-        /// Otherwise saves the parsed object using SetData on the request, so it can be retrieved using GetData by a later handler.
-        /// </summary>
-        /// <param name="req">The request object</param>
-        /// <param name="res">The response object</param>
-        /// <param name="_">The websocket dialog (not modified)</param>
-        /// <typeparam name="T">The type to parse the body to</typeparam>
-        /// <returns></returns>
-        public static Task CanParse<T>(Request req, Response res, WebSocketDialog _)
-            where T : class => CanParse<T>(req, res);
-
-
-        /// <summary>
-        /// Middleware for serving static files from a directory.
-        /// Requires one wildcard (*) in the path(s) it is used in
-        /// </summary>
-        /// <param name="basePath">The path of the base directory the files are served from</param>
-        /// <param name="send404NotFound">Whether to respond with 404 when file not found, or to continue to next handler</param>
-        /// <returns></returns>
-        public static Func<Request, Response, Task<HandlerType>> SendFiles(string basePath, bool send404NotFound = true)
-        {
-            var fullBasePath = Path.GetFullPath(basePath);
-            return (req, res) =>
-            {
-                var absoluteFilePath = Path.Combine(fullBasePath, req.Context.Params["any"]);
-                if (!absoluteFilePath.StartsWith(fullBasePath) || !File.Exists(absoluteFilePath))
-                {
-                    return send404NotFound 
-                        ? res.SendStatus(HttpStatusCode.NotFound) 
-                        : CachedContinueHandlerTask;
-                }
-
-                return res.SendFile(absoluteFilePath);
-            };
-        }
-
-
-
-        internal static string GetMimeType(string? contentType, string? filePath,
-            string defaultContentType = "application/octet-stream")
-        {
-            if (!string.IsNullOrEmpty(filePath) && !string.IsNullOrEmpty(contentType) && 
-                MimeTypes.TryGetValue(Path.GetExtension(filePath), out var mimeType))
-            {
-                return mimeType;
-            }
-            return defaultContentType;
-        }
 
         private static readonly IDictionary<string, string> MimeTypes =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -171,5 +93,80 @@ namespace Red
                 #endregion
             };
 
+        /// <summary>
+        ///     Parsing middleware.
+        ///     Attempts to parse the body using ParseBodyAsync.
+        ///     If unable to parse the body, responds with Bad Request status.
+        ///     Otherwise saves the parsed object using SetData on the request, so it can be retrieved using GetData by a later
+        ///     handler.
+        /// </summary>
+        /// <param name="req">The request object</param>
+        /// <param name="res">The response object</param>
+        /// <typeparam name="T">The type to parse the body to</typeparam>
+        /// <returns></returns>
+        public static async Task<HandlerType> CanParse<T>(Request req, Response res)
+            where T : class
+        {
+            var obj = req.ParseBodyAsync<T>();
+            if (obj == default)
+            {
+                await res.SendStatus(HttpStatusCode.BadRequest);
+                return HandlerType.Error;
+            }
+
+            req.SetData(obj);
+            return HandlerType.Continue;
+        }
+
+        /// <summary>
+        ///     Parsing middleware.
+        ///     Attempts to parse the body using ParseBodyAsync.
+        ///     If unable to parse the body, responds with Bad Request status.
+        ///     Otherwise saves the parsed object using SetData on the request, so it can be retrieved using GetData by a later
+        ///     handler.
+        /// </summary>
+        /// <param name="req">The request object</param>
+        /// <param name="res">The response object</param>
+        /// <param name="_">The websocket dialog (not modified)</param>
+        /// <typeparam name="T">The type to parse the body to</typeparam>
+        /// <returns></returns>
+        public static Task CanParse<T>(Request req, Response res, WebSocketDialog _)
+            where T : class
+        {
+            return CanParse<T>(req, res);
+        }
+
+
+        /// <summary>
+        ///     Middleware for serving static files from a directory.
+        ///     Requires one wildcard (*) in the path(s) it is used in
+        /// </summary>
+        /// <param name="basePath">The path of the base directory the files are served from</param>
+        /// <param name="send404NotFound">Whether to respond with 404 when file not found, or to continue to next handler</param>
+        /// <returns></returns>
+        public static Func<Request, Response, Task<HandlerType>> SendFiles(string basePath, bool send404NotFound = true)
+        {
+            var fullBasePath = Path.GetFullPath(basePath);
+            return (req, res) =>
+            {
+                var absoluteFilePath = Path.Combine(fullBasePath, req.Context.Params["any"]);
+                if (!absoluteFilePath.StartsWith(fullBasePath) || !File.Exists(absoluteFilePath))
+                    return send404NotFound
+                        ? res.SendStatus(HttpStatusCode.NotFound)
+                        : CachedContinueHandlerTask;
+
+                return res.SendFile(absoluteFilePath);
+            };
+        }
+
+
+        internal static string GetMimeType(string? contentType, string? filePath,
+            string defaultContentType = "application/octet-stream")
+        {
+            if (!string.IsNullOrEmpty(filePath) && !string.IsNullOrEmpty(contentType) &&
+                MimeTypes.TryGetValue(Path.GetExtension(filePath), out var mimeType))
+                return mimeType;
+            return defaultContentType;
+        }
     }
 }

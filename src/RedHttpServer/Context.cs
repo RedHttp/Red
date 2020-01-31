@@ -1,39 +1,43 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 
 namespace Red
 {
     /// <summary>
-    /// Class that encapsulates data relevant to both Requests and Responses, and the HttpContext
+    ///     Class that encapsulates data relevant to both Requests and Responses, and the HttpContext
     /// </summary>
     public sealed class Context
     {
         private readonly Lazy<Dictionary<Type, object>> _data = new Lazy<Dictionary<Type, object>>();
         private readonly Lazy<Dictionary<string, string>> _strings = new Lazy<Dictionary<string, string>>();
-        /// <summary>
-        ///    The Red.Request for this context
-        /// </summary>
-        public readonly Request Request;
-        
-        /// <summary>
-        ///    The Red.Response for this context
-        /// </summary>
-        public readonly Response Response;
-        
+
         /// <summary>
         ///     The ASP.NET HttpContext that is wrapped
         /// </summary>
         public readonly HttpContext AspNetContext;
-        
+
         /// <summary>
-        ///    The 
+        ///     Represent the url parameters and theirs values, contained in the path of the current request.
+        /// </summary>
+        public readonly UrlParameters Params;
+
+        /// <summary>
+        ///     The
         /// </summary>
         public readonly PluginCollection Plugins;
-        
+
+        /// <summary>
+        ///     The Red.Request for this context
+        /// </summary>
+        public readonly Request Request;
+
+        /// <summary>
+        ///     The Red.Response for this context
+        /// </summary>
+        public readonly Response Response;
+
         internal Context(HttpContext aspNetContext, PluginCollection plugins)
         {
             Plugins = plugins;
@@ -44,12 +48,6 @@ namespace Red
         }
 
         /// <summary>
-        /// Represent the url parameters and theirs values, contained in the path of the current request.
-        /// </summary>
-        public readonly UrlParameters Params;
-
-        /// <summary>
-        /// 
         /// </summary>
         /// <param name="defaultLanguage"></param>
         /// <returns></returns>
@@ -57,7 +55,7 @@ namespace Red
         {
             return Request.TypedHeaders.AcceptLanguage.FirstOrDefault()?.Value.Value ?? defaultLanguage;
         }
-        
+
         /// <summary>
         ///     Get data attached to request by middleware. The middleware should specify the type to lookup
         /// </summary>
@@ -66,6 +64,7 @@ namespace Red
         {
             return _strings.Value.TryGetValue(key, out var value) ? value : default;
         }
+
         /// <summary>
         ///     Get data attached to request by middleware. The middleware should specify the type to lookup
         /// </summary>
@@ -76,6 +75,7 @@ namespace Red
         {
             return _data.Value.TryGetValue(typeof(TData), out var value) ? (TData) value : default;
         }
+
         /// <summary>
         ///     Function that middleware can use to attach data to the request, so the next handlers has access to the data
         /// </summary>
@@ -86,8 +86,10 @@ namespace Red
         {
             _data.Value[typeof(TData)] = data;
         }
+
         /// <summary>
-        ///     Function that middleware can use to attach string values to the request, so the next handlers has access to the data
+        ///     Function that middleware can use to attach string values to the request, so the next handlers has access to the
+        ///     data
         /// </summary>
         /// <param name="key">the data key</param>
         /// <param name="value">the data value</param>
@@ -95,6 +97,5 @@ namespace Red
         {
             _strings.Value[key] = value;
         }
-
     }
 }

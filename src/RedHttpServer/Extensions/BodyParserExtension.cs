@@ -17,6 +17,7 @@ namespace Red.Extensions
             var bodyParser = request.Context.Plugins.Get<IBodyParser>();
             return bodyParser.DeserializeAsync<T>(request);
         }
+
         /// <summary>
         ///     Returns the body deserialized or parsed to specified type if possible, default if not
         /// </summary>

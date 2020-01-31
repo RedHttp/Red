@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Red.Interfaces
 {
     /// <summary>
-    ///    Interface for body converters
+    ///     Interface for body converters
     /// </summary>
     public interface IBodyConverter
     {
@@ -18,7 +18,7 @@ namespace Red.Interfaces
         /// </summary>
         T? Deserialize<T>(string jsonData)
             where T : class;
-        
+
         /// <summary>
         ///     Deserialize data from a stream to specified type
         /// </summary>

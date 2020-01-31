@@ -5,7 +5,7 @@ using Red.Interfaces;
 namespace Red
 {
     /// <summary>
-    /// A Router class that can be used to separate the handlers of the server in a more teamwork (git) friendly way
+    ///     A Router class that can be used to separate the handlers of the server in a more teamwork (git) friendly way
     /// </summary>
     public class Router : IRouter
     {
@@ -13,8 +13,8 @@ namespace Red
         private readonly IRouter _router;
 
         /// <summary>
-        /// Creates a Router from a baseRoute, that will be prepended all handlers registered through it,
-        /// and add them to the router
+        ///     Creates a Router from a baseRoute, that will be prepended all handlers registered through it,
+        ///     and add them to the router
         /// </summary>
         /// <param name="baseRoute">The base route of the router</param>
         /// <param name="router">The router (or server) to add handlers to</param>
@@ -35,16 +35,19 @@ namespace Red
         {
             _router.Get(CombinePartialRoutes(_baseRoute, route), handlers);
         }
+
         /// <inheritdoc />
         public void Post(string route, params Func<Request, Response, Task<HandlerType>>[] handlers)
         {
             _router.Post(CombinePartialRoutes(_baseRoute, route), handlers);
         }
+
         /// <inheritdoc />
         public void Put(string route, params Func<Request, Response, Task<HandlerType>>[] handlers)
         {
             _router.Put(CombinePartialRoutes(_baseRoute, route), handlers);
         }
+
         /// <inheritdoc />
         public void Delete(string route, params Func<Request, Response, Task<HandlerType>>[] handlers)
         {
@@ -52,7 +55,8 @@ namespace Red
         }
 
         /// <inheritdoc />
-        public void WebSocket(string route, params Func<Request, Response, WebSocketDialog, Task<HandlerType>>[] handlers)
+        public void WebSocket(string route,
+            params Func<Request, Response, WebSocketDialog, Task<HandlerType>>[] handlers)
         {
             _router.WebSocket(CombinePartialRoutes(_baseRoute, route), handlers);
         }

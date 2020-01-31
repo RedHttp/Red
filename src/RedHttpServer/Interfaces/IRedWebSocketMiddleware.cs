@@ -4,7 +4,7 @@ namespace Red.Interfaces
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Interface for middleware that handle websocket middleware 
+    ///     Interface for middleware that handle websocket middleware
     /// </summary>
     public interface IRedWebSocketMiddleware : IRedExtension
     {

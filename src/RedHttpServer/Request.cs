@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +13,12 @@ namespace Red
     public sealed class Request : InContext
     {
         private readonly Lazy<RequestHeaders> _typedHeaders;
+
+        /// <summary>
+        ///     The ASP.NET HttpRequest that is wrapped
+        /// </summary>
+        public readonly HttpRequest AspNetRequest;
+
         private IFormCollection? _form;
 
         internal Request(Context context, HttpRequest aspNetRequest) : base(context)
@@ -21,11 +26,6 @@ namespace Red
             AspNetRequest = aspNetRequest;
             _typedHeaders = new Lazy<RequestHeaders>(AspNetRequest.GetTypedHeaders);
         }
-
-        /// <summary>
-        ///     The ASP.NET HttpRequest that is wrapped
-        /// </summary>
-        public readonly HttpRequest AspNetRequest;
 
         /// <summary>
         ///     The query elements of the request
@@ -39,9 +39,9 @@ namespace Red
 
 
         /// <summary>
-        ///  Exposes the typed headers for the request
+        ///     Exposes the typed headers for the request
         /// </summary>
-        public RequestHeaders TypedHeaders => _typedHeaders.Value; 
+        public RequestHeaders TypedHeaders => _typedHeaders.Value;
 
         /// <summary>
         ///     The cookies contained in the request
@@ -54,7 +54,7 @@ namespace Red
         public Stream BodyStream => AspNetRequest.Body;
 
         /// <summary>
-        ///     Returns form-data from request, if any, null otherwise. 
+        ///     Returns form-data from request, if any, null otherwise.
         /// </summary>
         public async Task<IFormCollection?> GetFormDataAsync()
         {
@@ -64,10 +64,10 @@ namespace Red
             if (_form != null)
                 return _form;
 
-            _form =  await AspNetRequest.ReadFormAsync();
+            _form = await AspNetRequest.ReadFormAsync();
             return _form;
         }
-        
+
         /// <summary>
         ///     Save all files in requests to specified directory.
         /// </summary>
@@ -88,10 +88,7 @@ namespace Red
             {
                 var filename = fileRenamer == null ? formFile.FileName : fileRenamer(formFile.FileName);
                 filename = Path.GetFileName(filename);
-                if (string.IsNullOrWhiteSpace(filename))
-                {
-                    continue;
-                }
+                if (string.IsNullOrWhiteSpace(filename)) continue;
                 var filepath = Path.Combine(fullSaveDir, filename);
                 using (var fileStream = File.Create(filepath))
                 {
@@ -100,7 +97,6 @@ namespace Red
             }
 
             return true;
-
         }
     }
 }

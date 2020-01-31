@@ -21,22 +21,23 @@ namespace Red
         private const string PostMethod = "POST";
         private const string PutMethod = "PUT";
         private const string DeleteMethod = "DELETE";
-        
+        private static readonly Regex NamePathParameterRegex = new Regex(":[\\w-]+", RegexOptions.Compiled);
+
         private readonly List<IRedExtension> _plugins = new List<IRedExtension>();
+        private readonly string? _publicRoot;
+
+        private readonly List<Action<IRouteBuilder>> _routes = new List<Action<IRouteBuilder>>();
 
         private IWebHost? _host;
-        private readonly string? _publicRoot;
-        
+        private bool _useWebSockets;
+
         private IWebHost Build(IReadOnlyCollection<string> hostnames)
         {
-            if (_host != default)
-            {
-                throw new RedHttpServerException("The server is already running");
-            }
+            if (_host != default) throw new RedHttpServerException("The server is already running");
             Initialize();
-            var urls = hostnames.Count != 0 
+            var urls = hostnames.Count != 0
                 ? hostnames.Select(url => $"http://{url}:{Port}").ToArray()
-                : new []{ $"http://localhost:{Port}" };
+                : new[] {$"http://localhost:{Port}"};
             return new WebHostBuilder()
                 .UseKestrel()
                 .ConfigureServices(services =>
@@ -47,7 +48,8 @@ namespace Red
                 .Configure(app =>
                 {
                     if (!string.IsNullOrWhiteSpace(_publicRoot) && Directory.Exists(_publicRoot))
-                        app.UseFileServer(new FileServerOptions { FileProvider = new PhysicalFileProvider(Path.GetFullPath(_publicRoot)) });
+                        app.UseFileServer(new FileServerOptions
+                            {FileProvider = new PhysicalFileProvider(Path.GetFullPath(_publicRoot))});
                     if (_useWebSockets)
                         app.UseWebSockets();
                     app.UseRouter(routeBuilder =>
@@ -61,24 +63,18 @@ namespace Red
                 .UseUrls(urls)
                 .Build();
         }
-        
+
         private void Initialize()
         {
-            foreach (var plugin in _plugins)
-            {
-                plugin.Initialize(this);
-            }
+            foreach (var plugin in _plugins) plugin.Initialize(this);
         }
-        
-        private readonly List<Action<IRouteBuilder>> _routes = new List<Action<IRouteBuilder>>();
-        private static readonly Regex NamePathParameterRegex = new Regex(":[\\w-]+", RegexOptions.Compiled);
-        private bool _useWebSockets = false;
 
 
-        private async Task<HandlerType> ExecuteHandler(HttpContext aspNetContext, IEnumerable<Func<Request, Response, Task<HandlerType>>> handlers)
+        private async Task<HandlerType> ExecuteHandler(HttpContext aspNetContext,
+            IEnumerable<Func<Request, Response, Task<HandlerType>>> handlers)
         {
             var context = new Context(aspNetContext, Plugins);
-            
+
             var status = HandlerType.Continue;
             try
             {
@@ -87,18 +83,20 @@ namespace Red
                     status = await middleware(context.Request, context.Response);
                     if (status != HandlerType.Continue) return status;
                 }
-                
+
                 return status;
             }
             catch (Exception e)
-            { 
+            {
                 return await HandleException(context, status, e);
             }
         }
-        private async Task<HandlerType> ExecuteHandler(HttpContext aspNetContext, IEnumerable<Func<Request, Response, WebSocketDialog, Task<HandlerType>>> handlers)
+
+        private async Task<HandlerType> ExecuteHandler(HttpContext aspNetContext,
+            IEnumerable<Func<Request, Response, WebSocketDialog, Task<HandlerType>>> handlers)
         {
             var context = new Context(aspNetContext, Plugins);
-            
+
             var status = HandlerType.Continue;
             try
             {
@@ -106,13 +104,13 @@ namespace Red
                 {
                     var webSocket = await aspNetContext.WebSockets.AcceptWebSocketAsync();
                     var webSocketDialog = new WebSocketDialog(webSocket);
-                    
+
                     foreach (var middleware in _wsMiddle.Concat(handlers))
                     {
                         status = await middleware(context.Request, context.Response, webSocketDialog);
                         if (status != HandlerType.Continue) return status;
                     }
-                    
+
                     await webSocketDialog.ReadFromWebSocket();
                     return status;
                 }
@@ -131,34 +129,38 @@ namespace Red
             var path = context.Request.AspNetRequest.Path.ToString();
             var method = context.Request.AspNetRequest.Method;
             OnHandlerException?.Invoke(this, new HandlerExceptionEventArgs(method, path, e));
-            
+
             if (status != HandlerType.Continue)
                 return HandlerType.Error;
-                
+
             if (RespondWithExceptionDetails)
                 await context.Response.SendString(e.ToString(), status: HttpStatusCode.InternalServerError);
             else
                 await context.Response.SendStatus(HttpStatusCode.InternalServerError);
-            
+
             return HandlerType.Error;
         }
 
-        private void AddHandlers(string route, string method, IReadOnlyCollection<Func<Request, Response, Task<HandlerType>>> handlers)
+        private void AddHandlers(string route, string method,
+            IReadOnlyCollection<Func<Request, Response, Task<HandlerType>>> handlers)
         {
             if (handlers.Count == 0)
                 throw new RedHttpServerException("A route requires at least one handler");
-            
+
             var path = ConvertPathParameters(route, NamePathParameterRegex);
             _routes.Add(routeBuilder => routeBuilder.MapVerb(method, path, ctx => ExecuteHandler(ctx, handlers)));
         }
-        private void AddHandlers(string route, IReadOnlyCollection<Func<Request, Response, WebSocketDialog, Task<HandlerType>>> handlers)
+
+        private void AddHandlers(string route,
+            IReadOnlyCollection<Func<Request, Response, WebSocketDialog, Task<HandlerType>>> handlers)
         {
             if (handlers.Count == 0)
                 throw new RedHttpServerException("A route requires at least one handler");
-            
+
             var path = ConvertPathParameters(route, NamePathParameterRegex);
             _routes.Add(routeBuilder => routeBuilder.MapGet(path, ctx => ExecuteHandler(ctx, handlers)));
         }
+
         private static string ConvertPathParameters(string parameter, Regex urlParam)
         {
             return urlParam
@@ -166,6 +168,5 @@ namespace Red
                 .Replace("*", "{*any}")
                 .Trim('/');
         }
-
     }
 }

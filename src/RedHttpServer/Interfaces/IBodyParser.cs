@@ -8,15 +8,15 @@ namespace Red.Interfaces
     public interface IBodyParser
     {
         /// <summary>
-        /// Parse the request body stream into a string
+        ///     Parse the request body stream into a string
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         Task<string> ReadAsync(Request request);
-        
-        
+
+
         /// <summary>
-        /// Parse the request body stream into an object of a given type
+        ///     Parse the request body stream into an object of a given type
         /// </summary>
         /// <param name="request"></param>
         /// <typeparam name="T"></typeparam>

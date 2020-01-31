@@ -4,7 +4,7 @@ namespace Red
 {
     /// <inheritdoc />
     /// <summary>
-    /// Exception for errors in RedHttpServer
+    ///     Exception for errors in RedHttpServer
     /// </summary>
     public class RedHttpServerException : Exception
     {

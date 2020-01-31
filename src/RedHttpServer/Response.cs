@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Net.Http.Headers;
 using Red.Interfaces;
 
 namespace Red
@@ -15,6 +14,11 @@ namespace Red
     /// </summary>
     public sealed class Response : InContext
     {
+        /// <summary>
+        ///     The ASP.NET HttpResponse that is wrapped
+        /// </summary>
+        public readonly HttpResponse AspNetResponse;
+
         internal Response(Context context, HttpResponse aspNetResponse) : base(context)
         {
             AspNetResponse = aspNetResponse;
@@ -24,7 +28,7 @@ namespace Red
         ///     The headers for the response
         /// </summary>
         public IHeaderDictionary Headers => AspNetResponse.Headers;
-        
+
         /// <summary>
         ///     Obsolete. Please used Headers property instead.
         ///     This method Will be removed in a later version
@@ -37,11 +41,6 @@ namespace Red
             Headers[headerName] = headerValue;
         }
 
-        /// <summary>
-        ///     The ASP.NET HttpResponse that is wrapped
-        /// </summary>
-        public readonly HttpResponse AspNetResponse;
-        
         /// <summary>
         ///     Redirects the client to a given path or url
         /// </summary>
@@ -79,8 +78,8 @@ namespace Red
             {
                 var contentDisposition = $"{(attachment ? "attachment" : "inline")}; filename=\"{fileName}\"";
                 response.Headers.Add("Content-disposition", contentDisposition);
-                
             }
+
             await response.WriteAsync(data);
             return HandlerType.Final;
         }
@@ -94,6 +93,7 @@ namespace Red
         {
             return SendString(response, status.ToString(), "text/plain", "", false, status);
         }
+
         /// <summary>
         ///     Send a empty response with a status code
         /// </summary>
@@ -144,16 +144,11 @@ namespace Red
             AspNetResponse.StatusCode = (int) status;
             AspNetResponse.ContentType = contentType;
             if (!string.IsNullOrEmpty(fileName))
-            {
                 Headers["Content-disposition"] = $"{(attachment ? "attachment" : "inline")}; filename=\"{fileName}\"";
-            }
-            
+
             await dataStream.CopyToAsync(AspNetResponse.Body);
-            if (dispose)
-            {
-                dataStream.Dispose();
-            }
-            
+            if (dispose) dataStream.Dispose();
+
             return HandlerType.Final;
         }
 
@@ -168,7 +163,7 @@ namespace Red
         /// <param name="handleRanges">Whether to enable handling of range-requests for the file(s) served</param>
         /// <param name="fileName">Filename to show in header, instead of actual filename</param>
         /// <param name="status">The status code for the response</param>
-        public async Task<HandlerType> SendFile(string filePath, string? contentType = null, bool handleRanges = true, 
+        public async Task<HandlerType> SendFile(string filePath, string? contentType = null, bool handleRanges = true,
             string? fileName = null, HttpStatusCode status = HttpStatusCode.OK)
         {
             if (handleRanges) Headers["Accept-Ranges"] = "bytes";
@@ -176,9 +171,9 @@ namespace Red
             var fileSize = new FileInfo(filePath).Length;
             var range = Context.Request.TypedHeaders.Range;
             var encodedFilename = WebUtility.UrlEncode(fileName ?? Path.GetFileName(filePath));
-            
+
             Headers["Content-disposition"] = $"inline; filename=\"{encodedFilename}\"";
-            
+
             if (range != null && range.Ranges.Any())
             {
                 var firstRange = range.Ranges.First();

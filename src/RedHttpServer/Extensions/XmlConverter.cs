@@ -13,6 +13,11 @@ namespace Red.Extensions
     /// </summary>
     internal sealed class XmlConverter : IXmlConverter, IRedExtension
     {
+        public void Initialize(RedHttpServer server)
+        {
+            server.Plugins.Register<IXmlConverter, XmlConverter>(this);
+        }
+
         /// <inheritdoc />
         public string? Serialize<T>(T obj)
         {
@@ -26,11 +31,11 @@ namespace Red.Extensions
                 return reader.ReadToEnd();
             }
             catch (Exception)
-            { 
-                return default; 
+            {
+                return default;
             }
         }
-        
+
         /// <inheritdoc />
         public T? Deserialize<T>(string xmlData)
             where T : class
@@ -42,15 +47,15 @@ namespace Red.Extensions
                 return (T) xml.ReadContentAs(typeof(T), null);
             }
             catch (FormatException)
-            { 
-                return default; 
+            {
+                return default;
             }
             catch (InvalidCastException)
-            { 
-                return default; 
+            {
+                return default;
             }
         }
-        
+
         /// <inheritdoc />
         public async Task<T?> DeserializeAsync<T>(Stream xmlStream)
             where T : class
@@ -61,12 +66,12 @@ namespace Red.Extensions
                 return (T) await xmlReader.ReadContentAsAsync(typeof(T), null);
             }
             catch (FormatException)
-            { 
-                return default; 
+            {
+                return default;
             }
             catch (InvalidCastException)
-            { 
-                return default; 
+            {
+                return default;
             }
         }
 
@@ -86,11 +91,6 @@ namespace Red.Extensions
             catch (Exception)
             {
             }
-        }
-
-        public void Initialize(RedHttpServer server)
-        {
-            server.Plugins.Register<IXmlConverter, XmlConverter>(this);
         }
     }
 }

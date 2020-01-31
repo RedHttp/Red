@@ -13,15 +13,15 @@ namespace Red
     /// </summary>
     public sealed class WebSocketDialog
     {
-        internal WebSocketDialog(WebSocket webSocket)
-        {
-            WebSocket = webSocket;
-        }
-
         /// <summary>
         ///     The underlying WebSocket
         /// </summary>
         public readonly WebSocket WebSocket;
+
+        internal WebSocketDialog(WebSocket webSocket)
+        {
+            WebSocket = webSocket;
+        }
 
 
         /// <summary>
@@ -117,54 +117,6 @@ namespace Red
             }
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Represents a binary message received from websocket
-        /// </summary>
-        public sealed class BinaryMessageEventArgs : EventArgs
-        {
-            internal BinaryMessageEventArgs(ArraySegment<byte> data, bool endOfMessage)
-            {
-                _arraySegment = data;
-                EndOfMessage = endOfMessage;
-            }
-
-            private readonly ArraySegment<byte> _arraySegment;
-
-            /// <summary>
-            ///     The binary content of the message
-            /// </summary>
-            public byte[] Data => _arraySegment.Array;
-
-            /// <summary>
-            ///     Whether this is a complete message or the end of one, or there is more to come.
-            /// </summary>
-            public readonly bool EndOfMessage;
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Represents a UTF-8 encoded text message received from websocket
-        /// </summary>
-        public sealed class TextMessageEventArgs : EventArgs
-        {
-            internal TextMessageEventArgs(string text, bool endOfMessage)
-            {
-                Text = text;
-                EndOfMessage = endOfMessage;
-            }
-
-            /// <summary>
-            ///     The text content of the message
-            /// </summary>
-            public readonly string Text;
-
-            /// <summary>
-            ///     Whether this is a complete message or the end of one, or there is more to come.
-            /// </summary>
-            public readonly bool EndOfMessage;
-        }
-
         /// <summary>
         ///     Convenience method for ending a dialog handler
         /// </summary>
@@ -181,6 +133,54 @@ namespace Red
         public HandlerType Continue()
         {
             return HandlerType.Continue;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Represents a binary message received from websocket
+        /// </summary>
+        public sealed class BinaryMessageEventArgs : EventArgs
+        {
+            private readonly ArraySegment<byte> _arraySegment;
+
+            /// <summary>
+            ///     Whether this is a complete message or the end of one, or there is more to come.
+            /// </summary>
+            public readonly bool EndOfMessage;
+
+            internal BinaryMessageEventArgs(ArraySegment<byte> data, bool endOfMessage)
+            {
+                _arraySegment = data;
+                EndOfMessage = endOfMessage;
+            }
+
+            /// <summary>
+            ///     The binary content of the message
+            /// </summary>
+            public byte[] Data => _arraySegment.Array;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Represents a UTF-8 encoded text message received from websocket
+        /// </summary>
+        public sealed class TextMessageEventArgs : EventArgs
+        {
+            /// <summary>
+            ///     Whether this is a complete message or the end of one, or there is more to come.
+            /// </summary>
+            public readonly bool EndOfMessage;
+
+            /// <summary>
+            ///     The text content of the message
+            /// </summary>
+            public readonly string Text;
+
+            internal TextMessageEventArgs(string text, bool endOfMessage)
+            {
+                Text = text;
+                EndOfMessage = endOfMessage;
+            }
         }
     }
 }

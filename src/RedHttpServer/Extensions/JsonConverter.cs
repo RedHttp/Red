@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -30,8 +29,8 @@ namespace Red.Extensions
         {
             try
             {
-                return !string.IsNullOrEmpty(jsonData) 
-                    ? JsonSerializer.Deserialize<T>(jsonData) 
+                return !string.IsNullOrEmpty(jsonData)
+                    ? JsonSerializer.Deserialize<T>(jsonData)
                     : default;
             }
             catch (JsonException)
@@ -63,7 +62,6 @@ namespace Red.Extensions
             }
             catch (JsonException)
             {
-                
             }
         }
 

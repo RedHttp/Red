@@ -4,20 +4,21 @@ using System.Collections.Generic;
 namespace Red
 {
     /// <summary>
-    /// Plugin manager that contains the registered plugins for the instance of the server.
+    ///     Plugin manager that contains the registered plugins for the instance of the server.
     /// </summary>
     public sealed class PluginCollection
     {
+        private readonly Dictionary<Type, object> _plugins = new Dictionary<Type, object>();
+
         internal PluginCollection()
         {
         }
 
-        private readonly Dictionary<Type, object> _plugins = new Dictionary<Type, object>();
-
         /// <summary>
         ///     Register a plugin to the collection.
         ///     Preferably before starting the server
-        /// </summary>s
+        /// </summary>
+        /// s
         /// <typeparam name="TKey">The type-key to register the plugin to</typeparam>
         /// <typeparam name="TValue"></typeparam>
         /// <param name="plugin">The plugin to register</param>
@@ -33,10 +34,14 @@ namespace Red
 
         /// <summary>
         ///     Check whether a plugin is registered to the given type-key
-        /// </summary>s
+        /// </summary>
+        /// s
         /// <typeparam name="TKey">The type-key to look-up</typeparam>
         /// <returns>Whether the any plugin is registered to TPluginInterface</returns>
-        public bool IsRegistered<TKey>() => _plugins.ContainsKey(typeof(TKey));
+        public bool IsRegistered<TKey>()
+        {
+            return _plugins.ContainsKey(typeof(TKey));
+        }
 
         /// <summary>
         ///     Returns the instance of the registered plugin
@@ -49,6 +54,7 @@ namespace Red
                 return (TKey) obj;
             throw new RedHttpServerException($"No plugin registered for '{typeof(TKey).Name}'");
         }
+
         /// <summary>
         ///     Returns the instance of the registered plugin
         /// </summary>
