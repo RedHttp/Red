@@ -4,7 +4,7 @@
 [![Nuget](https://img.shields.io/nuget/v/rhttpserver)](https://www.nuget.org/packages/RHttpServer/)
 [![Nuget](https://img.shields.io/nuget/dt/rhttpserver)](https://www.nuget.org/packages/RHttpServer/)
 ![Dependent repos (via libraries.io)](https://img.shields.io/librariesio/dependent-repos/nuget/rhttpserver)
-
+![.NET Core](https://github.com/RedHttp/Red/workflows/.NET%20Core/badge.svg)
 A .NET Standard web application framework built on ASP.NET Core w/ Kestrel and inspired by the simplicity of Express.js
 
 - [Homepage](https://redhttp.github.io/Red/)
