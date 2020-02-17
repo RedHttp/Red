@@ -1,10 +1,10 @@
 # RedHttpServer
 ### Low ceremony cross-platform http server framework with websocket support
+![.NET Core](https://github.com/RedHttp/Red/workflows/CI/badge.svg)
 [![GitHub](https://img.shields.io/github/license/redhttp/red)](https://github.com/RedHttp/Red/blob/master/LICENSE.md)
 [![Nuget](https://img.shields.io/nuget/v/rhttpserver)](https://www.nuget.org/packages/RHttpServer/)
 [![Nuget](https://img.shields.io/nuget/dt/rhttpserver)](https://www.nuget.org/packages/RHttpServer/)
 ![Dependent repos (via libraries.io)](https://img.shields.io/librariesio/dependent-repos/nuget/rhttpserver)
-![.NET Core](https://github.com/RedHttp/Red/workflows/CI/badge.svg)
 
 
 A .NET Standard web application framework built on ASP.NET Core w/ Kestrel and inspired by the simplicity of Express.js
