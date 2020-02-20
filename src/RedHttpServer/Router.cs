@@ -25,9 +25,11 @@ namespace Red
         }
 
         /// <inheritdoc />
-        public IRouter CreateRouter(string baseRoute)
+        public IRouter CreateRouter(string routePrefix, Action<IRouter>? register = null)
         {
-            return new Router(baseRoute, this);
+            var router = new Router(routePrefix, this);
+            register?.Invoke(router);
+            return router;
         }
 
         /// <inheritdoc />

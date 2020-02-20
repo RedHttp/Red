@@ -7,7 +7,7 @@ using Red.Interfaces;
 namespace Red.Extensions
 {
     /// <summary>
-    ///     Very simple JsonConverter plugin using Newtonsoft.Json generic methods
+    ///     Extendable bodyparser
     /// </summary>
     internal sealed class BodyParser : IBodyParser, IRedExtension
     {

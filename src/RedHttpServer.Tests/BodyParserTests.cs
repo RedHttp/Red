@@ -27,26 +27,38 @@ namespace RedHttpServer.Tests
         }
         
         [Test]
-        public async Task BasicSerializationDeserialization()
+        public async Task JsonSerialization()
         {
             var obj = new TestPayload
             {
                 Name = "test",
                 Number = 42
             };
-            
             _server.Get("/json", (req, res) => res.SendJson(obj));
+            _server.Start();
+
+            var (status, content) = await _httpClient.GetContent(BaseUrl + "/json");
+
+            Assert.AreEqual(status, HttpStatusCode.OK);
+            Assert.AreEqual(content, "{\"Name\":\"test\",\"Number\":42}");
+            
+            await _server.StopAsync();
+        }
+        [Test]
+        public async Task XmlSerialization()
+        {
+            var obj = new TestPayload
+            {
+                Name = "test",
+                Number = 42
+            };
             _server.Get("/xml", (req, res) => res.SendXml(obj));
             _server.Start();
 
-            var (status0, content0) = await _httpClient.GetContent(BaseUrl + "/json");
-            var (status1, content1) = await _httpClient.GetContent(BaseUrl + "/xml");
+            var (status, content) = await _httpClient.GetContent(BaseUrl + "/xml");
 
-            Assert.AreEqual(status0, HttpStatusCode.OK);
-            Assert.AreEqual(status1, HttpStatusCode.OK);
-            
-            Assert.AreEqual(content0, "{\"Name\":\"test\",\"Number\":42}");
-            Assert.AreEqual(content1, "<?xml version=\"1.0\" encoding=\"utf-8\"?><TestPayload xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><Name>test</Name><Number>42</Number></TestPayload>");
+            Assert.AreEqual(status, HttpStatusCode.OK);
+            Assert.AreEqual(content, "<?xml version=\"1.0\" encoding=\"utf-8\"?><TestPayload xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><Name>test</Name><Number>42</Number></TestPayload>");
             
             await _server.StopAsync();
         }

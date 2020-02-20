@@ -48,8 +48,13 @@ namespace Red
                 .Configure(app =>
                 {
                     if (!string.IsNullOrWhiteSpace(_publicRoot) && Directory.Exists(_publicRoot))
+                    {
+                        var fullPublicPath = Path.GetFullPath(_publicRoot);
                         app.UseFileServer(new FileServerOptions
-                            {FileProvider = new PhysicalFileProvider(Path.GetFullPath(_publicRoot))});
+                            {FileProvider = new PhysicalFileProvider(fullPublicPath)});
+                        Console.WriteLine($"Public files directory: {fullPublicPath}");
+                    }
+
                     if (_useWebSockets)
                         app.UseWebSockets();
                     app.UseRouter(routeBuilder =>
@@ -74,13 +79,15 @@ namespace Red
             IEnumerable<Func<Request, Response, Task<HandlerType>>> handlers)
         {
             var context = new Context(aspNetContext, Plugins);
+            var request = new Request(context);
+            var response = new Response(context);
 
             var status = HandlerType.Continue;
             try
             {
                 foreach (var middleware in _middle.Concat(handlers))
                 {
-                    status = await middleware(context.Request, context.Response);
+                    status = await middleware(request, response);
                     if (status != HandlerType.Continue) return status;
                 }
 
@@ -88,7 +95,7 @@ namespace Red
             }
             catch (Exception e)
             {
-                return await HandleException(context, status, e);
+                return await HandleException(request, response, status, e);
             }
         }
 
@@ -96,6 +103,8 @@ namespace Red
             IEnumerable<Func<Request, Response, WebSocketDialog, Task<HandlerType>>> handlers)
         {
             var context = new Context(aspNetContext, Plugins);
+            var request = new Request(context);
+            var response = new Response(context);
 
             var status = HandlerType.Continue;
             try
@@ -107,7 +116,7 @@ namespace Red
 
                     foreach (var middleware in _wsMiddle.Concat(handlers))
                     {
-                        status = await middleware(context.Request, context.Response, webSocketDialog);
+                        status = await middleware(request, response, webSocketDialog);
                         if (status != HandlerType.Continue) return status;
                     }
 
@@ -115,28 +124,30 @@ namespace Red
                     return status;
                 }
 
-                await context.Response.SendStatus(HttpStatusCode.BadRequest);
+                response.Headers["Upgrade"] = "Websocket";
+                await response.SendStatus(HttpStatusCode.UpgradeRequired);
                 return HandlerType.Error;
             }
             catch (Exception e)
             {
-                return await HandleException(context, status, e);
+                return await HandleException(request, response, status, e);
             }
         }
 
-        private async Task<HandlerType> HandleException(Context context, HandlerType status, Exception e)
+        private async Task<HandlerType> HandleException(Request request, Response response, HandlerType status,
+            Exception e)
         {
-            var path = context.Request.AspNetRequest.Path.ToString();
-            var method = context.Request.AspNetRequest.Method;
+            var path = request.AspNetRequest.Path.ToString();
+            var method = request.AspNetRequest.Method;
             OnHandlerException?.Invoke(this, new HandlerExceptionEventArgs(method, path, e));
 
             if (status != HandlerType.Continue)
                 return HandlerType.Error;
 
             if (RespondWithExceptionDetails)
-                await context.Response.SendString(e.ToString(), status: HttpStatusCode.InternalServerError);
+                await response.SendString(e.ToString(), status: HttpStatusCode.InternalServerError);
             else
-                await context.Response.SendStatus(HttpStatusCode.InternalServerError);
+                await response.SendStatus(HttpStatusCode.InternalServerError);
 
             return HandlerType.Error;
         }

@@ -37,14 +37,14 @@ namespace Test
             server.Get("/exception", (req, res) => throw new Exception("oh no!"));
             server.Get("/index", Auth, (req, res) => res.SendFile("./index.html"));
             server.Get("/webm", (req, res) => res.SendFile("./Big_Buck_Bunny_alt.webm"));
-            server.Get("/files/*", Utils.SendFiles("public/files"));
+            server.Get("/files/*", Handlers.SendFiles("public/files"));
             
             var testObj = new TestObject{Prop1 = "Hello", Prop2 = 42};
             
             server.Get("/json", (req, res) => res.SendJson(testObj));
             server.Get("/xml", (req, res) => res.SendXml(testObj));
             
-            TestRoutes.Register(server.CreateRouter("/test"));
+            server.CreateRouter("/test", TestRoutes.Register);
 
             server.OnHandlerException += (e, sender) =>
             {

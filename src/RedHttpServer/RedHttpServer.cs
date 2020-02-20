@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing.Template;
 using Microsoft.Extensions.DependencyInjection;
 using Red.Extensions;
 using Red.Interfaces;
@@ -68,9 +69,11 @@ namespace Red
         public Action<IApplicationBuilder>? ConfigureApplication { private get; set; }
 
         /// <inheritdoc />
-        public IRouter CreateRouter(string baseRoute)
+        public IRouter CreateRouter(string routePrefix, Action<IRouter>? register = null)
         {
-            return new Router(baseRoute, this);
+            var router = new Router(routePrefix, this);
+            register?.Invoke(router);
+            return router;
         }
 
         /// <inheritdoc />

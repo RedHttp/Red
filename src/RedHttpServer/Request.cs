@@ -21,9 +21,9 @@ namespace Red
 
         private IFormCollection? _form;
 
-        internal Request(Context context, HttpRequest aspNetRequest) : base(context)
+        internal Request(Context context) : base(context)
         {
-            AspNetRequest = aspNetRequest;
+            AspNetRequest = context.AspNetContext.Request;
             _typedHeaders = new Lazy<RequestHeaders>(AspNetRequest.GetTypedHeaders);
         }
 
@@ -36,6 +36,11 @@ namespace Red
         ///     The headers contained in the request
         /// </summary>
         public IHeaderDictionary Headers => AspNetRequest.Headers;
+        
+        /// <summary>
+        ///     The headers contained in the request
+        /// </summary>
+        public UrlParameters Params => Context.Params;
 
 
         /// <summary>

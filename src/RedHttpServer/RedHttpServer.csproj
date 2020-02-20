@@ -31,8 +31,8 @@
     <RepositoryType>GitHub</RepositoryType>
     <Authors>Malte Rosenbjerg</Authors>
     <PackageReleaseNotes>Refined API and fixes</PackageReleaseNotes>
-    <AssemblyVersion>4.0.0.0</AssemblyVersion>
-    <FileVersion>4.0.0.0</FileVersion>
+    <AssemblyVersion>5.0.0.0</AssemblyVersion>
+    <FileVersion>5.0.0.0</FileVersion>
     <LangVersion>8</LangVersion>
     <PackageVersion>5.0.0</PackageVersion>
     <Title>Red</Title>

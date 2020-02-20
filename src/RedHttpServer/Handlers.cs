@@ -10,11 +10,10 @@ namespace Red
     /// <summary>
     ///     Utilities
     /// </summary>
-    public static class Utils
+    public static class Handlers
     {
         internal static readonly Task<HandlerType> CachedFinalHandlerTask = Task.FromResult(HandlerType.Final);
         internal static readonly Task<HandlerType> CachedContinueHandlerTask = Task.FromResult(HandlerType.Continue);
-        internal static readonly Task<HandlerType> CachedErrorHandlerTask = Task.FromResult(HandlerType.Error);
 
         private static readonly IDictionary<string, string> MimeTypes =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -107,7 +106,7 @@ namespace Red
         public static async Task<HandlerType> CanParse<T>(Request req, Response res)
             where T : class
         {
-            var obj = req.ParseBodyAsync<T>();
+            var obj = await req.ParseBodyAsync<T>();
             if (obj == default)
             {
                 await res.SendStatus(HttpStatusCode.BadRequest);
@@ -149,7 +148,7 @@ namespace Red
             var fullBasePath = Path.GetFullPath(basePath);
             return (req, res) =>
             {
-                var absoluteFilePath = Path.Combine(fullBasePath, req.Context.Params["any"]);
+                var absoluteFilePath = Path.GetFullPath(Path.Combine(fullBasePath, req.Context.Params["any"]));
                 if (!absoluteFilePath.StartsWith(fullBasePath) || !File.Exists(absoluteFilePath))
                     return send404NotFound
                         ? res.SendStatus(HttpStatusCode.NotFound)

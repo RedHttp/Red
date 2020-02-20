@@ -31,13 +31,30 @@ namespace RedHttpServer.Tests
             var (status1, content1) = await _httpClient.GetContent(BaseUrl + "/");
             var (status2, content2) = await _httpClient.GetContent(BaseUrl + "/hello");
 
-            Assert.AreEqual(status0, HttpStatusCode.OK);
-            Assert.AreEqual(status1, HttpStatusCode.OK);
-            Assert.AreEqual(status2, HttpStatusCode.OK);
+            Assert.AreEqual(HttpStatusCode.OK, status0);
+            Assert.AreEqual(HttpStatusCode.OK, status1);
+            Assert.AreEqual(HttpStatusCode.OK, status2);
             
-            Assert.AreEqual(content0, "1");
-            Assert.AreEqual(content1, "1");
-            Assert.AreEqual(content2, "2");
+            Assert.AreEqual("1", content0);
+            Assert.AreEqual("1", content1);
+            Assert.AreEqual("2", content2);
+            
+            await _server.StopAsync();
+        }
+        [Test]
+        public async Task WebsocketRouteOrdering()
+        {
+            _server.WebSocket("/websocket", (req, res, wsd) => res.SendString("1"));
+            _server.Get("/*",  (req, res) => res.SendString("2"));
+            _server.Start();
+
+            var (status0, _) = await _httpClient.GetContent(BaseUrl + "/websocket");
+            var (status1, content1) = await _httpClient.GetContent(BaseUrl + "/askjldald");
+
+            Assert.AreEqual(HttpStatusCode.UpgradeRequired, status0);
+            Assert.AreEqual(HttpStatusCode.OK, status1);
+            
+            Assert.AreEqual("2", content1);
             
             await _server.StopAsync();
         }
@@ -55,41 +72,67 @@ namespace RedHttpServer.Tests
             var (status2, content2) = await _httpClient.GetContent(BaseUrl + "/hello");
             var (status3, content3) = await _httpClient.GetContent(BaseUrl + "/blah/blah");
 
-            Assert.AreEqual(status0, HttpStatusCode.OK);
-            Assert.AreEqual(status1, HttpStatusCode.OK);
-            Assert.AreEqual(status2, HttpStatusCode.OK);
-            Assert.AreEqual(status3, HttpStatusCode.OK);
+            Assert.AreEqual(HttpStatusCode.OK, status0);
+            Assert.AreEqual(HttpStatusCode.OK, status1);
+            Assert.AreEqual(HttpStatusCode.OK, status2);
+            Assert.AreEqual(HttpStatusCode.OK, status3);
             
-            Assert.AreEqual(content0, "1");
-            Assert.AreEqual(content1, "2");
-            Assert.AreEqual(content2, "3");
-            Assert.AreEqual(content3, "1");
+            Assert.AreEqual("1", content0);
+            Assert.AreEqual("2", content1);
+            Assert.AreEqual("3", content2);
+            Assert.AreEqual("1", content3);
             
             await _server.StopAsync();
         }
 
         [Test]
-        public async Task WildcardOrderingRoutingTest()
+        public async Task ReverseWildcardOrderingRoutingTest()
         {
             // The ordering of catch-all wildcard matters as shown by this test
             _server.Get("/*", (req, res) => res.SendString("1"));
             _server.Get("/hello/*", (req, res) => res.SendString("2"));
-            _server.Get("/hello",  (req, res) => res.SendString("3"));
+            _server.Get("/hello/world",  (req, res) => res.SendString("3"));
             _server.Start();
 
             var (status0, content0) = await _httpClient.GetContent(BaseUrl + "/blah");
-            var (status1, content1) = await _httpClient.GetContent(BaseUrl + "/hello/blah");
+            var (status1, content1) = await _httpClient.GetContent(BaseUrl + "/hello/world");
             var (status2, content2) = await _httpClient.GetContent(BaseUrl + "/hello");
             var (status3, content3) = await _httpClient.GetContent(BaseUrl + "/blah/blah");
 
-            Assert.AreEqual(status0, HttpStatusCode.OK);
-            Assert.AreEqual(status1, HttpStatusCode.OK);
-            Assert.AreEqual(status2, HttpStatusCode.OK);
-            Assert.AreEqual(status3, HttpStatusCode.OK);
+            Assert.AreEqual(HttpStatusCode.OK, status0);
+            Assert.AreEqual(HttpStatusCode.OK, status1);
+            Assert.AreEqual(HttpStatusCode.OK, status2);
+            Assert.AreEqual(HttpStatusCode.OK, status3);
             
             Assert.AreEqual(content0, "1");
             Assert.AreEqual(content1, "1");
             Assert.AreEqual(content2, "1");
+            Assert.AreEqual(content3, "1");
+            
+            await _server.StopAsync();
+        }
+        [Test]
+        public async Task WildcardOrderingRoutingTest()
+        {
+            // The ordering of catch-all wildcard matters as shown by this test
+            _server.Get("/hello/world",  (req, res) => res.SendString("3"));
+            _server.Get("/hello/*", (req, res) => res.SendString("2"));
+            _server.Get("/*", (req, res) => res.SendString("1"));
+            _server.Start();
+
+            var (status0, content0) = await _httpClient.GetContent(BaseUrl + "/blah");
+            var (status1, content1) = await _httpClient.GetContent(BaseUrl + "/hello/world");
+            var (status2, content2) = await _httpClient.GetContent(BaseUrl + "/hello");
+            var (status3, content3) = await _httpClient.GetContent(BaseUrl + "/blah/blah");
+
+            Assert.AreEqual(HttpStatusCode.OK, status0);
+            Assert.AreEqual(HttpStatusCode.OK, status1);
+            Assert.AreEqual(HttpStatusCode.OK, status2);
+            Assert.AreEqual(HttpStatusCode.OK, status3);
+            
+            Assert.AreEqual(content0, "1");
+            Assert.AreEqual(content1, "3");
+            Assert.AreEqual(content2, "2");
             Assert.AreEqual(content3, "1");
             
             await _server.StopAsync();
@@ -109,17 +152,17 @@ namespace RedHttpServer.Tests
             var (status3, content3) = await _httpClient.GetContent(BaseUrl + "/orange");
             var (status4, content4) = await _httpClient.GetContent(BaseUrl + "/peach/test");
 
-            Assert.AreEqual(status0, HttpStatusCode.OK);
-            Assert.AreEqual(status1, HttpStatusCode.OK);
-            Assert.AreEqual(status2, HttpStatusCode.OK);
-            Assert.AreEqual(status3, HttpStatusCode.OK);
-            Assert.AreEqual(status4, HttpStatusCode.OK);
+            Assert.AreEqual(HttpStatusCode.OK, status0);
+            Assert.AreEqual(HttpStatusCode.OK, status1);
+            Assert.AreEqual(HttpStatusCode.OK, status2);
+            Assert.AreEqual(HttpStatusCode.OK, status3);
+            Assert.AreEqual(HttpStatusCode.OK, status4);
             
-            Assert.AreEqual(content0, "test1");
-            Assert.AreEqual(content1, "banana2");
-            Assert.AreEqual(content2, "apple3");
-            Assert.AreEqual(content3, "orange3");
-            Assert.AreEqual(content4, "peach2");
+            Assert.AreEqual("test1", content0);
+            Assert.AreEqual("banana2", content1);
+            Assert.AreEqual("apple3", content2);
+            Assert.AreEqual("orange3", content3);
+            Assert.AreEqual("peach2", content4);
             
             await _server.StopAsync();
         }
@@ -139,14 +182,14 @@ namespace RedHttpServer.Tests
             var (status4, _) = await _httpClient.GetContent(BaseUrl + "/test1");
             var (status5, content5) = await _httpClient.GetContent(BaseUrl + "/test");
 
-            Assert.AreEqual(status0, HttpStatusCode.NotFound);
-            Assert.AreEqual(status1, HttpStatusCode.NotFound);
-            Assert.AreEqual(status2, HttpStatusCode.NotFound);
-            Assert.AreEqual(status3, HttpStatusCode.NotFound);
-            Assert.AreEqual(status4, HttpStatusCode.NotFound);
+            Assert.AreEqual(HttpStatusCode.NotFound, status0);
+            Assert.AreEqual(HttpStatusCode.NotFound, status1);
+            Assert.AreEqual(HttpStatusCode.NotFound, status2);
+            Assert.AreEqual(HttpStatusCode.NotFound, status3);
+            Assert.AreEqual(HttpStatusCode.NotFound, status4);
             
-            Assert.AreEqual(status5, HttpStatusCode.OK);
-            Assert.AreEqual(content5, "test1");
+            Assert.AreEqual(HttpStatusCode.OK, status5);
+            Assert.AreEqual("test1", content5);
             
             await _server.StopAsync();
         }

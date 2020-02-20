@@ -27,33 +27,12 @@ namespace Red
         ///     The
         /// </summary>
         public readonly PluginCollection Plugins;
-
-        /// <summary>
-        ///     The Red.Request for this context
-        /// </summary>
-        public readonly Request Request;
-
-        /// <summary>
-        ///     The Red.Response for this context
-        /// </summary>
-        public readonly Response Response;
-
+        
         internal Context(HttpContext aspNetContext, PluginCollection plugins)
         {
             Plugins = plugins;
             AspNetContext = aspNetContext;
-            Request = new Request(this, aspNetContext.Request);
-            Response = new Response(this, aspNetContext.Response);
             Params = new UrlParameters(aspNetContext);
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="defaultLanguage"></param>
-        /// <returns></returns>
-        public string ParseLanguageHeader(string defaultLanguage = "en-UK")
-        {
-            return Request.TypedHeaders.AcceptLanguage.FirstOrDefault()?.Value.Value ?? defaultLanguage;
         }
 
         /// <summary>

@@ -19,9 +19,9 @@ namespace Red
         /// </summary>
         public readonly HttpResponse AspNetResponse;
 
-        internal Response(Context context, HttpResponse aspNetResponse) : base(context)
+        internal Response(Context context) : base(context)
         {
-            AspNetResponse = aspNetResponse;
+            AspNetResponse = context.AspNetContext.Response;
         }
 
         /// <summary>
@@ -48,8 +48,8 @@ namespace Red
         /// <param name="permanent">Whether to respond with a temporary or permanent redirect</param>
         public Task<HandlerType> Redirect(string redirectPath, bool permanent = false)
         {
-            Context.Response.Redirect(redirectPath, permanent);
-            return Utils.CachedFinalHandlerTask;
+            AspNetResponse.Redirect(redirectPath, permanent);
+            return Handlers.CachedFinalHandlerTask;
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace Red
             if (handleRanges) Headers["Accept-Ranges"] = "bytes";
 
             var fileSize = new FileInfo(filePath).Length;
-            var range = Context.Request.TypedHeaders.Range;
+            var range = Context.AspNetContext.Request.GetTypedHeaders().Range;
             var encodedFilename = WebUtility.UrlEncode(fileName ?? Path.GetFileName(filePath));
 
             Headers["Content-disposition"] = $"inline; filename=\"{encodedFilename}\"";
@@ -189,7 +189,7 @@ namespace Red
                     : fileSize - offset;
 
                 AspNetResponse.StatusCode = (int) HttpStatusCode.PartialContent;
-                AspNetResponse.ContentType = Utils.GetMimeType(contentType, filePath);
+                AspNetResponse.ContentType = Handlers.GetMimeType(contentType, filePath);
                 AspNetResponse.ContentLength = length;
                 Headers["Content-Range"] = $"bytes {offset}-{offset + length - 1}/{fileSize}";
                 await AspNetResponse.SendFileAsync(filePath, offset, length);
@@ -197,7 +197,7 @@ namespace Red
             else
             {
                 AspNetResponse.StatusCode = (int) status;
-                AspNetResponse.ContentType = Utils.GetMimeType(contentType, filePath);
+                AspNetResponse.ContentType = Handlers.GetMimeType(contentType, filePath);
                 AspNetResponse.ContentLength = fileSize;
                 await AspNetResponse.SendFileAsync(filePath);
             }
@@ -219,7 +219,7 @@ namespace Red
             HttpStatusCode status = HttpStatusCode.OK)
         {
             AspNetResponse.StatusCode = (int) status;
-            AspNetResponse.ContentType = Utils.GetMimeType(contentType, filePath);
+            AspNetResponse.ContentType = Handlers.GetMimeType(contentType, filePath);
             var name = string.IsNullOrEmpty(fileName) ? Path.GetFileName(filePath) : fileName;
             Headers["Content-disposition"] = $"attachment; filename=\"{name}\"";
             await AspNetResponse.SendFileAsync(filePath);

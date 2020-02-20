@@ -9,11 +9,12 @@ namespace Red.Interfaces
     public interface IRouter
     {
         /// <summary>
-        ///     Create a
+        ///     Create a router and/or invoke a registration function
         /// </summary>
-        /// <param name="baseRoute"></param>
+        /// <param name="routePrefix"></param>
+        /// <param name="register"></param>
         /// <returns></returns>
-        IRouter CreateRouter(string baseRoute);
+        IRouter CreateRouter(string routePrefix, Action<IRouter>? register = null);
 
         /// <summary>
         ///     Add action to handle GET requests to a given route
