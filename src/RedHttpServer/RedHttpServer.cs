@@ -139,8 +139,8 @@ namespace Red
         public void Run(params string[] hostnames)
         {
             _host = Build(hostnames);
+            Console.WriteLine($"Running Red/{Version} on port " + Port);
             _host.Run();
-            Console.WriteLine($"Red/{Version} running on port " + Port);
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace Red
         public Task RunAsync(params string[] hostnames)
         {
             _host = Build(hostnames);
-            Console.WriteLine($"Starting Red/{Version} on port " + Port);
+            Console.WriteLine($"Running Red/{Version} on port " + Port);
             return _host.RunAsync();
         }
         /// <summary>
