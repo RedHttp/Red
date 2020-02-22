@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -46,7 +47,7 @@ namespace RedHttpServer.Tests
         {
             _server.WebSocket("/websocket", (req, res, wsd) => res.SendString("1"));
             _server.Get("/*",  (req, res) => res.SendString("2"));
-            _server.Start();
+            await _server.StartAsync();
 
             var (status0, _) = await _httpClient.GetContent(BaseUrl + "/websocket");
             var (status1, content1) = await _httpClient.GetContent(BaseUrl + "/askjldald");

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing.Template;
 using Microsoft.Extensions.DependencyInjection;
 using Red.Extensions;
@@ -127,6 +128,20 @@ namespace Red
             _host.Start();
             Console.WriteLine($"Red/{Version} running on port " + Port);
         }
+        /// <summary>
+        ///     Runs the server, blocking the current thread until shutdown is requested.
+        ///     If no hostnames are provided, localhost will be used.
+        /// </summary>
+        /// <param name="hostnames">
+        ///     The host names the server is handling requests for. Protocol and port will be added
+        ///     automatically
+        /// </param>
+        public void Run(params string[] hostnames)
+        {
+            _host = Build(hostnames);
+            _host.Run();
+            Console.WriteLine($"Red/{Version} running on port " + Port);
+        }
 
         /// <summary>
         ///     Attempts to stop the running server using IWebHost.StopAsync
@@ -146,6 +161,21 @@ namespace Red
         /// </param>
         /// <returns></returns>
         public Task RunAsync(params string[] hostnames)
+        {
+            _host = Build(hostnames);
+            Console.WriteLine($"Starting Red/{Version} on port " + Port);
+            return _host.RunAsync();
+        }
+        /// <summary>
+        ///     Start the server using IWebHost.StartAsync and return the task so it can be awaited.
+        ///     If no hostnames are provided, localhost will be used.
+        /// </summary>
+        /// <param name="hostnames">
+        ///     The host names the server is handling requests for. Protocol and port will be added
+        ///     automatically
+        /// </param>
+        /// <returns></returns>
+        public Task StartAsync(params string[] hostnames)
         {
             _host = Build(hostnames);
             Console.WriteLine($"Starting Red/{Version} on port " + Port);
