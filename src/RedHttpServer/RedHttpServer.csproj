@@ -30,11 +30,11 @@
     <RepositoryUrl>https://github.com/RedHttp/Red</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <Authors>Malte Rosenbjerg</Authors>
-    <PackageReleaseNotes>Add more start/run methods and fix runasync</PackageReleaseNotes>
+    <PackageReleaseNotes>Improve support and use of cancellationtokens</PackageReleaseNotes>
     <AssemblyVersion>5.0.0.0</AssemblyVersion>
     <FileVersion>5.0.0.0</FileVersion>
     <LangVersion>8</LangVersion>
-    <PackageVersion>5.1.0</PackageVersion>
+    <PackageVersion>5.2.0</PackageVersion>
     <Title>Red</Title>
     <Nullable>enable</Nullable>
   </PropertyGroup>
