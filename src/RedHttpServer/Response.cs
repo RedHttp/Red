@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Red.Interfaces;
@@ -29,6 +30,11 @@ namespace Red
         /// </summary>
         public IHeaderDictionary Headers => AspNetResponse.Headers;
 
+        /// <summary>
+        ///     The cancellation token the request being aborted
+        /// </summary>
+        public CancellationToken Aborted => AspNetResponse.HttpContext.RequestAborted;
+        
         /// <summary>
         ///     Obsolete. Please used Headers property instead.
         ///     This method Will be removed in a later version
@@ -63,14 +69,14 @@ namespace Red
         public Task<HandlerType> SendString(string data, string contentType = "text/plain", string fileName = "",
             bool attachment = false, HttpStatusCode status = HttpStatusCode.OK)
         {
-            return SendString(AspNetResponse, data, contentType, fileName, attachment, status);
+            return SendString(AspNetResponse, data, contentType, fileName, attachment, status, Aborted);
         }
 
         /// <summary>
         ///     Static helper for use in middleware
         /// </summary>
         public static async Task<HandlerType> SendString(HttpResponse response, string data, string contentType,
-            string fileName, bool attachment, HttpStatusCode status)
+            string fileName, bool attachment, HttpStatusCode status, CancellationToken cancellationToken)
         {
             response.StatusCode = (int) status;
             response.ContentType = contentType;
@@ -80,7 +86,7 @@ namespace Red
                 response.Headers.Add("Content-disposition", contentDisposition);
             }
 
-            await response.WriteAsync(data);
+            await response.WriteAsync(data, cancellationToken);
             return HandlerType.Final;
         }
 
@@ -89,9 +95,9 @@ namespace Red
         /// </summary>
         /// <param name="response">The HttpResponse object</param>
         /// <param name="status">The status code for the response</param>
-        public static Task<HandlerType> SendStatus(HttpResponse response, HttpStatusCode status)
+        public static Task<HandlerType> SendStatus(HttpResponse response, HttpStatusCode status, CancellationToken cancellationToken)
         {
-            return SendString(response, status.ToString(), "text/plain", "", false, status);
+            return SendString(response, status.ToString(), "text/plain", "", false, status, cancellationToken);
         }
 
         /// <summary>
@@ -112,7 +118,7 @@ namespace Red
         {
             AspNetResponse.StatusCode = (int) status;
             AspNetResponse.ContentType = "application/json";
-            await Context.Plugins.Get<IJsonConverter>().SerializeAsync(data, AspNetResponse.Body);
+            await Context.Plugins.Get<IJsonConverter>().SerializeAsync(data, AspNetResponse.Body, Aborted);
             return HandlerType.Final;
         }
 
@@ -125,7 +131,7 @@ namespace Red
         {
             AspNetResponse.StatusCode = (int) status;
             AspNetResponse.ContentType = "application/xml";
-            await Context.Plugins.Get<IXmlConverter>().SerializeAsync(data, AspNetResponse.Body);
+            await Context.Plugins.Get<IXmlConverter>().SerializeAsync(data, AspNetResponse.Body, Aborted);
             return HandlerType.Final;
         }
 
@@ -146,7 +152,7 @@ namespace Red
             if (!string.IsNullOrEmpty(fileName))
                 Headers["Content-disposition"] = $"{(attachment ? "attachment" : "inline")}; filename=\"{fileName}\"";
 
-            await dataStream.CopyToAsync(AspNetResponse.Body);
+            await dataStream.CopyToAsync(AspNetResponse.Body, Aborted);
             if (dispose) dataStream.Dispose();
 
             return HandlerType.Final;
@@ -192,14 +198,14 @@ namespace Red
                 AspNetResponse.ContentType = Handlers.GetMimeType(contentType, filePath);
                 AspNetResponse.ContentLength = length;
                 Headers["Content-Range"] = $"bytes {offset}-{offset + length - 1}/{fileSize}";
-                await AspNetResponse.SendFileAsync(filePath, offset, length);
+                await AspNetResponse.SendFileAsync(filePath, offset, length, Aborted);
             }
             else
             {
                 AspNetResponse.StatusCode = (int) status;
                 AspNetResponse.ContentType = Handlers.GetMimeType(contentType, filePath);
                 AspNetResponse.ContentLength = fileSize;
-                await AspNetResponse.SendFileAsync(filePath);
+                await AspNetResponse.SendFileAsync(filePath, Aborted);
             }
 
             return HandlerType.Final;
@@ -222,7 +228,7 @@ namespace Red
             AspNetResponse.ContentType = Handlers.GetMimeType(contentType, filePath);
             var name = string.IsNullOrEmpty(fileName) ? Path.GetFileName(filePath) : fileName;
             Headers["Content-disposition"] = $"attachment; filename=\"{name}\"";
-            await AspNetResponse.SendFileAsync(filePath);
+            await AspNetResponse.SendFileAsync(filePath, Aborted);
             return HandlerType.Final;
         }
     }

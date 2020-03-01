@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -18,9 +19,12 @@ namespace Red
         /// </summary>
         public readonly WebSocket WebSocket;
 
-        internal WebSocketDialog(WebSocket webSocket)
+        private readonly CancellationToken _requestAborted;
+
+        internal WebSocketDialog(WebSocket webSocket, CancellationToken requestAborted)
         {
             WebSocket = webSocket;
+            _requestAborted = requestAborted;
         }
 
 
@@ -47,7 +51,7 @@ namespace Red
         public Task SendText(string text, bool endOfMessage = true)
         {
             return WebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(text)),
-                WebSocketMessageType.Text, endOfMessage, CancellationToken.None);
+                WebSocketMessageType.Text, endOfMessage, _requestAborted);
         }
 
         /// <summary>
@@ -57,8 +61,7 @@ namespace Red
         /// <param name="endOfMessage"></param>
         public Task SendBytes(ArraySegment<byte> data, bool endOfMessage = true)
         {
-            return WebSocket.SendAsync(data, WebSocketMessageType.Binary, endOfMessage,
-                CancellationToken.None);
+            return WebSocket.SendAsync(data, WebSocketMessageType.Binary, endOfMessage, _requestAborted);
         }
 
         /// <summary>
@@ -71,7 +74,7 @@ namespace Red
             WebSocketCloseStatus status = WebSocketCloseStatus.NormalClosure,
             string description = "")
         {
-            return WebSocket.CloseAsync(status, description, CancellationToken.None);
+            return WebSocket.CloseAsync(status, description, _requestAborted);
         }
 
         internal async Task ReadFromWebSocket()
@@ -79,8 +82,7 @@ namespace Red
             var buffer = ArrayPool<byte>.Shared.Rent(0x1000);
             try
             {
-                var received =
-                    await WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                var received = await WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), _requestAborted);
                 while (!received.CloseStatus.HasValue)
                 {
                     switch (received.MessageType)
@@ -96,13 +98,11 @@ namespace Red
                                     received.EndOfMessage));
                             break;
                         case WebSocketMessageType.Close:
-                            await WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "",
-                                CancellationToken.None);
+                            await WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", _requestAborted);
                             break;
                     }
 
-                    received = await WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer),
-                        CancellationToken.None);
+                    received = await WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), _requestAborted);
                 }
             }
             catch (WebSocketException)
@@ -110,29 +110,18 @@ namespace Red
             }
             finally
             {
+                try
+                {
+                    if (!new [] { WebSocketState.Aborted, WebSocketState.Closed}.Contains(WebSocket.State))
+                    {
+                        await WebSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "", _requestAborted);
+                    }
+                }
+                catch (WebSocketException) { }
+                
                 OnClosed?.Invoke(this, EventArgs.Empty);
-                await WebSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "",
-                    CancellationToken.None);
                 WebSocket.Dispose();
             }
-        }
-
-        /// <summary>
-        ///     Convenience method for ending a dialog handler
-        /// </summary>
-        /// <returns></returns>
-        public HandlerType Final()
-        {
-            return HandlerType.Final;
-        }
-
-        /// <summary>
-        ///     Convenience method for ending a dialog handler
-        /// </summary>
-        /// <returns></returns>
-        public HandlerType Continue()
-        {
-            return HandlerType.Continue;
         }
 
         /// <inheritdoc />

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Red.Interfaces
@@ -22,12 +23,12 @@ namespace Red.Interfaces
         /// <summary>
         ///     Deserialize data from a stream to specified type
         /// </summary>
-        Task<T?> DeserializeAsync<T>(Stream jsonStream)
+        Task<T?> DeserializeAsync<T>(Stream jsonStream, CancellationToken cancellationToken = default)
             where T : class;
 
         /// <summary>
         ///     Serialize data to a stream
         /// </summary>
-        Task SerializeAsync<T>(T obj, Stream jsonStream);
+        Task SerializeAsync<T>(T obj, Stream jsonStream, CancellationToken cancellationToken = default);
     }
 }

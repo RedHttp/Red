@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Red.Interfaces;
 
@@ -35,7 +36,7 @@ namespace Red.Extensions
                 return default;
 
             var converter = request.Context.Plugins.Get<IBodyConverter>(converterType);
-            return await converter.DeserializeAsync<T>(request.BodyStream);
+            return await converter.DeserializeAsync<T>(request.BodyStream, request.Aborted);
         }
 
         public void Initialize(RedHttpServer server)

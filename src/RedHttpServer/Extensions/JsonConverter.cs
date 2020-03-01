@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Red.Interfaces;
 
@@ -40,12 +41,12 @@ namespace Red.Extensions
         }
 
         /// <inheritdoc />
-        public async Task<T?> DeserializeAsync<T>(Stream jsonStream)
+        public async Task<T?> DeserializeAsync<T>(Stream jsonStream, CancellationToken cancellationToken = default)
             where T : class
         {
             try
             {
-                return await JsonSerializer.DeserializeAsync<T>(jsonStream);
+                return await JsonSerializer.DeserializeAsync<T>(jsonStream, cancellationToken: cancellationToken);
             }
             catch (JsonException)
             {
@@ -54,11 +55,11 @@ namespace Red.Extensions
         }
 
         /// <inheritdoc />
-        public async Task SerializeAsync<T>(T obj, Stream jsonStream)
+        public async Task SerializeAsync<T>(T obj, Stream jsonStream, CancellationToken cancellationToken = default)
         {
             try
             {
-                await JsonSerializer.SerializeAsync(jsonStream, obj);
+                await JsonSerializer.SerializeAsync(jsonStream, obj, cancellationToken: cancellationToken);
             }
             catch (JsonException)
             {

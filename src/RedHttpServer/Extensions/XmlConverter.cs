@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
@@ -57,7 +58,7 @@ namespace Red.Extensions
         }
 
         /// <inheritdoc />
-        public async Task<T?> DeserializeAsync<T>(Stream xmlStream)
+        public async Task<T?> DeserializeAsync<T>(Stream xmlStream, CancellationToken cancellationToken = default)
             where T : class
         {
             try
@@ -76,7 +77,7 @@ namespace Red.Extensions
         }
 
         /// <inheritdoc />
-        public async Task SerializeAsync<T>(T obj, Stream output)
+        public async Task SerializeAsync<T>(T obj, Stream output, CancellationToken cancellationToken = default)
         {
             try
             {

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Headers;
@@ -31,6 +32,11 @@ namespace Red
         ///     The query elements of the request
         /// </summary>
         public IQueryCollection Queries => AspNetRequest.Query;
+
+        /// <summary>
+        ///     The cancellation token the request being aborted
+        /// </summary>
+        public CancellationToken Aborted => AspNetRequest.HttpContext.RequestAborted;
 
         /// <summary>
         ///     The headers contained in the request
@@ -69,7 +75,7 @@ namespace Red
             if (_form != null)
                 return _form;
 
-            _form = await AspNetRequest.ReadFormAsync();
+            _form = await AspNetRequest.ReadFormAsync(Aborted);
             return _form;
         }
 
@@ -84,7 +90,7 @@ namespace Red
             long maxSizeKb = 50000)
         {
             if (!AspNetRequest.HasFormContentType) return false;
-            var form = await AspNetRequest.ReadFormAsync();
+            var form = await AspNetRequest.ReadFormAsync(Aborted);
             if (form.Files.Sum(file => file.Length) > maxSizeKb << 10)
                 return false;
 
@@ -94,11 +100,10 @@ namespace Red
                 var filename = fileRenamer == null ? formFile.FileName : fileRenamer(formFile.FileName);
                 filename = Path.GetFileName(filename);
                 if (string.IsNullOrWhiteSpace(filename)) continue;
+                
                 var filepath = Path.Combine(fullSaveDir, filename);
-                using (var fileStream = File.Create(filepath))
-                {
-                    await formFile.CopyToAsync(fileStream);
-                }
+                await using var fileStream = File.Create(filepath);
+                await formFile.CopyToAsync(fileStream, Aborted);
             }
 
             return true;

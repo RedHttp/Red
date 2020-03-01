@@ -112,7 +112,7 @@ namespace Red
                 if (aspNetContext.WebSockets.IsWebSocketRequest)
                 {
                     var webSocket = await aspNetContext.WebSockets.AcceptWebSocketAsync();
-                    var webSocketDialog = new WebSocketDialog(webSocket);
+                    var webSocketDialog = new WebSocketDialog(webSocket, request.Aborted);
 
                     foreach (var middleware in _wsMiddle.Concat(handlers))
                     {
