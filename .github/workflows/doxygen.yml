@@ -1,7 +1,7 @@
 name: Update documentation
 on:
   pull_request:
-    branches: [ gh-pages ]
+    branches: gh-pages
 
 jobs:
   build:
