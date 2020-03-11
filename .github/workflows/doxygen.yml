@@ -22,7 +22,8 @@ jobs:
     - name: Run doxygen
       run: doxygen assets/red.doxy
       
-    - name: |
+    - name: Push updated documentation
+      run: |
         git add ./doxygen --all
         git commit -am "Update documentation"
         git push
