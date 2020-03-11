@@ -91,7 +91,7 @@ namespace Red
         {
             if (!AspNetRequest.HasFormContentType) return false;
             var form = await AspNetRequest.ReadFormAsync(Aborted);
-            if (form.Files.Sum(file => file.Length) > maxSizeKb << 10)
+            if (form.Files.Sum(file => file.Length) > maxSizeKb * 1000)
                 return false;
 
             var fullSaveDir = Path.GetFullPath(saveDir);
