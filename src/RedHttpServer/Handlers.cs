@@ -162,8 +162,9 @@ namespace Red
         internal static string GetMimeType(string? contentType, string? filePath,
             string defaultContentType = "application/octet-stream")
         {
-            if (!string.IsNullOrEmpty(filePath) && !string.IsNullOrEmpty(contentType) &&
-                MimeTypes.TryGetValue(Path.GetExtension(filePath), out var mimeType))
+            if (!string.IsNullOrEmpty(contentType))
+                return contentType;
+            if (!string.IsNullOrEmpty(filePath) && MimeTypes.TryGetValue(Path.GetExtension(filePath), out var mimeType))
                 return mimeType;
             return defaultContentType;
         }
