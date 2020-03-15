@@ -10,7 +10,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="RHttpServer" Version="4.0.2" />
+      <PackageReference Include="RHttpServer" Version="5.2.0" />
     </ItemGroup>
 
 </Project>

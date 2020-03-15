@@ -7,9 +7,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Red.CommonMarkRenderer" Version="2.0.0" />
-    <PackageReference Include="Red.CookieSessions" Version="5.0.0" />
+    <PackageReference Include="Red.CookieSessions" Version="5.1.0" />
     <PackageReference Include="Red.EcsRenderer" Version="2.0.0" />
     <PackageReference Include="Red.JwtSessions" Version="3.0.0" />
-    <PackageReference Include="RHttpServer" Version="4.0.2" />
+    <PackageReference Include="RHttpServer" Version="5.2.0" />
   </ItemGroup>
 </Project>
