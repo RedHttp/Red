@@ -130,23 +130,21 @@ namespace Red
         /// </summary>
         public sealed class BinaryMessageEventArgs : EventArgs
         {
-            private readonly ArraySegment<byte> _arraySegment;
-
             /// <summary>
             ///     Whether this is a complete message or the end of one, or there is more to come.
             /// </summary>
             public readonly bool EndOfMessage;
 
-            internal BinaryMessageEventArgs(ArraySegment<byte> data, bool endOfMessage)
-            {
-                _arraySegment = data;
-                EndOfMessage = endOfMessage;
-            }
-
             /// <summary>
             ///     The binary content of the message
             /// </summary>
-            public byte[] Data => _arraySegment.Array;
+            public readonly ArraySegment<byte> Data;
+
+            internal BinaryMessageEventArgs(ArraySegment<byte> data, bool endOfMessage)
+            {
+                Data = data;
+                EndOfMessage = endOfMessage;
+            }
         }
 
         /// <inheritdoc />

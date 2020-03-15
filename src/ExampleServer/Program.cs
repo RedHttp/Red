@@ -55,9 +55,9 @@ namespace ExampleServer
                 var context = req.Context;
                 return res.SendString(
                     $"you entered:\n" +
-                    context.ExtractUrlParameter("param1") + "\n" +
-                    context.ExtractUrlParameter("paramtwo") + "\n" +
-                    context.ExtractUrlParameter("somethingthird") + "\n");
+                    context.Params["param1"] + "\n" +
+                    context.Params["paramtwo"] + "\n" +
+                    context.Params["somethingthird"] + "\n");
             });
 
             // The clients can post to this endpoint to authenticate
@@ -110,7 +110,7 @@ namespace ExampleServer
                     $"Hello {queries["firstname"]} {queries["lastname"]}, you are logged in as {session.Username}");
             });
 
-            // We can render MarkDown/CommonMark using the Red.CommonMarkRenderer plugin
+            // We can render Markdown/CommonMark using the Red.CommonMarkRenderer plugin
             server.Get("/markdown", (req, res) => res.RenderFile("markdown.md"));
 
             // We use the Red.EcsRenderer plugin to render a simple template
@@ -122,11 +122,11 @@ namespace ExampleServer
 
             // We can also handle WebSocket requests, without any plugin needed
             // In this example we just have a simple WebSocket echo server
-            server.WebSocket("/echo", async (req, wsd) =>
+            server.WebSocket("/echo", async (req, res, wsd) =>
             {
                 wsd.SendText("Welcome to the echo test server");
                 wsd.OnTextReceived += (sender, eventArgs) => { wsd.SendText("you sent: " + eventArgs.Text); };
-                return HandlerType.Final;
+                return HandlerType.Continue;
             });
             
             // Then we start the server as an awaitable task

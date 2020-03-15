@@ -29,8 +29,8 @@ HEJ
         console.log('open');
         webSocket.send('world');
     });
-    webSocket.addEventListener('close', () => console.log('close'));
     webSocket.addEventListener('message', console.log);
+    webSocket.addEventListener('close', () => console.log('close'));
 </script>
 </body>
 </html>

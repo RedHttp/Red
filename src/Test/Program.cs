@@ -55,7 +55,7 @@ namespace Test
             {
                 await wsd.SendText("Welcome to the echo test server");
                 wsd.OnTextReceived += (sender, eventArgs) => { wsd.SendText("you sent: " + eventArgs.Text); };
-                return HandlerType.Final;
+                return HandlerType.Continue;
             });
             await server.RunAsync();
         }
