@@ -1,0 +1,29 @@
+name: Update documentation
+on:
+  pull_request:
+    branches: gh-pages
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Prepare doxygen
+      run: |
+        sudo apt update
+        sudo apt install -y doxygen graphviz
+        
+    - name: Clean old documentation
+      run: |
+        rm -r ./doxygen
+        mkdir ./doxygen
+        
+    - name: Run doxygen
+      run: doxygen assets/red.doxy
+      
+    - name: Push updated documentation
+      run: |
+        git add ./doxygen --all
+        git commit -am "Update documentation"
+        git push
