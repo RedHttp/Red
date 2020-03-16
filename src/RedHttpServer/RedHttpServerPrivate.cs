@@ -93,6 +93,10 @@ namespace Red
 
                 return status;
             }
+            catch (OperationCanceledException)
+            {
+                return HandlerType.Final;
+            }
             catch (Exception e)
             {
                 return await HandleException(request, response, status, e);
@@ -127,6 +131,10 @@ namespace Red
                 response.Headers["Upgrade"] = "Websocket";
                 await response.SendStatus(HttpStatusCode.UpgradeRequired);
                 return HandlerType.Error;
+            }
+            catch (OperationCanceledException)
+            {
+                return HandlerType.Final;
             }
             catch (Exception e)
             {

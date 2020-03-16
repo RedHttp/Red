@@ -108,6 +108,9 @@ namespace Red
             catch (WebSocketException)
             {
             }
+            catch (OperationCanceledException)
+            {
+            }
             finally
             {
                 try

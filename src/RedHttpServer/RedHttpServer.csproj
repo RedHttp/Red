@@ -30,7 +30,8 @@
     <RepositoryUrl>https://github.com/RedHttp/Red</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <Authors>Malte Rosenbjerg</Authors>
-    <PackageReleaseNotes>Fix contentType optional parameter</PackageReleaseNotes>
+    <PackageReleaseNotes>Fix contentType optional parameter
+Suppress OperationCanceledException in ws handler </PackageReleaseNotes>
     <AssemblyVersion>5.0.0.0</AssemblyVersion>
     <FileVersion>5.0.0.0</FileVersion>
     <LangVersion>8</LangVersion>
