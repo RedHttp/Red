@@ -25,7 +25,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://RedHttp.github.io/Red/</PackageProjectUrl>
-    <PackageLicenseUrl></PackageLicenseUrl>
+    <PackageLicense>MIT</PackageLicense>
     <PackageIconUrl>https://redhttp.github.io/Red/assets/red-large.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/RedHttp/Red</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
