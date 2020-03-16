@@ -10,7 +10,7 @@ let main argv =
     app.Get("/", (fun (req:Request) (res:Response) -> res.SendString("Hello from F#")))
     
     app.Get("/:name", (fun (req:Request) (res:Response) ->
-        let message = sprintf "Hello from F#, %s" (req.Context.ExtractUrlParameter "name")
+        let message = sprintf "Hello from F#, %s" (req.Context.Params.["name"])
         res.SendString(message)))
     
     app.RunAsync() |> Async.AwaitTask |> Async.RunSynchronously
