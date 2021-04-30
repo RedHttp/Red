@@ -3,8 +3,8 @@ updates:
 - package-ecosystem: nuget
   directory: "/"
   schedule:
-    interval: daily
-  open-pull-requests-limit: 10
+    interval: weekly
+  open-pull-requests-limit: 5
   ignore:
   - dependency-name: Microsoft.NET.Test.Sdk
     versions:
