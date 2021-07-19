@@ -1,3 +1,5 @@
+## The RedHttp project is no longer maintained. See [Carter](https://github.com/CarterCommunity/Carter) for a similar low-ceremony experience.
+
 # RedHttpServer
 ### Low ceremony cross-platform http server framework with websocket support
 ![.NET Core](https://github.com/RedHttp/Red/workflows/CI/badge.svg)
